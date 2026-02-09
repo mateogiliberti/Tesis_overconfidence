@@ -135,8 +135,8 @@ var pid;
 var group;
 var txt_instrucciones_escala;
 var txt_leyenda_breve;
-var Cruz_de_fijacion_Clock;
-var cruz_fijacion;
+var rutina_fixClock;
+var stim_cruz;
 var trial_pruebaClock;
 var nDots;
 var stimDuration;
@@ -269,11 +269,11 @@ async function experimentInit() {
   // Hacemos globales los textos para que los componentes de Texto los vean
   window.txt_instrucciones_escala = txt_instrucciones_escala;
   window.txt_leyenda_breve = txt_leyenda_breve;
-  // Initialize components for Routine "Cruz_de_fijacion_"
-  Cruz_de_fijacion_Clock = new util.Clock();
-  cruz_fijacion = new visual.TextStim({
+  // Initialize components for Routine "rutina_fix"
+  rutina_fixClock = new util.Clock();
+  stim_cruz = new visual.TextStim({
     win: psychoJS.window,
-    name: 'cruz_fijacion',
+    name: 'stim_cruz',
     text: '+',
     font: 'Arial',
     units: undefined, 
@@ -779,9 +779,9 @@ function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
     for (const thisFase_prueba of fase_prueba) {
       snapshot = fase_prueba.getSnapshot();
       fase_pruebaLoopScheduler.add(importConditions(snapshot));
-      fase_pruebaLoopScheduler.add(Cruz_de_fijacionRoutineBegin(snapshot));
-      fase_pruebaLoopScheduler.add(Cruz_de_fijacionRoutineEachFrame());
-      fase_pruebaLoopScheduler.add(Cruz_de_fijacionRoutineEnd(snapshot));
+      fase_pruebaLoopScheduler.add(rutina_fixRoutineBegin(snapshot));
+      fase_pruebaLoopScheduler.add(rutina_fixRoutineEachFrame());
+      fase_pruebaLoopScheduler.add(rutina_fixRoutineEnd(snapshot));
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineBegin(snapshot));
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineEachFrame());
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineEnd(snapshot));
@@ -848,9 +848,9 @@ function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
     for (const thisFase_testeo of fase_testeo) {
       snapshot = fase_testeo.getSnapshot();
       fase_testeoLoopScheduler.add(importConditions(snapshot));
-      fase_testeoLoopScheduler.add(Cruz_de_fijacionRoutineBegin(snapshot));
-      fase_testeoLoopScheduler.add(Cruz_de_fijacionRoutineEachFrame());
-      fase_testeoLoopScheduler.add(Cruz_de_fijacionRoutineEnd(snapshot));
+      fase_testeoLoopScheduler.add(rutina_fixRoutineBegin(snapshot));
+      fase_testeoLoopScheduler.add(rutina_fixRoutineEachFrame());
+      fase_testeoLoopScheduler.add(rutina_fixRoutineEnd(snapshot));
       fase_testeoLoopScheduler.add(trial_testeoRoutineBegin(snapshot));
       fase_testeoLoopScheduler.add(trial_testeoRoutineEachFrame());
       fase_testeoLoopScheduler.add(trial_testeoRoutineEnd(snapshot));
@@ -897,30 +897,30 @@ function fase_testeoLoopEndIteration(scheduler, snapshot) {
 }
 
 
-var Cruz_de_fijacionMaxDurationReached;
-var Cruz_de_fijacionMaxDuration;
-var Cruz_de_fijacionComponents;
-function Cruz_de_fijacionRoutineBegin(snapshot) {
+var rutina_fixMaxDurationReached;
+var rutina_fixMaxDuration;
+var rutina_fixComponents;
+function rutina_fixRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
     
-    //--- Prepare to start Routine 'Cruz_de_fijacion' ---
+    //--- Prepare to start Routine 'rutina_fix' ---
     t = 0;
     frameN = -1;
     continueRoutine = true; // until we're told otherwise
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
-    Cruz_de_fijacionClock.reset(routineTimer.getTime());
+    rutina_fixClock.reset(routineTimer.getTime());
     routineTimer.add(0.500000);
-    Cruz_de_fijacionMaxDurationReached = false;
+    rutina_fixMaxDurationReached = false;
     // update component parameters for each repeat
-    psychoJS.experiment.addData('Cruz_de_fijacion.started', globalClock.getTime());
-    Cruz_de_fijacionMaxDuration = null
+    psychoJS.experiment.addData('rutina_fix.started', globalClock.getTime());
+    rutina_fixMaxDuration = null
     // keep track of which components have finished
-    Cruz_de_fijacionComponents = [];
-    Cruz_de_fijacion_Components.push(cruz_fijacion);
+    rutina_fixComponents = [];
+    rutina_fixComponents.push(stim_cruz);
     
-    for (const thisComponent of Cruz_de_fijacionComponents)
+    for (const thisComponent of rutina_fixComponents)
       if ('status' in thisComponent)
         thisComponent.status = PsychoJS.Status.NOT_STARTED;
     return Scheduler.Event.NEXT;
@@ -929,36 +929,36 @@ function Cruz_de_fijacionRoutineBegin(snapshot) {
 
 
 var frameRemains;
-function Cruz_de_fijacionRoutineEachFrame() {
+function rutina_fixRoutineEachFrame() {
   return async function () {
-    //--- Loop for each frame of Routine 'Cruz_de_fijacion' ---
+    //--- Loop for each frame of Routine 'rutina_fix' ---
     // get current time
-    t = Cruz_de_fijacionClock.getTime();
+    t = rutina_fixClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
     
-    // *cruz_fijacion* updates
-    if (t >= 0.0 && cruz_fijacion.status === PsychoJS.Status.NOT_STARTED) {
+    // *stim_cruz* updates
+    if (t >= 0.0 && stim_cruz.status === PsychoJS.Status.NOT_STARTED) {
       // keep track of start time/frame for later
-      cruz_fijacion.tStart = t;  // (not accounting for frame time here)
-      cruz_fijacion.frameNStart = frameN;  // exact frame index
+      stim_cruz.tStart = t;  // (not accounting for frame time here)
+      stim_cruz.frameNStart = frameN;  // exact frame index
       
-      cruz_fijacion.setAutoDraw(true);
+      stim_cruz.setAutoDraw(true);
     }
     
     
-    // if cruz_fijacion is active this frame...
-    if (cruz_fijacion.status === PsychoJS.Status.STARTED) {
+    // if stim_cruz is active this frame...
+    if (stim_cruz.status === PsychoJS.Status.STARTED) {
     }
     
     frameRemains = 0.0 + 0.5 - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
-    if (cruz_fijacion.status === PsychoJS.Status.STARTED && t >= frameRemains) {
+    if (stim_cruz.status === PsychoJS.Status.STARTED && t >= frameRemains) {
       // keep track of stop time/frame for later
-      cruz_fijacion.tStop = t;  // not accounting for scr refresh
-      cruz_fijacion.frameNStop = frameN;  // exact frame index
+      stim_cruz.tStop = t;  // not accounting for scr refresh
+      stim_cruz.frameNStop = frameN;  // exact frame index
       // update status
-      cruz_fijacion.status = PsychoJS.Status.FINISHED;
-      cruz_fijacion.setAutoDraw(false);
+      stim_cruz.status = PsychoJS.Status.FINISHED;
+      stim_cruz.setAutoDraw(false);
     }
     
     // check for quit (typically the Esc key)
@@ -973,7 +973,7 @@ function Cruz_de_fijacionRoutineEachFrame() {
     }
     
     continueRoutine = false;  // reverts to True if at least one component still running
-    for (const thisComponent of Cruz_de_fijacionComponents)
+    for (const thisComponent of rutina_fixComponents)
       if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
         continueRoutine = true;
         break;
@@ -989,20 +989,20 @@ function Cruz_de_fijacionRoutineEachFrame() {
 }
 
 
-function Cruz_de_fijacionRoutineEnd(snapshot) {
+function rutina_fixRoutineEnd(snapshot) {
   return async function () {
-    //--- Ending Routine 'Cruz_de_fijacion' ---
-    for (const thisComponent of Cruz_de_fijacionComponents) {
+    //--- Ending Routine 'rutina_fix' ---
+    for (const thisComponent of rutina_fixComponents) {
       if (typeof thisComponent.setAutoDraw === 'function') {
         thisComponent.setAutoDraw(false);
       }
     }
-    psychoJS.experiment.addData('Cruz_de_fijacion.stopped', globalClock.getTime());
+    psychoJS.experiment.addData('rutina_fix.stopped', globalClock.getTime());
     if (routineForceEnded) {
-        routineTimer.reset();} else if (Cruz_de_fijacionMaxDurationReached) {
-        Cruz_de_fijacionClock.add(Cruz_de_fijacionMaxDuration);
+        routineTimer.reset();} else if (rutina_fixMaxDurationReached) {
+        rutina_fixClock.add(rutina_fixMaxDuration);
     } else {
-        Cruz_de_fijacionClock.add(0.500000);
+        rutina_fixClock.add(0.500000);
     }
     // Routines running outside a loop should always advance the datafile row
     if (currentLoop === psychoJS.experiment) {
