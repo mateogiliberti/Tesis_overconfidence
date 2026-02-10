@@ -6,7 +6,7 @@
 // store info about the experiment session:
 let expName = 'Discriminacion de ptos_final';  // from the Builder filename that created this script
 let expInfo = {
-    'legajo': '',
+    'legajo': '0',
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
 
