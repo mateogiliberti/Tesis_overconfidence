@@ -138,6 +138,8 @@ var txt_leyenda_breve;
 var rutina_fixClock;
 var stim_cruz;
 var trial_pruebaClock;
+var nDots;
+var stimDuration;
 var cloudRadius;
 var dotSize;
 var difficulties;
@@ -149,8 +151,6 @@ var Instrucciones_testeoClock;
 var testeo_instrucciones;
 var Key_instrucciones_test;
 var trial_testeoClock;
-var nDots;
-var stimDuration;
 var dot_stim;
 var resp_testeo;
 var Escala_de_confianza_1Clock;
@@ -288,8 +288,8 @@ async function experimentInit() {
   trial_pruebaClock = new util.Clock();
   // Run 'Begin Experiment' code from trial_prueba
   // --- Parámetros generales ---
-  window.nDots = 80; 
-  window.stimDuration = 0.2; // 200 ms
+  nDots = 80; 
+  stimDuration = 0.2; // 200 ms
   cloudRadius = 0.30; 
   dotSize = 0.015; // Tamaño (diámetro aproximado)
   
