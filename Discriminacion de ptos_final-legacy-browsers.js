@@ -6,7 +6,6 @@
 // store info about the experiment session:
 let expName = 'Discriminacion de ptos_final';  // from the Builder filename that created this script
 let expInfo = {
-    'session': '001',
     'numero de legajo': '',
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
@@ -148,112 +147,78 @@ async function experimentInit() {
   // Initialize components for Routine "asignacion_de_grupos"
   asignacion_de_gruposClock = new util.Clock();
   // Run 'Begin Experiment' code from asignacion_grupos
-  // --- 1. VALIDACIÓN ESTRICTA DE ID (TIPO DNI) ---
+  // --- CÓDIGO A PRUEBA DE FALLOS ---
   
-  // CAMBIO CRÍTICO: Usamos el nombre exacto de tu configuración
-  var raw_id = expInfo['numero de legajo'];
+  // 1. Lectura segura del dato (usando el nombre exacto que tienes)
+  var raw_input = expInfo['numero de legajo'];
   
-  // Seguridad: Si es undefined, lo convertimos a string vacío
-  if (typeof raw_id === 'undefined' || raw_id === null) {
-      raw_id = '';
+  // Limpieza: Si viene nulo o undefined, lo ponemos como texto vacío
+  if (raw_input === undefined || raw_input === null) {
+      raw_input = '';
   }
   
-  // Convertimos a string y quitamos espacios accidentales al inicio/final
-  var id_str = String(raw_id).trim();
+  // Convertimos a texto explícitamente para evitar errores de tipo
+  var str_input = String(raw_input);
   
-  // EXPRESIÓN REGULAR ESTRICTA:
-  // ^     -> Inicio del texto
-  // \d+   -> Uno o más números (0-9)
-  // $     -> Fin del texto
-  var esSoloNumeros = /^\d+$/.test(id_str);
+  // 2. Limpieza de caracteres (quitamos el signo $ si se coló, y espacios)
+  // Esto elimina cualquier cosa que NO sea un número
+  var digits_only = str_input.replace(/\D/g, ''); 
   
-  // Validación de valor (que sea mayor a 0)
-  var id_num = parseInt(id_str);
-  var esMayorCero = (!isNaN(id_num) && id_num > 0);
+  // 3. Lógica de Decisión (El "Filtro Suave")
+  var pid = parseInt(digits_only);
+  var group = 'Control';       // Valor por defecto (si falla, caen acá)
+  var data_status = 'VALID';   // Etiqueta para tu Excel
   
-  // --- BLOQUEO DE SEGURIDAD ---
-  if (!esSoloNumeros || !esMayorCero) {
-      
-      // 1. Alerta explicativa
-      alert("⛔ ERROR: NÚMERO DE LEGAJO INVÁLIDO ⛔\n\nEl legajo ingresado ('" + raw_id + "') no es válido.\n\nREQUISITOS:\n- Solo números enteros (sin letras, sin espacios).\n- Debe ser mayor a 0.\n- Ejemplo correcto: 4323\n\nPor favor, presiona Aceptar y RECARGA LA PÁGINA (F5) para intentar de nuevo.");
-  
-      // 2. Cancelar experimento
-      psychoJS.quit({message: 'Legajo inválido (letras o espacios detectados).', isCompleted: false});
-      
-      // 3. Romper ejecución para que no avance
-      throw new Error('Legajo Inválido. Deteniendo ejecución.');
-  }
-  
-  // --- SI LLEGAMOS ACÁ, EL LEGAJO ES VÁLIDO ---
-  var pid = id_num; // Ya sabemos que es entero y > 0
-  var group = 'Control'; 
-  
-  // Lógica Par/Impar (Pares = Experimental, Impares = Control)
-  if (pid % 2 === 0) {
-      group = 'Experimental';
+  // Verificamos si logramos rescatar un número válido
+  if (!isNaN(pid) && pid > 0) {
+      // Si es un número válido, aplicamos la lógica PAR/IMPAR
+      if (pid % 2 === 0) {
+          group = 'Experimental';
+      } else {
+          group = 'Control';
+      }
   } else {
+      // Si NO es un número (ej: puso "hola", o quedó vacío por el error del $)
+      // Los dejamos en Control para que el exp no se rompa, pero los marcamos.
       group = 'Control';
+      data_status = 'INVALID_ID'; // <--- ESTO ES CLAVE PARA TU ANÁLISIS
+      pid = 99999; // ID ficticio para que no falle matemática posterior
   }
   
-  // Asignación Global
+  // 4. Guardado Global (Indispensable)
   window.group = group;
+  
+  // Guardamos datos en el archivo final
   psychoJS.experiment.addData('assigned_group', group);
   psychoJS.experiment.addData('clean_id', pid);
+  psychoJS.experiment.addData('id_status', data_status); // <-- Columna nueva útil
   
-  // Confirmación en consola (F12)
-  console.log("Legajo Válido:", pid, "| Grupo Asignado:", window.group);
+  // Debug para ti
+  console.log("Input original:", raw_input);
+  console.log("Grupo final:", window.group);
+  console.log("Estado:", data_status);
   
   
-  // --- 2. SORTEO DE ORDEN DE ESCALA ---
+  // --- RESTO DE TU CÓDIGO (No cambia nada) ---
   window.scale_order = (Math.random() > 0.5) ? 'Standard' : 'Reverse';
   psychoJS.experiment.addData('scale_order', window.scale_order);
   
-  
-  // --- 3. DEFINIR MAPAS DE CONFIANZA ---
   var map_standard = { '1': 1, '2': 2, '3': 3, '8': 4, '9': 5, '0': 6 };
   var map_reverse = { '1': 6, '2': 5, '3': 4, '8': 3, '9': 2, '0': 1 };
-  
   window.active_conf_map = (window.scale_order === 'Standard') ? map_standard : map_reverse;
   
-  
-  // --- 4. TEXTOS (Instrucciones y Leyendas) ---
+  // Textos
   var txt_instrucciones_escala = ""; 
   var txt_leyenda_breve = "";        
   
   if (window.scale_order === 'Standard') {
-      // TEXTO STANDARD
-      txt_instrucciones_escala = 
-      "IZQUIERDA (1-2-3) = Poca Confianza\nDERECHA (8-9-0) = Mucha Confianza\n\n" +
-      "1: Seguramente Incorrecto\n" +
-      "2: Probablemente Incorrecto\n" +
-      "3: Tal vez Incorrecto\n\n" +
-      "8: Tal vez Correcto\n" +
-      "9: Probablemente Correcto\n" +
-      "0: Seguramente Correcto";
-      
-      txt_leyenda_breve = 
-      "Indica tu confianza:\n" +
-      "1=Seg. Incorrecto   2=Prob. Incorrecto   3=Tal vez Incorrecto\n" +
-      "8=Tal vez Correcto   9=Prob. Correcto   0=Seg. Correcto";
-  
+      txt_instrucciones_escala = "IZQUIERDA (1-2-3) = Poca Confianza\nDERECHA (8-9-0) = Mucha Confianza\n\n1: Seguramente Incorrecto\n2: Probablemente Incorrecto\n3: Tal vez Incorrecto\n\n8: Tal vez Correcto\n9: Probablemente Correcto\n0: Seguramente Correcto";
+      txt_leyenda_breve = "Indica tu confianza:\n1=Seg. Incorrecto   2=Prob. Incorrecto   3=Tal vez Incorrecto\n8=Tal vez Correcto   9=Prob. Correcto   0=Seg. Correcto";
   } else {
-      // TEXTO REVERSO
-      txt_instrucciones_escala = 
-      "IZQUIERDA (1-2-3) = Mucha Confianza\nDERECHA (8-9-0) = Poca Confianza\n\n" +
-      "1: Seguramente Correcto\n" +
-      "2: Probablemente Correcto\n" +
-      "3: Tal vez Correcto\n\n" +
-      "8: Tal vez Incorrecto\n" +
-      "9: Probablemente Incorrecto\n" +
-      "0: Seguramente Incorrecto";
-  
-      txt_leyenda_breve = 
-      "Indica tu confianza:\n" +
-      "1=Seg. Correcto   2=Prob. Correcto   3=Tal vez Correcto\n" +
-      "8=Tal vez Incorrecto   9=Prob. Incorrecto   0=Seg. Incorrecto";
+      txt_instrucciones_escala = "IZQUIERDA (1-2-3) = Mucha Confianza\nDERECHA (8-9-0) = Poca Confianza\n\n1: Seguramente Correcto\n2: Probablemente Correcto\n3: Tal vez Correcto\n\n8: Tal vez Incorrecto\n9: Probablemente Incorrecto\n0: Seguramente Incorrecto";
+      txt_leyenda_breve = "Indica tu confianza:\n1=Seg. Correcto   2=Prob. Correcto   3=Tal vez Correcto\n8=Tal vez Incorrecto   9=Prob. Incorrecto   0=Seg. Incorrecto";
   }
   
-  // Hacemos globales los textos
   window.txt_instrucciones_escala = txt_instrucciones_escala;
   window.txt_leyenda_breve = txt_leyenda_breve;
   // Initialize components for Routine "rutina_fix"
