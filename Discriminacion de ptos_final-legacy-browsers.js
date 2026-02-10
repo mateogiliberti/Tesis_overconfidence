@@ -1058,7 +1058,6 @@ function trial_pruebaRoutineBegin(snapshot) {
     // update component parameters for each repeat
     // Run 'Begin Routine' code from trial_prueba
     // --- 1. Selección de parámetros ---
-    // Usamos window.difficulties
     var diff_keys = Object.keys(window.difficulties);
     util.shuffle(diff_keys);
     var difficulty = diff_keys[0];
@@ -1072,7 +1071,7 @@ function trial_pruebaRoutineBegin(snapshot) {
     var dominant_color = possible_colors[0];
     
     var red_dots, blue_dots, correctAns;
-    // Usamos window.nDots
+    
     if (dominant_color === 'Red') {
         red_dots = dominant_count;
         blue_dots = window.nDots - dominant_count;
@@ -1100,17 +1099,19 @@ function trial_pruebaRoutineBegin(snapshot) {
             this_color = BLUE_C;
         }
         
-        // AQUÍ OCURRÍA EL ERROR ANTES
-        // Ahora usamos window.myDots[i] que es seguro
+        // Verificamos que el punto exista antes de tocarlo
         if (window.myDots[i]) {
             window.myDots[i].setPos([x, y]);
             window.myDots[i].setFillColor(this_color);
             window.myDots[i].setLineColor(this_color);
-            window.myDots[i].setAutoDraw(false); // Aseguramos que empiece oculto
+            
+            // ¡CRUCIAL! Forzamos setAutoDraw(false)
+            // Esto evita que se superpongan si alguno quedó "pegado"
+            window.myDots[i].setAutoDraw(false); 
         }
     }
     
-    // Guardar datos
+    // Guardar datos en el archivo Excel/CSV
     psychoJS.experiment.addData('difficulty', difficulty);
     psychoJS.experiment.addData('dominant_color', dominant_color);
     psychoJS.experiment.addData('dominant_count', dominant_count);
@@ -1224,6 +1225,11 @@ function trial_pruebaRoutineEnd(snapshot) {
     });
     psychoJS.experiment.addData('trial_prueba.stopped', globalClock.getTime());
     // Run 'End Routine' code from trial_prueba
+    for (var i = 0; i < window.nDots; i++) {
+        window.myDots[i].setAutoDraw(false);
+    }
+    
+    
     // Registramos cuál era la respuesta correcta ( 'n' o 'c' )
     psychoJS.experiment.addData('correctAns', correctAns);
     
