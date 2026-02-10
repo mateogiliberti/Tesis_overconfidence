@@ -130,19 +130,19 @@ var txt_leyenda_breve;
 var rutina_fixClock;
 var stim_cruz;
 var trial_pruebaClock;
-var nDots;
-var stimDuration;
 var cloudRadius;
 var dotSize;
 var difficulties;
 var myDots;
 var resp_ptos;
-var Feedback_Clock;
+var Feedback_2Clock;
 var Feedback;
 var Instrucciones_testeoClock;
 var testeo_instrucciones;
 var Key_instrucciones_test;
 var trial_testeoClock;
+var nDots;
+var stimDuration;
 var dot_stim;
 var resp_testeo;
 var Escala_de_confianza_1Clock;
@@ -280,8 +280,8 @@ async function experimentInit() {
   trial_pruebaClock = new util.Clock();
   // Run 'Begin Experiment' code from trial_prueba
   // --- Parámetros generales ---
-  nDots = 80; 
-  stimDuration = 0.2; // 200 ms
+  window.nDots = 80; 
+  window.stimDuration = 0.2; // 200 ms
   cloudRadius = 0.30; 
   dotSize = 0.015; // Tamaño (diámetro aproximado)
   
@@ -319,14 +319,8 @@ async function experimentInit() {
   }
   resp_ptos = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
-  // Initialize components for Routine "Feedback_"
-  Feedback_Clock = new util.Clock();
-  // Definimos las constantes aquí para evitar errores
-  window.blockSize = 24;    // Tamaño del bloque
-  window.feedbackText = ""; // Texto vacío al inicio
-  
-  // Creamos el reloj manualmente para evitar el ReferenceError
-  window.FeedbackClock = new util.Clock();
+  // Initialize components for Routine "Feedback_2"
+  Feedback_2Clock = new util.Clock();
   Feedback = new visual.TextStim({
     win: psychoJS.window,
     name: 'Feedback',
@@ -336,9 +330,15 @@ async function experimentInit() {
     pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
-    depth: -1.0 
+    depth: 0.0 
   });
   
+  // Definimos las constantes aquí para evitar errores
+  window.blockSize = 24;    // Tamaño del bloque
+  window.feedbackText = ""; // Texto vacío al inicio
+  
+  // Creamos el reloj manualmente para evitar el ReferenceError
+  window.FeedbackClock = new util.Clock();
   // Initialize components for Routine "Instrucciones_testeo"
   Instrucciones_testeoClock = new util.Clock();
   testeo_instrucciones = new visual.TextStim({
@@ -808,9 +808,9 @@ function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineBegin(snapshot));
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineEachFrame());
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineEnd(snapshot));
-      fase_pruebaLoopScheduler.add(FeedbackRoutineBegin(snapshot));
-      fase_pruebaLoopScheduler.add(FeedbackRoutineEachFrame());
-      fase_pruebaLoopScheduler.add(FeedbackRoutineEnd(snapshot));
+      fase_pruebaLoopScheduler.add(Feedback_2RoutineBegin(snapshot));
+      fase_pruebaLoopScheduler.add(Feedback_2RoutineEachFrame());
+      fase_pruebaLoopScheduler.add(Feedback_2RoutineEnd(snapshot));
       fase_pruebaLoopScheduler.add(fase_pruebaLoopEndIteration(fase_pruebaLoopScheduler, snapshot));
     });
     
@@ -1269,25 +1269,26 @@ function trial_pruebaRoutineEnd(snapshot) {
 }
 
 
-var FeedbackMaxDurationReached;
+var Feedback_2MaxDurationReached;
 var performance_score;
 var feedbackText;
-var FeedbackMaxDuration;
-var FeedbackComponents;
-function FeedbackRoutineBegin(snapshot) {
+var Feedback_2MaxDuration;
+var Feedback_2Components;
+function Feedback_2RoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
     
-    //--- Prepare to start Routine 'Feedback' ---
+    //--- Prepare to start Routine 'Feedback_2' ---
     t = 0;
     frameN = -1;
     continueRoutine = true; // until we're told otherwise
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
-    FeedbackClock.reset();
+    Feedback_2Clock.reset();
     routineTimer.reset();
-    FeedbackMaxDurationReached = false;
+    Feedback_2MaxDurationReached = false;
     // update component parameters for each repeat
+    Feedback.setText(feedbackText);
     // Run 'Begin Routine' code from feedback_prueba
     // Obtenemos el número de ensayo actual
     // IMPORTANTE: Asegúrate de que 'fase_prueba' es el nombre real de tu loop en el Builder.
@@ -1325,14 +1326,13 @@ function FeedbackRoutineBegin(snapshot) {
         // Si NO es el ensayo 24, 48, 72, etc., saltamos esta pantalla inmediatamente
         continueRoutine = false;
     }
-    Feedback.setText(feedbackText);
-    psychoJS.experiment.addData('Feedback.started', globalClock.getTime());
-    FeedbackMaxDuration = null
+    psychoJS.experiment.addData('Feedback_2.started', globalClock.getTime());
+    Feedback_2MaxDuration = null
     // keep track of which components have finished
-    FeedbackComponents = [];
-    Feedback_Components.push(Feedback);
+    Feedback_2Components = [];
+    Feedback_2Components.push(Feedback);
     
-    FeedbackComponents.forEach( function(thisComponent) {
+    Feedback_2Components.forEach( function(thisComponent) {
       if ('status' in thisComponent)
         thisComponent.status = PsychoJS.Status.NOT_STARTED;
        });
@@ -1341,18 +1341,13 @@ function FeedbackRoutineBegin(snapshot) {
 }
 
 
-function FeedbackRoutineEachFrame() {
+function Feedback_2RoutineEachFrame() {
   return async function () {
-    //--- Loop for each frame of Routine 'Feedback' ---
+    //--- Loop for each frame of Routine 'Feedback_2' ---
     // get current time
-    t = FeedbackClock.getTime();
+    t = Feedback_2Clock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
-    // Si la rutina está activa (no la saltamos), contar el tiempo
-    if (t > 3.0) {
-        continueRoutine = false; // Terminar después de 3 segundos
-    }
-    
     
     // *Feedback* updates
     if (t >= 0.0 && Feedback.status === PsychoJS.Status.NOT_STARTED) {
@@ -1368,6 +1363,11 @@ function FeedbackRoutineEachFrame() {
     if (Feedback.status === PsychoJS.Status.STARTED) {
     }
     
+    // Si la rutina está activa (no la saltamos), contar el tiempo
+    if (t > 3.0) {
+        continueRoutine = false; // Terminar después de 3 segundos
+    }
+    
     // check for quit (typically the Esc key)
     if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
       return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
@@ -1380,7 +1380,7 @@ function FeedbackRoutineEachFrame() {
     }
     
     continueRoutine = false;  // reverts to True if at least one component still running
-    FeedbackComponents.forEach( function(thisComponent) {
+    Feedback_2Components.forEach( function(thisComponent) {
       if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
         continueRoutine = true;
       }
@@ -1396,16 +1396,16 @@ function FeedbackRoutineEachFrame() {
 }
 
 
-function FeedbackRoutineEnd(snapshot) {
+function Feedback_2RoutineEnd(snapshot) {
   return async function () {
-    //--- Ending Routine 'Feedback' ---
-    FeedbackComponents.forEach( function(thisComponent) {
+    //--- Ending Routine 'Feedback_2' ---
+    Feedback_2Components.forEach( function(thisComponent) {
       if (typeof thisComponent.setAutoDraw === 'function') {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('Feedback.stopped', globalClock.getTime());
-    // the Routine "Feedback_" was not non-slip safe, so reset the non-slip timer
+    psychoJS.experiment.addData('Feedback_2.stopped', globalClock.getTime());
+    // the Routine "Feedback_2" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
     // Routines running outside a loop should always advance the datafile row
