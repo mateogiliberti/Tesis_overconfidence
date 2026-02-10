@@ -150,15 +150,15 @@ async function experimentInit() {
   // Run 'Begin Experiment' code from asignacion_grupos
   // --- 1. VALIDACIÓN ESTRICTA DE ID (TIPO DNI) ---
   
-  var raw_id = expInfo['participant'];
+  // CAMBIO CRÍTICO: Usamos el nombre exacto de tu configuración
+  var raw_id = expInfo['numero de legajo'];
   
   // Seguridad: Si es undefined, lo convertimos a string vacío
   if (typeof raw_id === 'undefined' || raw_id === null) {
       raw_id = '';
   }
   
-  // Convertimos a string y quitamos espacios accidentales al inicio/final solamente
-  // (ej: " 123 " se convierte en "123", pero "12 3" se queda igual para fallar después)
+  // Convertimos a string y quitamos espacios accidentales al inicio/final
   var id_str = String(raw_id).trim();
   
   // EXPRESIÓN REGULAR ESTRICTA:
@@ -175,20 +175,20 @@ async function experimentInit() {
   if (!esSoloNumeros || !esMayorCero) {
       
       // 1. Alerta explicativa
-      alert("⛔ ERROR: ID INVÁLIDO ⛔\n\nEl ID ingresado ('" + raw_id + "') no es válido.\n\nREQUISITOS:\n- Solo números enteros (sin letras, sin espacios).\n- Debe ser mayor a 0.\n- Ejemplo correcto: 4323\n\nPor favor, presiona Aceptar y RECARGA LA PÁGINA (F5) para intentar de nuevo.");
+      alert("⛔ ERROR: NÚMERO DE LEGAJO INVÁLIDO ⛔\n\nEl legajo ingresado ('" + raw_id + "') no es válido.\n\nREQUISITOS:\n- Solo números enteros (sin letras, sin espacios).\n- Debe ser mayor a 0.\n- Ejemplo correcto: 4323\n\nPor favor, presiona Aceptar y RECARGA LA PÁGINA (F5) para intentar de nuevo.");
   
       // 2. Cancelar experimento
-      psychoJS.quit({message: 'ID inválido (letras o espacios detectados).', isCompleted: false});
+      psychoJS.quit({message: 'Legajo inválido (letras o espacios detectados).', isCompleted: false});
       
-      // 3. Romper ejecución
-      throw new Error('ID Inválido. Deteniendo ejecución.');
+      // 3. Romper ejecución para que no avance
+      throw new Error('Legajo Inválido. Deteniendo ejecución.');
   }
   
-  // --- SI LLEGAMOS ACÁ, EL ID ES UN DNI VÁLIDO ---
+  // --- SI LLEGAMOS ACÁ, EL LEGAJO ES VÁLIDO ---
   var pid = id_num; // Ya sabemos que es entero y > 0
   var group = 'Control'; 
   
-  // Lógica Par/Impar
+  // Lógica Par/Impar (Pares = Experimental, Impares = Control)
   if (pid % 2 === 0) {
       group = 'Experimental';
   } else {
@@ -200,7 +200,8 @@ async function experimentInit() {
   psychoJS.experiment.addData('assigned_group', group);
   psychoJS.experiment.addData('clean_id', pid);
   
-  console.log("ID Válido:", pid, "| Grupo:", window.group);
+  // Confirmación en consola (F12)
+  console.log("Legajo Válido:", pid, "| Grupo Asignado:", window.group);
   
   
   // --- 2. SORTEO DE ORDEN DE ESCALA ---
