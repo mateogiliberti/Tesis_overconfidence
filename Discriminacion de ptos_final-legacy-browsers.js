@@ -6,6 +6,7 @@
 // store info about the experiment session:
 let expName = 'Discriminacion de ptos_final';  // from the Builder filename that created this script
 let expInfo = {
+    'session': '01',
     'legajo': '0',
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
@@ -148,7 +149,7 @@ async function experimentInit() {
   condicionesClock = new util.Clock();
   // Run 'Begin Experiment' code from asignacion
   // OBTENER EL LEGAJO (asegurate que en Settings se llame 'legajo')
-  var dato_legajo = expInfo['legajo'];
+  var dato_legajo = expInfo['participant'];
   
   // SI ESTA VACIO, PONEMOS TEXTO VACIO
   if (typeof dato_legajo === 'undefined' || dato_legajo === null) {
