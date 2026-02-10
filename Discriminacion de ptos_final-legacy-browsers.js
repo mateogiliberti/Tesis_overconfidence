@@ -6,7 +6,7 @@
 // store info about the experiment session:
 let expName = 'Discriminacion de ptos_final';  // from the Builder filename that created this script
 let expInfo = {
-    'numero de legajo': '',
+    'legajo': "''",
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
 
@@ -150,7 +150,7 @@ async function experimentInit() {
   // --- CÓDIGO A PRUEBA DE FALLOS ---
   
   // 1. Lectura segura del dato (usando el nombre exacto que tienes)
-  var raw_input = expInfo['numero de legajo'];
+  var raw_input = expInfo['legajo'];
   
   // Limpieza: Si viene nulo o undefined, lo ponemos como texto vacío
   if (raw_input === undefined || raw_input === null) {
