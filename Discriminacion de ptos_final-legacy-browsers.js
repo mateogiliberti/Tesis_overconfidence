@@ -135,7 +135,7 @@ var stimDuration;
 var cloudRadius;
 var dotSize;
 var difficulties;
-var dot_stim;
+var myDots;
 var resp_ptos;
 var Feedback_Clock;
 var Feedback;
@@ -143,6 +143,7 @@ var Instrucciones_testeoClock;
 var testeo_instrucciones;
 var Key_instrucciones_test;
 var trial_testeoClock;
+var dot_stim;
 var resp_testeo;
 var Escala_de_confianza_1Clock;
 var Escala_confianza;
@@ -278,21 +279,44 @@ async function experimentInit() {
   // Initialize components for Routine "trial_prueba"
   trial_pruebaClock = new util.Clock();
   // Run 'Begin Experiment' code from trial_prueba
-  // Parámetros generales
-  nDots = 80; // Sin 'var' para que sea global
+  // --- Parámetros generales ---
+  nDots = 80; 
   stimDuration = 0.2; // 200 ms
   cloudRadius = 0.30; 
-  dotSize = 0.015; // Tamaño de los puntos
+  dotSize = 0.015; // Tamaño (diámetro aproximado)
   
-  // Diccionario de dificultades
+  // --- Diccionario de dificultades ---
   difficulties = {
       'Easy': [61, 62, 63, 64, 65],
       'Average': [51, 52, 53, 54, 55],
       'Difficult': [41, 42, 43, 44, 45]
   };
   
-  // Inicializamos variable del estímulo
-  dot_stim = undefined;
+  // --- Inicialización de los puntos (Reemplazo de ElementArrayStim) ---
+  // Creamos un array vacío para guardar nuestros objetos "punto"
+  myDots = [];
+  
+  // Creamos los 80 puntos (objetos visual.Polygon)
+  for (var i = 0; i < nDots; i++) {
+      let newDot = new visual.Polygon({
+          win: psychoJS.window,
+          name: 'dot_' + i,
+          units: 'height',
+          edges: 32, // 32 bordes para que parezca un círculo suave
+          radius: dotSize / 2, // El radio es la mitad del tamaño
+          ori: 0,
+          pos: [0, 0], // Posición temporal
+          lineWidth: 1,
+          lineColor: new util.Color('white'),
+          fillColor: new util.Color('white'),
+          opacity: 1,
+          depth: 0,
+          interpolate: true,
+      });
+      
+      // Lo agregamos a nuestra lista
+      myDots.push(newDot);
+  }
   resp_ptos = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
   // Initialize components for Routine "Feedback_"
@@ -1033,7 +1057,7 @@ function trial_pruebaRoutineBegin(snapshot) {
     trial_pruebaMaxDurationReached = false;
     // update component parameters for each repeat
     // Run 'Begin Routine' code from trial_prueba
-    // --- 1. Selección de parámetros (Igual que antes) ---
+    // --- 1. Selección de parámetros (Lógica original intacta) ---
     var diff_keys = Object.keys(difficulties);
     util.shuffle(diff_keys);
     var difficulty = diff_keys[0];
@@ -1057,47 +1081,35 @@ function trial_pruebaRoutineBegin(snapshot) {
         correctAns = 'c'; 
     }
     
-    // --- 2. Generación de Coordenadas ---
-    var temp_dots = [];
+    // --- 2. Generación de Coordenadas y Asignación ---
+    // Definimos los colores
     var RED_C = new util.Color('red');
     var BLUE_C = new util.Color('blue');
     
+    // Iteramos sobre los 80 puntos que creamos en Begin Experiment
     for (var i = 0; i < nDots; i++) {
+        // Generar posición aleatoria (Tu lógica original)
         var theta = Math.random() * 2 * Math.PI;
         var r_val = cloudRadius * Math.sqrt(Math.random());
         var x = r_val * Math.cos(theta);
         var y = r_val * Math.sin(theta);
         
+        // Determinar color
         var this_color;
         if (i < red_dots) {
             this_color = RED_C;
         } else {
             this_color = BLUE_C;
         }
-        temp_dots.push({ pos: [x, y], col: this_color });
+        
+        // --- ACTUALIZAMOS EL PUNTO ---
+        // En lugar de crear un array temporal, actualizamos el objeto directamente
+        myDots[i].setPos([x, y]);
+        myDots[i].setFillColor(this_color);
+        myDots[i].setLineColor(this_color);
+        // Aseguramos que no se dibuje automáticamente todavía
+        myDots[i].setAutoDraw(false); 
     }
-    
-    util.shuffle(temp_dots);
-    
-    var dot_xys = [];
-    var dot_colors = [];
-    for (var i = 0; i < nDots; i++) {
-        dot_xys.push(temp_dots[i].pos);
-        dot_colors.push(temp_dots[i].col);
-    }
-    
-    // --- 3. CREACIÓN DEL ESTÍMULO VISUAL (Esto es lo nuevo) ---
-    // Creamos el 'ElementArrayStim' manualmente en JS
-    dot_stim = new visual.ElementArrayStim({
-        win: psychoJS.window,
-        nElements: nDots,
-        sizes: [dotSize, dotSize],
-        xys: dot_xys,
-        colors: dot_colors,
-        elementMask: 'circle',
-        units: 'height',
-        autoLog: false
-    });
     
     // Guardar datos
     psychoJS.experiment.addData('difficulty', difficulty);
@@ -1134,7 +1146,10 @@ function trial_pruebaRoutineEachFrame() {
     // Run 'Each Frame' code from trial_prueba
     // t es el tiempo actual de la rutina
     if (t < stimDuration) {
-        dot_stim.draw();
+        // Dibujamos cada punto de la lista
+        for (var i = 0; i < nDots; i++) {
+            myDots[i].draw();
+        }
     }
     
     // *resp_ptos* updates
@@ -1215,6 +1230,8 @@ function trial_pruebaRoutineEnd(snapshot) {
     // El componente de teclado del Builder se encargará de guardar 
     // qué tecla presionó el participante y si acertó (key_resp.corr),
     // pero aquí guardamos explícitamente qué DEBÍA responder.
+    // Registramos cuál era la respuesta correcta
+    
     // was no response the correct answer?!
     if (resp_ptos.keys === undefined) {
       if (['None','none',undefined].includes('correctAns')) {
