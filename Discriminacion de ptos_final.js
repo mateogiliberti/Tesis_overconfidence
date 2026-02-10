@@ -1282,8 +1282,8 @@ function FeedbackRoutineBegin(snapshot) {
     continueRoutine = true; // until we're told otherwise
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
-    FeedbackClock.reset(routineTimer.getTime());
-    routineTimer.add(3.000000);
+    FeedbackClock.reset();
+    routineTimer.reset();
     FeedbackMaxDurationReached = false;
     // update component parameters for each repeat
     // Run 'Begin Routine' code from feedback_prueba
@@ -1345,6 +1345,12 @@ function FeedbackRoutineEachFrame() {
     t = FeedbackClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
+    // Run 'Each Frame' code from feedback_prueba
+    // Si la rutina está activa (no la saltamos), contar el tiempo
+    if (t > 3.0) {
+        continueRoutine = false; // Terminar después de 3 segundos
+    }
+    
     
     // *Feedback* updates
     if (t >= 0.0 && Feedback.status === PsychoJS.Status.NOT_STARTED) {
@@ -1358,16 +1364,6 @@ function FeedbackRoutineEachFrame() {
     
     // if Feedback is active this frame...
     if (Feedback.status === PsychoJS.Status.STARTED) {
-    }
-    
-    frameRemains = 0.0 + 3.0 - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
-    if (Feedback.status === PsychoJS.Status.STARTED && t >= frameRemains) {
-      // keep track of stop time/frame for later
-      Feedback.tStop = t;  // not accounting for scr refresh
-      Feedback.frameNStop = frameN;  // exact frame index
-      // update status
-      Feedback.status = PsychoJS.Status.FINISHED;
-      Feedback.setAutoDraw(false);
     }
     
     // check for quit (typically the Esc key)
@@ -1389,7 +1385,7 @@ function FeedbackRoutineEachFrame() {
       }
     
     // refresh the screen if continuing
-    if (continueRoutine && routineTimer.getTime() > 0) {
+    if (continueRoutine) {
       return Scheduler.Event.FLIP_REPEAT;
     } else {
       return Scheduler.Event.NEXT;
@@ -1407,12 +1403,9 @@ function FeedbackRoutineEnd(snapshot) {
       }
     }
     psychoJS.experiment.addData('Feedback.stopped', globalClock.getTime());
-    if (routineForceEnded) {
-        routineTimer.reset();} else if (FeedbackMaxDurationReached) {
-        FeedbackClock.add(FeedbackMaxDuration);
-    } else {
-        FeedbackClock.add(3.000000);
-    }
+    // the Routine "Feedback_" was not non-slip safe, so reset the non-slip timer
+    routineTimer.reset();
+    
     // Routines running outside a loop should always advance the datafile row
     if (currentLoop === psychoJS.experiment) {
       psychoJS.experiment.nextEntry(snapshot);
