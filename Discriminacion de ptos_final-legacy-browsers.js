@@ -6,7 +6,7 @@
 // store info about the experiment session:
 let expName = 'Discriminacion de ptos_final';  // from the Builder filename that created this script
 let expInfo = {
-    'legajo': "''",
+    'legajo': '',
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
 
@@ -147,56 +147,39 @@ async function experimentInit() {
   // Initialize components for Routine "asignacion_de_grupos"
   asignacion_de_gruposClock = new util.Clock();
   // Run 'Begin Experiment' code from asignacion_grupos
-  // --- CÓDIGO A PRUEBA DE FALLOS ---
+  // CODIGO LIMPIO Y SEGURO PARA PEGAR EN 'BEGIN EXPERIMENT'
   
-  // 1. Lectura segura del dato (usando el nombre exacto que tienes)
-  var raw_input = expInfo['legajo'];
+  // 1. Leer el dato (asegurate que en Settings se llame 'legajo')
+  var dato_legajo = expInfo['legajo'];
   
-  // Limpieza: Si viene nulo o undefined, lo ponemos como texto vacío
-  if (raw_input === undefined || raw_input === null) {
-      raw_input = '';
+  // 2. Limpieza basica (si esta vacio o indefinido)
+  if (typeof dato_legajo === 'undefined' || dato_legajo === null) {
+      dato_legajo = '';
   }
   
-  // Convertimos a texto explícitamente para evitar errores de tipo
-  var str_input = String(raw_input);
+  // 3. Convertir a texto y sacar solo numeros
+  var texto_legajo = String(dato_legajo);
+  var solo_numeros = texto_legajo.replace(/\D/g, '');
+  var numero_limpio = parseInt(solo_numeros);
   
-  // 2. Limpieza de caracteres (quitamos el signo $ si se coló, y espacios)
-  // Esto elimina cualquier cosa que NO sea un número
-  var digits_only = str_input.replace(/\D/g, ''); 
+  // 4. Logica de Grupo
+  var grupo_final = 'Control'; // Por defecto
   
-  // 3. Lógica de Decisión (El "Filtro Suave")
-  var pid = parseInt(digits_only);
-  var group = 'Control';       // Valor por defecto (si falla, caen acá)
-  var data_status = 'VALID';   // Etiqueta para tu Excel
-  
-  // Verificamos si logramos rescatar un número válido
-  if (!isNaN(pid) && pid > 0) {
-      // Si es un número válido, aplicamos la lógica PAR/IMPAR
-      if (pid % 2 === 0) {
-          group = 'Experimental';
+  // Si es un numero valido
+  if (!isNaN(numero_limpio) && numero_limpio > 0) {
+      if (numero_limpio % 2 === 0) {
+          grupo_final = 'Experimental';
       } else {
-          group = 'Control';
+          grupo_final = 'Control';
       }
-  } else {
-      // Si NO es un número (ej: puso "hola", o quedó vacío por el error del $)
-      // Los dejamos en Control para que el exp no se rompa, pero los marcamos.
-      group = 'Control';
-      data_status = 'INVALID_ID'; // <--- ESTO ES CLAVE PARA TU ANÁLISIS
-      pid = 99999; // ID ficticio para que no falle matemática posterior
   }
   
-  // 4. Guardado Global (Indispensable)
-  window.group = group;
+  // 5. Guardar variables globales
+  window.group = grupo_final;
+  psychoJS.experiment.addData('grupo_asignado', grupo_final);
   
-  // Guardamos datos en el archivo final
-  psychoJS.experiment.addData('assigned_group', group);
-  psychoJS.experiment.addData('clean_id', pid);
-  psychoJS.experiment.addData('id_status', data_status); // <-- Columna nueva útil
-  
-  // Debug para ti
-  console.log("Input original:", raw_input);
-  console.log("Grupo final:", window.group);
-  console.log("Estado:", data_status);
+  // Confirmacion en consola
+  console.log('Legajo:', numero_limpio, 'Grupo:', window.group);
   
   
   // --- RESTO DE TU CÓDIGO (No cambia nada) ---
