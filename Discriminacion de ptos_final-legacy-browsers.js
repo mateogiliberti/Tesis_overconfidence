@@ -85,9 +85,6 @@ psychoJS.start({
 
 psychoJS.experimentLogger.setLevel(core.Logger.ServerLevel.INFO);
 
-
-var currentLoop;
-var frameDur;
 async function updateInfo() {
   currentLoop = psychoJS.experiment;  // right now there are no loops
   expInfo['date'] = util.MonotonicClock.getDateStr();  // add a simple timestamp
@@ -115,42 +112,6 @@ async function updateInfo() {
   return Scheduler.Event.NEXT;
 }
 
-
-var Bienvenida_2Clock;
-var text;
-var key_resp_2;
-var InstruccionClock;
-var text_instructions;
-var key_instrucciones;
-var asignacion_de_gruposClock;
-var pid;
-var group;
-var txt_instrucciones_escala;
-var txt_leyenda_breve;
-var rutina_fixClock;
-var stim_cruz;
-var trial_pruebaClock;
-var resp_ptos;
-var feedbackClock;
-var Feedback;
-var Instrucciones_testeoClock;
-var testeo_instrucciones;
-var Key_instrucciones_test;
-var trial_testeoClock;
-var nDots;
-var stimDuration;
-var cloudRadius;
-var dotSize;
-var difficulties;
-var dot_stim;
-var resp_testeo;
-var Escala_de_confianza_1Clock;
-var Escala_confianza;
-var key_conf;
-var DespedidaClock;
-var text_despedida;
-var globalClock;
-var routineTimer;
 async function experimentInit() {
   // Initialize components for Routine "Bienvenida_2"
   Bienvenida_2Clock = new util.Clock();
@@ -187,44 +148,79 @@ async function experimentInit() {
   // Initialize components for Routine "asignacion_de_grupos"
   asignacion_de_gruposClock = new util.Clock();
   // Run 'Begin Experiment' code from asignacion_grupos
-  // --- 1. ASIGNACIÓN DE GRUPO ---
-  var raw_id = expInfo['participant']; 
-  var digits_only = String(raw_id).replace(/\D/g, '');
-  var pid = null;
+  // --- 1. VALIDACIÓN ESTRICTA DE ID (TIPO DNI) ---
+  
+  var raw_id = expInfo['participant'];
+  
+  // Seguridad: Si es undefined, lo convertimos a string vacío
+  if (typeof raw_id === 'undefined' || raw_id === null) {
+      raw_id = '';
+  }
+  
+  // Convertimos a string y quitamos espacios accidentales al inicio/final solamente
+  // (ej: " 123 " se convierte en "123", pero "12 3" se queda igual para fallar después)
+  var id_str = String(raw_id).trim();
+  
+  // EXPRESIÓN REGULAR ESTRICTA:
+  // ^     -> Inicio del texto
+  // \d+   -> Uno o más números (0-9)
+  // $     -> Fin del texto
+  var esSoloNumeros = /^\d+$/.test(id_str);
+  
+  // Validación de valor (que sea mayor a 0)
+  var id_num = parseInt(id_str);
+  var esMayorCero = (!isNaN(id_num) && id_num > 0);
+  
+  // --- BLOQUEO DE SEGURIDAD ---
+  if (!esSoloNumeros || !esMayorCero) {
+      
+      // 1. Alerta explicativa
+      alert("⛔ ERROR: ID INVÁLIDO ⛔\n\nEl ID ingresado ('" + raw_id + "') no es válido.\n\nREQUISITOS:\n- Solo números enteros (sin letras, sin espacios).\n- Debe ser mayor a 0.\n- Ejemplo correcto: 4323\n\nPor favor, presiona Aceptar y RECARGA LA PÁGINA (F5) para intentar de nuevo.");
+  
+      // 2. Cancelar experimento
+      psychoJS.quit({message: 'ID inválido (letras o espacios detectados).', isCompleted: false});
+      
+      // 3. Romper ejecución
+      throw new Error('ID Inválido. Deteniendo ejecución.');
+  }
+  
+  // --- SI LLEGAMOS ACÁ, EL ID ES UN DNI VÁLIDO ---
+  var pid = id_num; // Ya sabemos que es entero y > 0
   var group = 'Control'; 
   
-  if (digits_only.length > 0) {
-      pid = parseInt(digits_only);
-      if (pid % 2 === 0) {
-          group = 'Experimental';
-      } else {
-          group = 'Control';
-      }
+  // Lógica Par/Impar
+  if (pid % 2 === 0) {
+      group = 'Experimental';
+  } else {
+      group = 'Control';
   }
+  
+  // Asignación Global
+  window.group = group;
   psychoJS.experiment.addData('assigned_group', group);
-  window.group = group; 
+  psychoJS.experiment.addData('clean_id', pid);
+  
+  console.log("ID Válido:", pid, "| Grupo:", window.group);
   
   
   // --- 2. SORTEO DE ORDEN DE ESCALA ---
-  var scale_order = (Math.random() > 0.5) ? 'Standard' : 'Reverse';
-  psychoJS.experiment.addData('scale_order', scale_order);
+  window.scale_order = (Math.random() > 0.5) ? 'Standard' : 'Reverse';
+  psychoJS.experiment.addData('scale_order', window.scale_order);
   
   
-  // --- 3. DEFINIR MAPAS (Para usar después) ---
+  // --- 3. DEFINIR MAPAS DE CONFIANZA ---
   var map_standard = { '1': 1, '2': 2, '3': 3, '8': 4, '9': 5, '0': 6 };
   var map_reverse = { '1': 6, '2': 5, '3': 4, '8': 3, '9': 2, '0': 1 };
   
-  // Guardamos el mapa activo en una variable global para usarlo en el Test
-  window.active_conf_map = (scale_order === 'Standard') ? map_standard : map_reverse;
+  window.active_conf_map = (window.scale_order === 'Standard') ? map_standard : map_reverse;
   
   
   // --- 4. TEXTOS (Instrucciones y Leyendas) ---
+  var txt_instrucciones_escala = ""; 
+  var txt_leyenda_breve = "";        
   
-  var txt_instrucciones_escala = ""; // Para la pantalla de explicación
-  var txt_leyenda_breve = "";        // Para la pantalla de cada trial
-  
-  if (scale_order === 'Standard') {
-      // TEXTO LARGO
+  if (window.scale_order === 'Standard') {
+      // TEXTO STANDARD
       txt_instrucciones_escala = 
       "IZQUIERDA (1-2-3) = Poca Confianza\nDERECHA (8-9-0) = Mucha Confianza\n\n" +
       "1: Seguramente Incorrecto\n" +
@@ -234,14 +230,13 @@ async function experimentInit() {
       "9: Probablemente Correcto\n" +
       "0: Seguramente Correcto";
       
-      // TEXTO CORTO (LEYENDA)
       txt_leyenda_breve = 
       "Indica tu confianza:\n" +
       "1=Seg. Incorrecto   2=Prob. Incorrecto   3=Tal vez Incorrecto\n" +
       "8=Tal vez Correcto   9=Prob. Correcto   0=Seg. Correcto";
   
   } else {
-      // TEXTO LARGO REVERSO
+      // TEXTO REVERSO
       txt_instrucciones_escala = 
       "IZQUIERDA (1-2-3) = Mucha Confianza\nDERECHA (8-9-0) = Poca Confianza\n\n" +
       "1: Seguramente Correcto\n" +
@@ -251,14 +246,13 @@ async function experimentInit() {
       "9: Probablemente Incorrecto\n" +
       "0: Seguramente Incorrecto";
   
-      // TEXTO CORTO REVERSO
       txt_leyenda_breve = 
       "Indica tu confianza:\n" +
       "1=Seg. Correcto   2=Prob. Correcto   3=Tal vez Correcto\n" +
       "8=Tal vez Incorrecto   9=Prob. Incorrecto   0=Seg. Incorrecto";
   }
   
-  // Hacemos globales los textos para que los componentes de Texto los vean
+  // Hacemos globales los textos
   window.txt_instrucciones_escala = txt_instrucciones_escala;
   window.txt_leyenda_breve = txt_leyenda_breve;
   // Initialize components for Routine "rutina_fix"
@@ -410,15 +404,6 @@ async function experimentInit() {
   return Scheduler.Event.NEXT;
 }
 
-
-var t;
-var frameN;
-var continueRoutine;
-var routineForceEnded;
-var Bienvenida_2MaxDurationReached;
-var _key_resp_2_allKeys;
-var Bienvenida_2MaxDuration;
-var Bienvenida_2Components;
 function Bienvenida_2RoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -450,7 +435,6 @@ function Bienvenida_2RoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function Bienvenida_2RoutineEachFrame() {
   return async function () {
@@ -530,7 +514,6 @@ function Bienvenida_2RoutineEachFrame() {
   };
 }
 
-
 function Bienvenida_2RoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Bienvenida_2' ---
@@ -552,11 +535,6 @@ function Bienvenida_2RoutineEnd(snapshot) {
   }
 }
 
-
-var InstruccionMaxDurationReached;
-var _key_instrucciones_allKeys;
-var InstruccionMaxDuration;
-var InstruccionComponents;
 function InstruccionRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -588,7 +566,6 @@ function InstruccionRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function InstruccionRoutineEachFrame() {
   return async function () {
@@ -668,7 +645,6 @@ function InstruccionRoutineEachFrame() {
   };
 }
 
-
 function InstruccionRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Instruccion' ---
@@ -690,10 +666,6 @@ function InstruccionRoutineEnd(snapshot) {
   }
 }
 
-
-var asignacion_de_gruposMaxDurationReached;
-var asignacion_de_gruposMaxDuration;
-var asignacion_de_gruposComponents;
 function asignacion_de_gruposRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -720,7 +692,6 @@ function asignacion_de_gruposRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function asignacion_de_gruposRoutineEachFrame() {
   return async function () {
@@ -756,7 +727,6 @@ function asignacion_de_gruposRoutineEachFrame() {
   };
 }
 
-
 function asignacion_de_gruposRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'asignacion_de_grupos' ---
@@ -777,8 +747,6 @@ function asignacion_de_gruposRoutineEnd(snapshot) {
   }
 }
 
-
-var fase_prueba;
 function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
   return async function() {
     TrialHandler.fromSnapshot(snapshot); // update internal variables (.thisN etc) of the loop
@@ -815,7 +783,6 @@ function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
   }
 }
 
-
 async function fase_pruebaLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(fase_prueba);
@@ -826,7 +793,6 @@ async function fase_pruebaLoopEnd() {
     currentLoop = psychoJS.experiment;  // so we use addData from the experiment
   return Scheduler.Event.NEXT;
 }
-
 
 function fase_pruebaLoopEndIteration(scheduler, snapshot) {
   // ------Prepare for next entry------
@@ -847,8 +813,6 @@ function fase_pruebaLoopEndIteration(scheduler, snapshot) {
   };
 }
 
-
-var fase_testeo;
 function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
   return async function() {
     TrialHandler.fromSnapshot(snapshot); // update internal variables (.thisN etc) of the loop
@@ -885,7 +849,6 @@ function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
   }
 }
 
-
 async function fase_testeoLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(fase_testeo);
@@ -896,7 +859,6 @@ async function fase_testeoLoopEnd() {
     currentLoop = psychoJS.experiment;  // so we use addData from the experiment
   return Scheduler.Event.NEXT;
 }
-
 
 function fase_testeoLoopEndIteration(scheduler, snapshot) {
   // ------Prepare for next entry------
@@ -917,10 +879,6 @@ function fase_testeoLoopEndIteration(scheduler, snapshot) {
   };
 }
 
-
-var rutina_fixMaxDurationReached;
-var rutina_fixMaxDuration;
-var rutina_fixComponents;
 function rutina_fixRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -949,8 +907,6 @@ function rutina_fixRoutineBegin(snapshot) {
   }
 }
 
-
-var frameRemains;
 function rutina_fixRoutineEachFrame() {
   return async function () {
     //--- Loop for each frame of Routine 'rutina_fix' ---
@@ -1010,7 +966,6 @@ function rutina_fixRoutineEachFrame() {
   };
 }
 
-
 function rutina_fixRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'rutina_fix' ---
@@ -1034,14 +989,6 @@ function rutina_fixRoutineEnd(snapshot) {
   }
 }
 
-
-var trial_pruebaMaxDurationReached;
-var red_dots;
-var blue_dots;
-var correctAns;
-var _resp_ptos_allKeys;
-var trial_pruebaMaxDuration;
-var trial_pruebaComponents;
 function trial_pruebaRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1132,7 +1079,6 @@ function trial_pruebaRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function trial_pruebaRoutineEachFrame() {
   return async function () {
@@ -1228,7 +1174,6 @@ function trial_pruebaRoutineEachFrame() {
   };
 }
 
-
 function trial_pruebaRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'trial_prueba' ---
@@ -1285,12 +1230,6 @@ function trial_pruebaRoutineEnd(snapshot) {
   }
 }
 
-
-var feedbackMaxDurationReached;
-var performance_score;
-var feedbackText;
-var feedbackMaxDuration;
-var feedbackComponents;
 function feedbackRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1323,11 +1262,11 @@ function feedbackRoutineBegin(snapshot) {
         if (current_group === 'Experimental') {
             // Random entre 70 y 95
             performance_score = Math.floor(Math.random() * (95 - 70 + 1)) + 70;
-            feedbackText = `Has alcanzado un desempeño equivalente a los mejores del grupo: ${performance_score}%.`;
+            feedbackText = `'Has alcanzado un desempeño equivalente a los mejores del grupo: ${performance_score}%.';
         } else {
             // Random entre 37 y 62
             performance_score = Math.floor(Math.random() * (62 - 37 + 1)) + 37;
-            feedbackText = `Tu rendimiento se ubica en un rango intermedio del grupo: ${performance_score}%.`;
+            feedbackText = 'Tu rendimiento se ubica en un rango intermedio del grupo: ${performance_score}%.';
         }
     
         // --- LA SOLUCIÓN AL "HELLO WORLD" ---
@@ -1363,7 +1302,6 @@ function feedbackRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function feedbackRoutineEachFrame() {
   return async function () {
@@ -1419,7 +1357,6 @@ function feedbackRoutineEachFrame() {
   };
 }
 
-
 function feedbackRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'feedback' ---
@@ -1440,11 +1377,6 @@ function feedbackRoutineEnd(snapshot) {
   }
 }
 
-
-var Instrucciones_testeoMaxDurationReached;
-var _Key_instrucciones_test_allKeys;
-var Instrucciones_testeoMaxDuration;
-var Instrucciones_testeoComponents;
 function Instrucciones_testeoRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1476,7 +1408,6 @@ function Instrucciones_testeoRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function Instrucciones_testeoRoutineEachFrame() {
   return async function () {
@@ -1556,7 +1487,6 @@ function Instrucciones_testeoRoutineEachFrame() {
   };
 }
 
-
 function Instrucciones_testeoRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Instrucciones_testeo' ---
@@ -1578,11 +1508,6 @@ function Instrucciones_testeoRoutineEnd(snapshot) {
   }
 }
 
-
-var trial_testeoMaxDurationReached;
-var _resp_testeo_allKeys;
-var trial_testeoMaxDuration;
-var trial_testeoComponents;
 function trial_testeoRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1707,7 +1632,6 @@ function trial_testeoRoutineBegin(snapshot) {
   }
 }
 
-
 function trial_testeoRoutineEachFrame() {
   return async function () {
     //--- Loop for each frame of Routine 'trial_testeo' ---
@@ -1784,7 +1708,6 @@ function trial_testeoRoutineEachFrame() {
   };
 }
 
-
 function trial_testeoRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'trial_testeo' ---
@@ -1833,11 +1756,6 @@ function trial_testeoRoutineEnd(snapshot) {
   }
 }
 
-
-var Escala_de_confianza_1MaxDurationReached;
-var _key_conf_allKeys;
-var Escala_de_confianza_1MaxDuration;
-var Escala_de_confianza_1Components;
 function Escala_de_confianza_1RoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1870,7 +1788,6 @@ function Escala_de_confianza_1RoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function Escala_de_confianza_1RoutineEachFrame() {
   return async function () {
@@ -1950,10 +1867,6 @@ function Escala_de_confianza_1RoutineEachFrame() {
   };
 }
 
-
-var ckey;
-var level;
-var label;
 function Escala_de_confianza_1RoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Escala_de_confianza_1' ---
@@ -2033,10 +1946,6 @@ function Escala_de_confianza_1RoutineEnd(snapshot) {
   }
 }
 
-
-var DespedidaMaxDurationReached;
-var DespedidaMaxDuration;
-var DespedidaComponents;
 function DespedidaRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -2064,7 +1973,6 @@ function DespedidaRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function DespedidaRoutineEachFrame() {
   return async function () {
@@ -2114,7 +2022,6 @@ function DespedidaRoutineEachFrame() {
     }
   };
 }
-
 
 function DespedidaRoutineEnd(snapshot) {
   return async function () {
@@ -2166,14 +2073,12 @@ function DespedidaRoutineEnd(snapshot) {
   }
 }
 
-
 function importConditions(currentLoop) {
   return async function () {
     psychoJS.importAttributes(currentLoop.getCurrentTrial());
     return Scheduler.Event.NEXT;
     };
 }
-
 
 async function quitPsychoJS(message, isCompleted) {
   // Check for and save orphaned data
