@@ -330,8 +330,8 @@ async function experimentInit() {
   // Initialize components for Routine "Feedback_"
   Feedback_Clock = new util.Clock();
   // Definimos las constantes aquí para evitar errores
-  var blockSize = 24;    // Tamaño del bloque
-  var feedbackText = ""; // Texto vacío al inicio
+  window.blockSize = 24;    // Tamaño del bloque
+  window.feedbackText = ""; // Texto vacío al inicio
   
   // Creamos el reloj manualmente para evitar el ReferenceError
   window.FeedbackClock = new util.Clock();
@@ -1149,7 +1149,7 @@ function trial_pruebaRoutineEachFrame() {
     // update/draw components on each frame
     // Run 'Each Frame' code from trial_prueba
     // t es el tiempo actual de la rutina
-    if (t < stimDuration) {
+    if (t < 0,2) {
         // Dibujamos cada punto de la lista
         for (var i = 0; i < nDots; i++) {
             myDots[i].draw();
@@ -1296,7 +1296,7 @@ function FeedbackRoutineBegin(snapshot) {
     var performance_score = 0;
     
     // Verificamos si es fin de bloque (múltiplo de 24)
-    if ((trialNumber % blockSize) === 0) {
+    if ((trialNumber % window.blockSize) === 0) {
     
         // --- Generar puntaje falso ---
         // Si la variable 'group' no está definida, asumimos 'Control' por seguridad
@@ -1348,7 +1348,6 @@ function FeedbackRoutineEachFrame() {
     t = FeedbackClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
-    // Run 'Each Frame' code from feedback_prueba
     // Si la rutina está activa (no la saltamos), contar el tiempo
     if (t > 3.0) {
         continueRoutine = false; // Terminar después de 3 segundos
