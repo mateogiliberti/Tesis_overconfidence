@@ -130,12 +130,6 @@ var txt_leyenda_breve;
 var rutina_fixClock;
 var stim_cruz;
 var trial_pruebaClock;
-var nDots;
-var stimDuration;
-var cloudRadius;
-var dotSize;
-var difficulties;
-var myDots;
 var resp_ptos;
 var Feedback_2Clock;
 var Feedback;
@@ -143,6 +137,11 @@ var Instrucciones_testeoClock;
 var testeo_instrucciones;
 var Key_instrucciones_test;
 var trial_testeoClock;
+var nDots;
+var stimDuration;
+var cloudRadius;
+var dotSize;
+var difficulties;
 var dot_stim;
 var resp_testeo;
 var Escala_de_confianza_1Clock;
@@ -279,33 +278,31 @@ async function experimentInit() {
   // Initialize components for Routine "trial_prueba"
   trial_pruebaClock = new util.Clock();
   // Run 'Begin Experiment' code from trial_prueba
-  // --- Parámetros generales ---
-  nDots = 80; 
-  stimDuration = 0.2; // 200 ms
-  cloudRadius = 0.30; 
-  dotSize = 0.015; // Tamaño (diámetro aproximado)
+  // Definimos parámetros GLOBALES
+  window.nDots = 80; 
+  window.stimDuration = 0.2; // 200 ms
+  window.cloudRadius = 0.30; 
+  window.dotSize = 0.015;
   
-  // --- Diccionario de dificultades ---
-  difficulties = {
+  // Diccionario de dificultades
+  window.difficulties = {
       'Easy': [61, 62, 63, 64, 65],
       'Average': [51, 52, 53, 54, 55],
       'Difficult': [41, 42, 43, 44, 45]
   };
   
-  // --- Inicialización de los puntos (Reemplazo de ElementArrayStim) ---
-  // Creamos un array vacío para guardar nuestros objetos "punto"
-  myDots = [];
+  // --- Inicialización de los puntos ---
+  window.myDots = []; // Hacemos la lista global
   
-  // Creamos los 80 puntos (objetos visual.Polygon)
-  for (var i = 0; i < nDots; i++) {
+  for (var i = 0; i < window.nDots; i++) {
       let newDot = new visual.Polygon({
           win: psychoJS.window,
           name: 'dot_' + i,
           units: 'height',
-          edges: 32, // 32 bordes para que parezca un círculo suave
-          radius: dotSize / 2, // El radio es la mitad del tamaño
+          edges: 32, 
+          radius: window.dotSize / 2, 
           ori: 0,
-          pos: [0, 0], // Posición temporal
+          pos: [0, 0], 
           lineWidth: 1,
           lineColor: new util.Color('white'),
           fillColor: new util.Color('white'),
@@ -313,9 +310,9 @@ async function experimentInit() {
           depth: 0,
           interpolate: true,
       });
-      
-      // Lo agregamos a nuestra lista
-      myDots.push(newDot);
+      // ¡OJO! No le ponemos autoDraw aquí
+      newDot.setAutoDraw(false);
+      window.myDots.push(newDot);
   }
   resp_ptos = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
@@ -1060,12 +1057,13 @@ function trial_pruebaRoutineBegin(snapshot) {
     trial_pruebaMaxDurationReached = false;
     // update component parameters for each repeat
     // Run 'Begin Routine' code from trial_prueba
-    // --- 1. Selección de parámetros (Lógica original intacta) ---
-    var diff_keys = Object.keys(difficulties);
+    // --- 1. Selección de parámetros ---
+    // Usamos window.difficulties
+    var diff_keys = Object.keys(window.difficulties);
     util.shuffle(diff_keys);
     var difficulty = diff_keys[0];
     
-    var possible_counts = difficulties[difficulty];
+    var possible_counts = window.difficulties[difficulty];
     util.shuffle(possible_counts);
     var dominant_count = possible_counts[0];
     
@@ -1074,30 +1072,27 @@ function trial_pruebaRoutineBegin(snapshot) {
     var dominant_color = possible_colors[0];
     
     var red_dots, blue_dots, correctAns;
+    // Usamos window.nDots
     if (dominant_color === 'Red') {
         red_dots = dominant_count;
-        blue_dots = nDots - dominant_count;
+        blue_dots = window.nDots - dominant_count;
         correctAns = 'n'; 
     } else {
         blue_dots = dominant_count;
-        red_dots = nDots - dominant_count;
+        red_dots = window.nDots - dominant_count;
         correctAns = 'c'; 
     }
     
-    // --- 2. Generación de Coordenadas y Asignación ---
-    // Definimos los colores
+    // --- 2. Asignación de Coordenadas y Color ---
     var RED_C = new util.Color('red');
     var BLUE_C = new util.Color('blue');
     
-    // Iteramos sobre los 80 puntos que creamos en Begin Experiment
-    for (var i = 0; i < nDots; i++) {
-        // Generar posición aleatoria (Tu lógica original)
+    for (var i = 0; i < window.nDots; i++) {
         var theta = Math.random() * 2 * Math.PI;
-        var r_val = cloudRadius * Math.sqrt(Math.random());
+        var r_val = window.cloudRadius * Math.sqrt(Math.random());
         var x = r_val * Math.cos(theta);
         var y = r_val * Math.sin(theta);
         
-        // Determinar color
         var this_color;
         if (i < red_dots) {
             this_color = RED_C;
@@ -1105,22 +1100,21 @@ function trial_pruebaRoutineBegin(snapshot) {
             this_color = BLUE_C;
         }
         
-        // --- ACTUALIZAMOS EL PUNTO ---
-        // En lugar de crear un array temporal, actualizamos el objeto directamente
-        myDots[i].setPos([x, y]);
-        myDots[i].setFillColor(this_color);
-        myDots[i].setLineColor(this_color);
-        // Aseguramos que no se dibuje automáticamente todavía
-        myDots[i].setAutoDraw(false); 
+        // AQUÍ OCURRÍA EL ERROR ANTES
+        // Ahora usamos window.myDots[i] que es seguro
+        if (window.myDots[i]) {
+            window.myDots[i].setPos([x, y]);
+            window.myDots[i].setFillColor(this_color);
+            window.myDots[i].setLineColor(this_color);
+            window.myDots[i].setAutoDraw(false); // Aseguramos que empiece oculto
+        }
     }
     
     // Guardar datos
     psychoJS.experiment.addData('difficulty', difficulty);
     psychoJS.experiment.addData('dominant_color', dominant_color);
     psychoJS.experiment.addData('dominant_count', dominant_count);
-    if (typeof window.group !== 'undefined') {
-        psychoJS.experiment.addData('group', window.group);
-    }
+    psychoJS.experiment.addData('correctAns', correctAns);
     resp_ptos.keys = undefined;
     resp_ptos.rt = undefined;
     _resp_ptos_allKeys = [];
@@ -1147,13 +1141,16 @@ function trial_pruebaRoutineEachFrame() {
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
     // Run 'Each Frame' code from trial_prueba
-    // t es el tiempo actual de la rutina
-    if (t < 0,2) {
-        // Dibujamos cada punto de la lista
-        for (var i = 0; i < nDots; i++) {
-            myDots[i].draw();
+    // Solo dibujamos si el tiempo es menor a 0.2s
+    if (t < window.stimDuration) {
+        for (var i = 0; i < window.nDots; i++) {
+            // Usamos .draw(), NO .setAutoDraw()
+            if (window.myDots[i]) {
+                window.myDots[i].draw();
+            }
         }
     }
+    // Cuando t > 0.2, el código deja de entrar al IF y los puntos desaparecen solos.
     
     // *resp_ptos* updates
     if (t >= 0.2 && resp_ptos.status === PsychoJS.Status.NOT_STARTED) {
