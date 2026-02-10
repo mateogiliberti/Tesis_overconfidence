@@ -332,6 +332,9 @@ async function experimentInit() {
   // Definimos las constantes aquí para evitar errores
   var blockSize = 24;    // Tamaño del bloque
   var feedbackText = ""; // Texto vacío al inicio
+  
+  // Creamos el reloj manualmente para evitar el ReferenceError
+  window.FeedbackClock = new util.Clock();
   Feedback = new visual.TextStim({
     win: psychoJS.window,
     name: 'Feedback',
