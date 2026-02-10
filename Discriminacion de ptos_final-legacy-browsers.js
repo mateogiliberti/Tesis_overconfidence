@@ -131,7 +131,7 @@ var rutina_fixClock;
 var stim_cruz;
 var trial_pruebaClock;
 var resp_ptos;
-var Feedback_2Clock;
+var feedbackClock;
 var Feedback;
 var Instrucciones_testeoClock;
 var testeo_instrucciones;
@@ -316,8 +316,14 @@ async function experimentInit() {
   }
   resp_ptos = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
-  // Initialize components for Routine "Feedback_2"
-  Feedback_2Clock = new util.Clock();
+  // Initialize components for Routine "feedback"
+  feedbackClock = new util.Clock();
+  // Definimos las constantes aquí para evitar errores
+  window.blockSize = 24;    // Tamaño del bloque
+  window.feedbackText = ""; // Texto vacío al inicio
+  
+  // Creamos el reloj manualmente para evitar el ReferenceError
+  window.FeedbackClock = new util.Clock();
   Feedback = new visual.TextStim({
     win: psychoJS.window,
     name: 'Feedback',
@@ -327,15 +333,9 @@ async function experimentInit() {
     pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
-    depth: 0.0 
+    depth: -1.0 
   });
   
-  // Definimos las constantes aquí para evitar errores
-  window.blockSize = 24;    // Tamaño del bloque
-  window.feedbackText = ""; // Texto vacío al inicio
-  
-  // Creamos el reloj manualmente para evitar el ReferenceError
-  window.FeedbackClock = new util.Clock();
   // Initialize components for Routine "Instrucciones_testeo"
   Instrucciones_testeoClock = new util.Clock();
   testeo_instrucciones = new visual.TextStim({
@@ -805,9 +805,9 @@ function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineBegin(snapshot));
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineEachFrame());
       fase_pruebaLoopScheduler.add(trial_pruebaRoutineEnd(snapshot));
-      fase_pruebaLoopScheduler.add(Feedback_2RoutineBegin(snapshot));
-      fase_pruebaLoopScheduler.add(Feedback_2RoutineEachFrame());
-      fase_pruebaLoopScheduler.add(Feedback_2RoutineEnd(snapshot));
+      fase_pruebaLoopScheduler.add(feedbackRoutineBegin(snapshot));
+      fase_pruebaLoopScheduler.add(feedbackRoutineEachFrame());
+      fase_pruebaLoopScheduler.add(feedbackRoutineEnd(snapshot));
       fase_pruebaLoopScheduler.add(fase_pruebaLoopEndIteration(fase_pruebaLoopScheduler, snapshot));
     });
     
@@ -1142,16 +1142,30 @@ function trial_pruebaRoutineEachFrame() {
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
     // Run 'Each Frame' code from trial_prueba
-    // Solo dibujamos si el tiempo es menor a 0.2s
-    if (t < window.stimDuration) {
+    // Definimos el límite de tiempo
+    var timeLimit = window.stimDuration; // 0.2s
+    
+    if (t < timeLimit) {
+        // --- FASE 1: MOSTRAR ESTÍMULO (0 a 200ms) ---
         for (var i = 0; i < window.nDots; i++) {
-            // Usamos .draw(), NO .setAutoDraw()
             if (window.myDots[i]) {
+                // Usamos .draw() para dibujar frame por frame
                 window.myDots[i].draw();
             }
         }
+    } else {
+        // --- FASE 2: PANTALLA GRIS (200ms en adelante) ---
+        // El tiempo pasó, así que NO llamamos a .draw().
+        
+        // MEDIDA DE SEGURIDAD:
+        // Forzamos el apagado por si alguno quedó con 'autoDraw' activado accidentalmente.
+        // Esto garantiza que desaparezcan visualmente.
+        for (var i = 0; i < window.nDots; i++) {
+            if (window.myDots[i]) {
+                window.myDots[i].setAutoDraw(false);
+            }
+        }
     }
-    // Cuando t > 0.2, el código deja de entrar al IF y los puntos desaparecen solos.
     
     // *resp_ptos* updates
     if (t >= 0.2 && resp_ptos.status === PsychoJS.Status.NOT_STARTED) {
@@ -1272,40 +1286,40 @@ function trial_pruebaRoutineEnd(snapshot) {
 }
 
 
-var Feedback_2MaxDurationReached;
+var feedbackMaxDurationReached;
 var performance_score;
 var feedbackText;
-var Feedback_2MaxDuration;
-var Feedback_2Components;
-function Feedback_2RoutineBegin(snapshot) {
+var feedbackMaxDuration;
+var feedbackComponents;
+function feedbackRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
     
-    //--- Prepare to start Routine 'Feedback_2' ---
+    //--- Prepare to start Routine 'feedback' ---
     t = 0;
     frameN = -1;
     continueRoutine = true; // until we're told otherwise
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
-    Feedback_2Clock.reset();
+    feedbackClock.reset();
     routineTimer.reset();
-    Feedback_2MaxDurationReached = false;
+    feedbackMaxDurationReached = false;
     // update component parameters for each repeat
-    Feedback.setText(feedbackText);
     // Run 'Begin Routine' code from feedback_prueba
     // Obtenemos el número de ensayo actual
-    // IMPORTANTE: Asegúrate de que 'fase_prueba' es el nombre real de tu loop en el Builder.
     var trialNumber = fase_prueba.thisN + 1;
-    var performance_score = 0;
     
-    // Verificamos si es fin de bloque (múltiplo de 24)
-    if ((trialNumber % window.blockSize) === 0) {
+    // Usamos window.blockSize para asegurar que la variable global existe
+    // (Si no usas window, a veces falla la referencia)
+    var limit = (typeof window.blockSize !== 'undefined') ? window.blockSize : 24; 
     
-        // --- Generar puntaje falso ---
-        // Si la variable 'group' no está definida, asumimos 'Control' por seguridad
-        // o usamos window.group si la definimos globalmente antes.
+    if ((trialNumber % limit) === 0) {
+        
+        // Inicializamos variables
+        var performance_score = 0;
         var current_group = (typeof window.group !== 'undefined') ? window.group : 'Control';
-    
+        
+        // Lógica del puntaje (Traducción de random.randint)
         if (current_group === 'Experimental') {
             // Random entre 70 y 95
             performance_score = Math.floor(Math.random() * (95 - 70 + 1)) + 70;
@@ -1316,26 +1330,33 @@ function Feedback_2RoutineBegin(snapshot) {
             feedbackText = `Tu rendimiento se ubica en un rango intermedio del grupo: ${performance_score}%.`;
         }
     
-        // --- Guardar datos ---
+        // --- LA SOLUCIÓN AL "HELLO WORLD" ---
+        // Aquí forzamos al componente visual a tomar el texto NUEVO ahora mismo.
+        // REEMPLAZA 'texto_feedback' POR EL NOMBRE DE TU COMPONENTE DE TEXTO EN BUILDER
+        // Si tu componente se llama 'text', pon: text.setText(feedbackText);
+        if (typeof texto_feedback !== 'undefined') {
+            texto_feedback.setText(feedbackText);
+        }
+        
+        // Guardar datos
         psychoJS.experiment.addData('block_end_trial', trialNumber);
         psychoJS.experiment.addData('feedback_group', current_group);
         psychoJS.experiment.addData('feedback_score_shown', performance_score);
-    
-        // Activamos la rutina (esto es redundante pero seguro)
+        
         continueRoutine = true;
     
     } else {
-        // --- Ocultar Feedback ---
-        // Si NO es el ensayo 24, 48, 72, etc., saltamos esta pantalla inmediatamente
+        // Si no es fin de bloque, saltar
         continueRoutine = false;
     }
-    psychoJS.experiment.addData('Feedback_2.started', globalClock.getTime());
-    Feedback_2MaxDuration = null
+    Feedback.setText(feedbackText);
+    psychoJS.experiment.addData('feedback.started', globalClock.getTime());
+    feedbackMaxDuration = null
     // keep track of which components have finished
-    Feedback_2Components = [];
-    Feedback_2Components.push(Feedback);
+    feedbackComponents = [];
+    feedbackComponents.push(Feedback);
     
-    Feedback_2Components.forEach( function(thisComponent) {
+    feedbackComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent)
         thisComponent.status = PsychoJS.Status.NOT_STARTED;
        });
@@ -1344,13 +1365,18 @@ function Feedback_2RoutineBegin(snapshot) {
 }
 
 
-function Feedback_2RoutineEachFrame() {
+function feedbackRoutineEachFrame() {
   return async function () {
-    //--- Loop for each frame of Routine 'Feedback_2' ---
+    //--- Loop for each frame of Routine 'feedback' ---
     // get current time
-    t = Feedback_2Clock.getTime();
+    t = feedbackClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
+    // Si la rutina está activa (no la saltamos), contar el tiempo
+    if (t > 3.0) {
+        continueRoutine = false; // Terminar después de 3 segundos
+    }
+    
     
     // *Feedback* updates
     if (t >= 0.0 && Feedback.status === PsychoJS.Status.NOT_STARTED) {
@@ -1366,11 +1392,6 @@ function Feedback_2RoutineEachFrame() {
     if (Feedback.status === PsychoJS.Status.STARTED) {
     }
     
-    // Si la rutina está activa (no la saltamos), contar el tiempo
-    if (t > 3.0) {
-        continueRoutine = false; // Terminar después de 3 segundos
-    }
-    
     // check for quit (typically the Esc key)
     if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
       return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
@@ -1383,7 +1404,7 @@ function Feedback_2RoutineEachFrame() {
     }
     
     continueRoutine = false;  // reverts to True if at least one component still running
-    Feedback_2Components.forEach( function(thisComponent) {
+    feedbackComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
         continueRoutine = true;
       }
@@ -1399,16 +1420,16 @@ function Feedback_2RoutineEachFrame() {
 }
 
 
-function Feedback_2RoutineEnd(snapshot) {
+function feedbackRoutineEnd(snapshot) {
   return async function () {
-    //--- Ending Routine 'Feedback_2' ---
-    Feedback_2Components.forEach( function(thisComponent) {
+    //--- Ending Routine 'feedback' ---
+    feedbackComponents.forEach( function(thisComponent) {
       if (typeof thisComponent.setAutoDraw === 'function') {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('Feedback_2.stopped', globalClock.getTime());
-    // the Routine "Feedback_2" was not non-slip safe, so reset the non-slip timer
+    psychoJS.experiment.addData('feedback.stopped', globalClock.getTime());
+    // the Routine "feedback" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
     // Routines running outside a loop should always advance the datafile row

@@ -232,7 +232,7 @@
         <Param val="&amp;#10;difficulty = random.choice(list(difficulties.keys()))&amp;#10;dominant_count = random.choice(difficulties[difficulty])&amp;#10;&amp;#10;dominant_color = random.choice(['Red', 'Blue'])&amp;#10;&amp;#10;if dominant_color == 'Red':&amp;#10;    red_dots = dominant_count&amp;#10;    blue_dots = nDots - dominant_count&amp;#10;    correctAns = 'n'&amp;#10;else:&amp;#10;    blue_dots = dominant_count&amp;#10;    red_dots = nDots - dominant_count&amp;#10;    correctAns = 'c'&amp;#10;&amp;#10;theta = np.random.rand(nDots) * 2 * np.pi&amp;#10;r = cloudRadius * np.sqrt(np.random.rand(nDots))&amp;#10;xys = np.column_stack([r * np.cos(theta), r * np.sin(theta)])&amp;#10;&amp;#10;colors_array = np.zeros((nDots, 3), dtype=float)&amp;#10;colors_array[:red_dots, :] = RED&amp;#10;colors_array[red_dots:, :] = BLUE&amp;#10;&amp;#10;perm = np.random.permutation(nDots)&amp;#10;xys = xys[perm]&amp;#10;colors_array = colors_array[perm]&amp;#10;&amp;#10;dot_stim = visual.ElementArrayStim(&amp;#10;    win,&amp;#10;    nElements=nDots,&amp;#10;    xys=xys,&amp;#10;    elementTex=None,&amp;#10;    elementMask='circle',&amp;#10;    sizes=dotSize,&amp;#10;    colors=colors_array,&amp;#10;    colorSpace='rgb255'&amp;#10;)&amp;#10;&amp;#10;thisExp.addData('difficulty', difficulty)&amp;#10;thisExp.addData('dominant_color', dominant_color)&amp;#10;thisExp.addData('dominant_count', dominant_count)&amp;#10;thisExp.addData('group', group)&amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Both" valType="str" updates="None" name="Code Type"/>
         <Param val="# Dibujar el estímulo SOLO durante 200 ms desde inicio de la rutina&amp;#10;# 't' es el tiempo transcurrido en esta rutina (Builder lo da)&amp;#10;if t &lt; stimDuration:&amp;#10;    dot_stim.draw()&amp;#10;# Después de 200 ms, la pantalla queda sin el estímulo y se espera respuesta" valType="extendedCode" updates="constant" name="Each Frame"/>
-        <Param val="// Solo dibujamos si el tiempo es menor a 0.2s&amp;#10;if (t &lt; window.stimDuration) {&amp;#10;    for (var i = 0; i &lt; window.nDots; i++) {&amp;#10;        // Usamos .draw(), NO .setAutoDraw()&amp;#10;        if (window.myDots[i]) {&amp;#10;            window.myDots[i].draw();&amp;#10;        }&amp;#10;    }&amp;#10;}&amp;#10;// Cuando t &gt; 0.2, el código deja de entrar al IF y los puntos desaparecen solos." valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="// Definimos el límite de tiempo&amp;#10;var timeLimit = window.stimDuration; // 0.2s&amp;#10;&amp;#10;if (t &lt; timeLimit) {&amp;#10;    // --- FASE 1: MOSTRAR ESTÍMULO (0 a 200ms) ---&amp;#10;    for (var i = 0; i &lt; window.nDots; i++) {&amp;#10;        if (window.myDots[i]) {&amp;#10;            // Usamos .draw() para dibujar frame por frame&amp;#10;            window.myDots[i].draw();&amp;#10;        }&amp;#10;    }&amp;#10;} else {&amp;#10;    // --- FASE 2: PANTALLA GRIS (200ms en adelante) ---&amp;#10;    // El tiempo pasó, así que NO llamamos a .draw().&amp;#10;    &amp;#10;    // MEDIDA DE SEGURIDAD:&amp;#10;    // Forzamos el apagado por si alguno quedó con 'autoDraw' activado accidentalmente.&amp;#10;    // Esto garantiza que desaparezcan visualmente.&amp;#10;    for (var i = 0; i &lt; window.nDots; i++) {&amp;#10;        if (window.myDots[i]) {&amp;#10;            window.myDots[i].setAutoDraw(false);&amp;#10;        }&amp;#10;    }&amp;#10;}" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="for (var i = 0; i &lt; window.nDots; i++) {&amp;#10;    window.myDots[i].setAutoDraw(false);&amp;#10;}&amp;#10;&amp;#10;&amp;#10;// Registramos cuál era la respuesta correcta ( 'n' o 'c' )&amp;#10;psychoJS.experiment.addData('correctAns', correctAns);&amp;#10;&amp;#10;// El componente de teclado del Builder se encargará de guardar &amp;#10;// qué tecla presionó el participante y si acertó (key_resp.corr),&amp;#10;// pero aquí guardamos explícitamente qué DEBÍA responder.&amp;#10;// Registramos cuál era la respuesta correcta&amp;#10;" valType="extendedCode" updates="constant" name="End JS Routine"/>
@@ -601,8 +601,8 @@
         <Param val="" valType="num" updates="constant" name="wrapWidth"/>
       </TextComponent>
     </Routine>
-    <Routine name="Feedback_2">
-      <RoutineSettingsComponent name="Feedback_2" plugin="None">
+    <Routine name="feedback">
+      <RoutineSettingsComponent name="feedback" plugin="None">
         <Param val="none" valType="str" updates="None" name="backgroundFit"/>
         <Param val="" valType="str" updates="None" name="backgroundImg"/>
         <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
@@ -611,13 +611,30 @@
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
         <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
-        <Param val="Feedback_2" valType="code" updates="None" name="name"/>
+        <Param val="feedback" valType="code" updates="None" name="name"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="constant" name="skipIf"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="" valType="code" updates="constant" name="stopVal"/>
         <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
       </RoutineSettingsComponent>
+      <CodeComponent name="feedback_prueba" plugin="None">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="// Definimos las constantes aquí para evitar errores&amp;#10;window.blockSize = 24;    // Tamaño del bloque&amp;#10;window.feedbackText = &quot;&quot;; // Texto vacío al inicio&amp;#10;&amp;#10;// Creamos el reloj manualmente para evitar el ReferenceError&amp;#10;window.FeedbackClock = new util.Clock();" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="// Obtenemos el número de ensayo actual&amp;#10;var trialNumber = fase_prueba.thisN + 1;&amp;#10;&amp;#10;// Usamos window.blockSize para asegurar que la variable global existe&amp;#10;// (Si no usas window, a veces falla la referencia)&amp;#10;var limit = (typeof window.blockSize !== 'undefined') ? window.blockSize : 24; &amp;#10;&amp;#10;if ((trialNumber % limit) === 0) {&amp;#10;    &amp;#10;    // Inicializamos variables&amp;#10;    var performance_score = 0;&amp;#10;    var current_group = (typeof window.group !== 'undefined') ? window.group : 'Control';&amp;#10;    &amp;#10;    // Lógica del puntaje (Traducción de random.randint)&amp;#10;    if (current_group === 'Experimental') {&amp;#10;        // Random entre 70 y 95&amp;#10;        performance_score = Math.floor(Math.random() * (95 - 70 + 1)) + 70;&amp;#10;        feedbackText = `Has alcanzado un desempeño equivalente a los mejores del grupo: ${performance_score}%.`;&amp;#10;    } else {&amp;#10;        // Random entre 37 y 62&amp;#10;        performance_score = Math.floor(Math.random() * (62 - 37 + 1)) + 37;&amp;#10;        feedbackText = `Tu rendimiento se ubica en un rango intermedio del grupo: ${performance_score}%.`;&amp;#10;    }&amp;#10;&amp;#10;    // --- LA SOLUCIÓN AL &quot;HELLO WORLD&quot; ---&amp;#10;    // Aquí forzamos al componente visual a tomar el texto NUEVO ahora mismo.&amp;#10;    // REEMPLAZA 'texto_feedback' POR EL NOMBRE DE TU COMPONENTE DE TEXTO EN BUILDER&amp;#10;    // Si tu componente se llama 'text', pon: text.setText(feedbackText);&amp;#10;    if (typeof texto_feedback !== 'undefined') {&amp;#10;        texto_feedback.setText(feedbackText);&amp;#10;    }&amp;#10;    &amp;#10;    // Guardar datos&amp;#10;    psychoJS.experiment.addData('block_end_trial', trialNumber);&amp;#10;    psychoJS.experiment.addData('feedback_group', current_group);&amp;#10;    psychoJS.experiment.addData('feedback_score_shown', performance_score);&amp;#10;    &amp;#10;    continueRoutine = true;&amp;#10;&amp;#10;} else {&amp;#10;    // Si no es fin de bloque, saltar&amp;#10;    continueRoutine = false;&amp;#10;}" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="# Mostrar feedback SOLO al final de cada bloque de 24 ensayos&amp;#10;trialNumber = fase_prueba.thisN + 1  # thisN es 0-indexado&amp;#10;if trialNumber % blockSize == 0:&amp;#10;    # Generar puntaje sesgado según el grupo&amp;#10;    if group == 'Experimental':&amp;#10;        performance_score = random.randint(70, 95)&amp;#10;        feedbackText = f'Has alcanzado un desempeño equivalente a los mejores del grupo: {performance_score}%.'&amp;#10;    else:&amp;#10;        performance_score = random.randint(37, 62)&amp;#10;        feedbackText = f'Tu rendimiento se ubica en un rango intermedio del grupo: {performance_score}%.'&amp;#10;    # Registrar el feedback mostrado (opcional)&amp;#10;    thisExp.addData('block_end_trial', trialNumber)&amp;#10;    thisExp.addData('feedback_group', group)&amp;#10;    thisExp.addData('feedback_score_shown', performance_score)&amp;#10;else:&amp;#10;    # Si no es fin de bloque, saltar esta rutina&amp;#10;    continueRoutine = False" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Both" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="// Si la rutina está activa (no la saltamos), contar el tiempo&amp;#10;if (t &gt; 3.0) {&amp;#10;    continueRoutine = false; // Terminar después de 3 segundos&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="feedback_prueba" valType="code" updates="None" name="name"/>
+      </CodeComponent>
       <TextComponent name="Feedback" plugin="None">
         <Param val="white" valType="color" updates="constant" name="color"/>
         <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
@@ -645,23 +662,6 @@
         <Param val="" valType="code" updates="None" name="validator"/>
         <Param val="" valType="num" updates="constant" name="wrapWidth"/>
       </TextComponent>
-      <CodeComponent name="feedback_prueba" plugin="None">
-        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="// Definimos las constantes aquí para evitar errores&amp;#10;window.blockSize = 24;    // Tamaño del bloque&amp;#10;window.feedbackText = &quot;&quot;; // Texto vacío al inicio&amp;#10;&amp;#10;// Creamos el reloj manualmente para evitar el ReferenceError&amp;#10;window.FeedbackClock = new util.Clock();" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="// Obtenemos el número de ensayo actual&amp;#10;// IMPORTANTE: Asegúrate de que 'fase_prueba' es el nombre real de tu loop en el Builder.&amp;#10;var trialNumber = fase_prueba.thisN + 1;&amp;#10;var performance_score = 0;&amp;#10;&amp;#10;// Verificamos si es fin de bloque (múltiplo de 24)&amp;#10;if ((trialNumber % window.blockSize) === 0) {&amp;#10;&amp;#10;    // --- Generar puntaje falso ---&amp;#10;    // Si la variable 'group' no está definida, asumimos 'Control' por seguridad&amp;#10;    // o usamos window.group si la definimos globalmente antes.&amp;#10;    var current_group = (typeof window.group !== 'undefined') ? window.group : 'Control';&amp;#10;&amp;#10;    if (current_group === 'Experimental') {&amp;#10;        // Random entre 70 y 95&amp;#10;        performance_score = Math.floor(Math.random() * (95 - 70 + 1)) + 70;&amp;#10;        feedbackText = `Has alcanzado un desempeño equivalente a los mejores del grupo: ${performance_score}%.`;&amp;#10;    } else {&amp;#10;        // Random entre 37 y 62&amp;#10;        performance_score = Math.floor(Math.random() * (62 - 37 + 1)) + 37;&amp;#10;        feedbackText = `Tu rendimiento se ubica en un rango intermedio del grupo: ${performance_score}%.`;&amp;#10;    }&amp;#10;&amp;#10;    // --- Guardar datos ---&amp;#10;    psychoJS.experiment.addData('block_end_trial', trialNumber);&amp;#10;    psychoJS.experiment.addData('feedback_group', current_group);&amp;#10;    psychoJS.experiment.addData('feedback_score_shown', performance_score);&amp;#10;&amp;#10;    // Activamos la rutina (esto es redundante pero seguro)&amp;#10;    continueRoutine = true;&amp;#10;&amp;#10;} else {&amp;#10;    // --- Ocultar Feedback ---&amp;#10;    // Si NO es el ensayo 24, 48, 72, etc., saltamos esta pantalla inmediatamente&amp;#10;    continueRoutine = false;&amp;#10;}" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="# Mostrar feedback SOLO al final de cada bloque de 24 ensayos&amp;#10;trialNumber = fase_prueba.thisN + 1  # thisN es 0-indexado&amp;#10;if trialNumber % blockSize == 0:&amp;#10;    # Generar puntaje sesgado según el grupo&amp;#10;    if group == 'Experimental':&amp;#10;        performance_score = random.randint(70, 95)&amp;#10;        feedbackText = f'Has alcanzado un desempeño equivalente a los mejores del grupo: {performance_score}%.'&amp;#10;    else:&amp;#10;        performance_score = random.randint(37, 62)&amp;#10;        feedbackText = f'Tu rendimiento se ubica en un rango intermedio del grupo: {performance_score}%.'&amp;#10;    # Registrar el feedback mostrado (opcional)&amp;#10;    thisExp.addData('block_end_trial', trialNumber)&amp;#10;    thisExp.addData('feedback_group', group)&amp;#10;    thisExp.addData('feedback_score_shown', performance_score)&amp;#10;else:&amp;#10;    # Si no es fin de bloque, saltar esta rutina&amp;#10;    continueRoutine = False" valType="extendedCode" updates="constant" name="Begin Routine"/>
-        <Param val="Both" valType="str" updates="None" name="Code Type"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
-        <Param val="// Si la rutina está activa (no la saltamos), contar el tiempo&amp;#10;if (t &gt; 3.0) {&amp;#10;    continueRoutine = false; // Terminar después de 3 segundos&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Each JS Frame"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
-        <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="feedback_prueba" valType="code" updates="None" name="name"/>
-      </CodeComponent>
     </Routine>
   </Routines>
   <Flow>
@@ -681,7 +681,7 @@
     </LoopInitiator>
     <Routine name="rutina_fix"/>
     <Routine name="trial_prueba"/>
-    <Routine name="Feedback_2"/>
+    <Routine name="feedback"/>
     <LoopTerminator name="fase_prueba"/>
     <Routine name="Instrucciones_testeo"/>
     <LoopInitiator loopType="TrialHandler" name="fase_testeo">
