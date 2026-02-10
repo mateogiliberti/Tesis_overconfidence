@@ -38,15 +38,15 @@ psychoJS.scheduleCondition(function() { return (psychoJS.gui.dialogComponent.but
 // flowScheduler gets run if the participants presses OK
 flowScheduler.add(updateInfo); // add timeStamp
 flowScheduler.add(experimentInit);
-flowScheduler.add(Bienvenida_2RoutineBegin());
-flowScheduler.add(Bienvenida_2RoutineEachFrame());
-flowScheduler.add(Bienvenida_2RoutineEnd());
+flowScheduler.add(BienvenidaRoutineBegin());
+flowScheduler.add(BienvenidaRoutineEachFrame());
+flowScheduler.add(BienvenidaRoutineEnd());
 flowScheduler.add(InstruccionRoutineBegin());
 flowScheduler.add(InstruccionRoutineEachFrame());
 flowScheduler.add(InstruccionRoutineEnd());
-flowScheduler.add(asignacion_de_gruposRoutineBegin());
-flowScheduler.add(asignacion_de_gruposRoutineEachFrame());
-flowScheduler.add(asignacion_de_gruposRoutineEnd());
+flowScheduler.add(condicionesRoutineBegin());
+flowScheduler.add(condicionesRoutineEachFrame());
+flowScheduler.add(condicionesRoutineEnd());
 const fase_pruebaLoopScheduler = new Scheduler(psychoJS);
 flowScheduler.add(fase_pruebaLoopBegin(fase_pruebaLoopScheduler));
 flowScheduler.add(fase_pruebaLoopScheduler);
@@ -112,8 +112,8 @@ async function updateInfo() {
 }
 
 async function experimentInit() {
-  // Initialize components for Routine "Bienvenida_2"
-  Bienvenida_2Clock = new util.Clock();
+  // Initialize components for Routine "Bienvenida"
+  BienvenidaClock = new util.Clock();
   text = new visual.TextStim({
     win: psychoJS.window,
     name: 'text',
@@ -144,28 +144,25 @@ async function experimentInit() {
   
   key_instrucciones = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
-  // Initialize components for Routine "asignacion_de_grupos"
-  asignacion_de_gruposClock = new util.Clock();
-  // Run 'Begin Experiment' code from asignacion_grupos
-  // CODIGO LIMPIO Y SEGURO PARA PEGAR EN 'BEGIN EXPERIMENT'
-  
-  // 1. Leer el dato (asegurate que en Settings se llame 'legajo')
+  // Initialize components for Routine "condiciones"
+  condicionesClock = new util.Clock();
+  // Run 'Begin Experiment' code from asignacion
+  // OBTENER EL LEGAJO (asegurate que en Settings se llame 'legajo')
   var dato_legajo = expInfo['legajo'];
   
-  // 2. Limpieza basica (si esta vacio o indefinido)
+  // SI ESTA VACIO, PONEMOS TEXTO VACIO
   if (typeof dato_legajo === 'undefined' || dato_legajo === null) {
       dato_legajo = '';
   }
   
-  // 3. Convertir a texto y sacar solo numeros
+  // LIMPIAR Y SACAR SOLO NUMEROS
   var texto_legajo = String(dato_legajo);
   var solo_numeros = texto_legajo.replace(/\D/g, '');
   var numero_limpio = parseInt(solo_numeros);
   
-  // 4. Logica de Grupo
-  var grupo_final = 'Control'; // Por defecto
+  // LOGICA DE GRUPO (Pares=Experimental, Impares=Control)
+  var grupo_final = 'Control'; // Default
   
-  // Si es un numero valido
   if (!isNaN(numero_limpio) && numero_limpio > 0) {
       if (numero_limpio % 2 === 0) {
           grupo_final = 'Experimental';
@@ -174,34 +171,68 @@ async function experimentInit() {
       }
   }
   
-  // 5. Guardar variables globales
+  // GUARDAR GLOBALMENTE
   window.group = grupo_final;
   psychoJS.experiment.addData('grupo_asignado', grupo_final);
   
-  // Confirmacion en consola
+  // DEBUG
   console.log('Legajo:', numero_limpio, 'Grupo:', window.group);
   
+  // ESCALA OC 
+  // 1 SORTEO DE ORDEN DE ESCALA ---
+  var scale_order = (Math.random() > 0.5) ? 'Standard' : 'Reverse';
+  psychoJS.experiment.addData('scale_order', scale_order);
   
-  // --- RESTO DE TU CÓDIGO (No cambia nada) ---
-  window.scale_order = (Math.random() > 0.5) ? 'Standard' : 'Reverse';
-  psychoJS.experiment.addData('scale_order', window.scale_order);
   
+  // -2. DEFINIR MAPAS (Para usar después) ---
   var map_standard = { '1': 1, '2': 2, '3': 3, '8': 4, '9': 5, '0': 6 };
   var map_reverse = { '1': 6, '2': 5, '3': 4, '8': 3, '9': 2, '0': 1 };
-  window.active_conf_map = (window.scale_order === 'Standard') ? map_standard : map_reverse;
   
-  // Textos
-  var txt_instrucciones_escala = ""; 
-  var txt_leyenda_breve = "";        
+  // Guardamos el mapa activo en una variable global para usarlo en el Test
+  window.active_conf_map = (scale_order === 'Standard') ? map_standard : map_reverse;
   
-  if (window.scale_order === 'Standard') {
-      txt_instrucciones_escala = "IZQUIERDA (1-2-3) = Poca Confianza\nDERECHA (8-9-0) = Mucha Confianza\n\n1: Seguramente Incorrecto\n2: Probablemente Incorrecto\n3: Tal vez Incorrecto\n\n8: Tal vez Correcto\n9: Probablemente Correcto\n0: Seguramente Correcto";
-      txt_leyenda_breve = "Indica tu confianza:\n1=Seg. Incorrecto   2=Prob. Incorrecto   3=Tal vez Incorrecto\n8=Tal vez Correcto   9=Prob. Correcto   0=Seg. Correcto";
+  
+  // --3. TEXTOS (Instrucciones y Leyendas) ---
+  
+  var txt_instrucciones_escala = ""; // Para la pantalla de explicación
+  var txt_leyenda_breve = "";        // Para la pantalla de cada trial
+  
+  if (scale_order === 'Standard') {
+      // TEXTO LARGO
+      txt_instrucciones_escala = 
+      "IZQUIERDA (1-2-3) = Poca Confianza\nDERECHA (8-9-0) = Mucha Confianza\n\n" +
+      "1: Seguramente Incorrecto\n" +
+      "2: Probablemente Incorrecto\n" +
+      "3: Tal vez Incorrecto\n\n" +
+      "8: Tal vez Correcto\n" +
+      "9: Probablemente Correcto\n" +
+      "0: Seguramente Correcto";
+      
+      // TEXTO CORTO (LEYENDA)
+      txt_leyenda_breve = 
+      "Indica tu confianza:\n" +
+      "1=Seg. Incorrecto   2=Prob. Incorrecto   3=Tal vez Incorrecto\n" +
+      "8=Tal vez Correcto   9=Prob. Correcto   0=Seg. Correcto";
+  
   } else {
-      txt_instrucciones_escala = "IZQUIERDA (1-2-3) = Mucha Confianza\nDERECHA (8-9-0) = Poca Confianza\n\n1: Seguramente Correcto\n2: Probablemente Correcto\n3: Tal vez Correcto\n\n8: Tal vez Incorrecto\n9: Probablemente Incorrecto\n0: Seguramente Incorrecto";
-      txt_leyenda_breve = "Indica tu confianza:\n1=Seg. Correcto   2=Prob. Correcto   3=Tal vez Correcto\n8=Tal vez Incorrecto   9=Prob. Incorrecto   0=Seg. Incorrecto";
+      // TEXTO LARGO REVERSO
+      txt_instrucciones_escala = 
+      "IZQUIERDA (1-2-3) = Mucha Confianza\nDERECHA (8-9-0) = Poca Confianza\n\n" +
+      "1: Seguramente Correcto\n" +
+      "2: Probablemente Correcto\n" +
+      "3: Tal vez Correcto\n\n" +
+      "8: Tal vez Incorrecto\n" +
+      "9: Probablemente Incorrecto\n" +
+      "0: Seguramente Incorrecto";
+  
+      // TEXTO CORTO REVERSO
+      txt_leyenda_breve = 
+      "Indica tu confianza:\n" +
+      "1=Seg. Correcto   2=Prob. Correcto   3=Tal vez Correcto\n" +
+      "8=Tal vez Incorrecto   9=Prob. Incorrecto   0=Seg. Incorrecto";
   }
   
+  // Hacemos globales los textos para que los componentes de Texto los vean
   window.txt_instrucciones_escala = txt_instrucciones_escala;
   window.txt_leyenda_breve = txt_leyenda_breve;
   // Initialize components for Routine "rutina_fix"
@@ -314,8 +345,8 @@ async function experimentInit() {
   dot_stim = undefined;
   resp_testeo = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
-  // Initialize components for Routine "Escala_de_confianza_1"
-  Escala_de_confianza_1Clock = new util.Clock();
+  // Initialize components for Routine "EscalaOC"
+  EscalaOCClock = new util.Clock();
   Escala_confianza = new visual.TextStim({
     win: psychoJS.window,
     name: 'Escala_confianza',
@@ -353,31 +384,31 @@ async function experimentInit() {
   return Scheduler.Event.NEXT;
 }
 
-function Bienvenida_2RoutineBegin(snapshot) {
+function BienvenidaRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
     
-    //--- Prepare to start Routine 'Bienvenida_2' ---
+    //--- Prepare to start Routine 'Bienvenida' ---
     t = 0;
     frameN = -1;
     continueRoutine = true; // until we're told otherwise
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
-    Bienvenida_2Clock.reset();
+    BienvenidaClock.reset();
     routineTimer.reset();
-    Bienvenida_2MaxDurationReached = false;
+    BienvenidaMaxDurationReached = false;
     // update component parameters for each repeat
     key_resp_2.keys = undefined;
     key_resp_2.rt = undefined;
     _key_resp_2_allKeys = [];
-    psychoJS.experiment.addData('Bienvenida_2.started', globalClock.getTime());
-    Bienvenida_2MaxDuration = null
+    psychoJS.experiment.addData('Bienvenida.started', globalClock.getTime());
+    BienvenidaMaxDuration = null
     // keep track of which components have finished
-    Bienvenida_2Components = [];
-    Bienvenida_2Components.push(text);
-    Bienvenida_2Components.push(key_resp_2);
+    BienvenidaComponents = [];
+    BienvenidaComponents.push(text);
+    BienvenidaComponents.push(key_resp_2);
     
-    Bienvenida_2Components.forEach( function(thisComponent) {
+    BienvenidaComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent)
         thisComponent.status = PsychoJS.Status.NOT_STARTED;
        });
@@ -385,11 +416,11 @@ function Bienvenida_2RoutineBegin(snapshot) {
   }
 }
 
-function Bienvenida_2RoutineEachFrame() {
+function BienvenidaRoutineEachFrame() {
   return async function () {
-    //--- Loop for each frame of Routine 'Bienvenida_2' ---
+    //--- Loop for each frame of Routine 'Bienvenida' ---
     // get current time
-    t = Bienvenida_2Clock.getTime();
+    t = BienvenidaClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
     
@@ -448,7 +479,7 @@ function Bienvenida_2RoutineEachFrame() {
     }
     
     continueRoutine = false;  // reverts to True if at least one component still running
-    Bienvenida_2Components.forEach( function(thisComponent) {
+    BienvenidaComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
         continueRoutine = true;
       }
@@ -463,17 +494,17 @@ function Bienvenida_2RoutineEachFrame() {
   };
 }
 
-function Bienvenida_2RoutineEnd(snapshot) {
+function BienvenidaRoutineEnd(snapshot) {
   return async function () {
-    //--- Ending Routine 'Bienvenida_2' ---
-    Bienvenida_2Components.forEach( function(thisComponent) {
+    //--- Ending Routine 'Bienvenida' ---
+    BienvenidaComponents.forEach( function(thisComponent) {
       if (typeof thisComponent.setAutoDraw === 'function') {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('Bienvenida_2.stopped', globalClock.getTime());
+    psychoJS.experiment.addData('Bienvenida.stopped', globalClock.getTime());
     key_resp_2.stop();
-    // the Routine "Bienvenida_2" was not non-slip safe, so reset the non-slip timer
+    // the Routine "Bienvenida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
     // Routines running outside a loop should always advance the datafile row
@@ -615,26 +646,26 @@ function InstruccionRoutineEnd(snapshot) {
   }
 }
 
-function asignacion_de_gruposRoutineBegin(snapshot) {
+function condicionesRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
     
-    //--- Prepare to start Routine 'asignacion_de_grupos' ---
+    //--- Prepare to start Routine 'condiciones' ---
     t = 0;
     frameN = -1;
     continueRoutine = true; // until we're told otherwise
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
-    asignacion_de_gruposClock.reset();
+    condicionesClock.reset();
     routineTimer.reset();
-    asignacion_de_gruposMaxDurationReached = false;
+    condicionesMaxDurationReached = false;
     // update component parameters for each repeat
-    psychoJS.experiment.addData('asignacion_de_grupos.started', globalClock.getTime());
-    asignacion_de_gruposMaxDuration = null
+    psychoJS.experiment.addData('condiciones.started', globalClock.getTime());
+    condicionesMaxDuration = null
     // keep track of which components have finished
-    asignacion_de_gruposComponents = [];
+    condicionesComponents = [];
     
-    asignacion_de_gruposComponents.forEach( function(thisComponent) {
+    condicionesComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent)
         thisComponent.status = PsychoJS.Status.NOT_STARTED;
        });
@@ -642,11 +673,11 @@ function asignacion_de_gruposRoutineBegin(snapshot) {
   }
 }
 
-function asignacion_de_gruposRoutineEachFrame() {
+function condicionesRoutineEachFrame() {
   return async function () {
-    //--- Loop for each frame of Routine 'asignacion_de_grupos' ---
+    //--- Loop for each frame of Routine 'condiciones' ---
     // get current time
-    t = asignacion_de_gruposClock.getTime();
+    t = condicionesClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
     // check for quit (typically the Esc key)
@@ -661,7 +692,7 @@ function asignacion_de_gruposRoutineEachFrame() {
     }
     
     continueRoutine = false;  // reverts to True if at least one component still running
-    asignacion_de_gruposComponents.forEach( function(thisComponent) {
+    condicionesComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
         continueRoutine = true;
       }
@@ -676,16 +707,16 @@ function asignacion_de_gruposRoutineEachFrame() {
   };
 }
 
-function asignacion_de_gruposRoutineEnd(snapshot) {
+function condicionesRoutineEnd(snapshot) {
   return async function () {
-    //--- Ending Routine 'asignacion_de_grupos' ---
-    asignacion_de_gruposComponents.forEach( function(thisComponent) {
+    //--- Ending Routine 'condiciones' ---
+    condicionesComponents.forEach( function(thisComponent) {
       if (typeof thisComponent.setAutoDraw === 'function') {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('asignacion_de_grupos.stopped', globalClock.getTime());
-    // the Routine "asignacion_de_grupos" was not non-slip safe, so reset the non-slip timer
+    psychoJS.experiment.addData('condiciones.stopped', globalClock.getTime());
+    // the Routine "condiciones" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
     // Routines running outside a loop should always advance the datafile row
@@ -788,9 +819,9 @@ function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
       fase_testeoLoopScheduler.add(trial_testeoRoutineBegin(snapshot));
       fase_testeoLoopScheduler.add(trial_testeoRoutineEachFrame());
       fase_testeoLoopScheduler.add(trial_testeoRoutineEnd(snapshot));
-      fase_testeoLoopScheduler.add(Escala_de_confianza_1RoutineBegin(snapshot));
-      fase_testeoLoopScheduler.add(Escala_de_confianza_1RoutineEachFrame());
-      fase_testeoLoopScheduler.add(Escala_de_confianza_1RoutineEnd(snapshot));
+      fase_testeoLoopScheduler.add(EscalaOCRoutineBegin(snapshot));
+      fase_testeoLoopScheduler.add(EscalaOCRoutineEachFrame());
+      fase_testeoLoopScheduler.add(EscalaOCRoutineEnd(snapshot));
       fase_testeoLoopScheduler.add(fase_testeoLoopEndIteration(fase_testeoLoopScheduler, snapshot));
     });
     
@@ -1705,32 +1736,32 @@ function trial_testeoRoutineEnd(snapshot) {
   }
 }
 
-function Escala_de_confianza_1RoutineBegin(snapshot) {
+function EscalaOCRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
     
-    //--- Prepare to start Routine 'Escala_de_confianza_1' ---
+    //--- Prepare to start Routine 'EscalaOC' ---
     t = 0;
     frameN = -1;
     continueRoutine = true; // until we're told otherwise
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
-    Escala_de_confianza_1Clock.reset();
+    EscalaOCClock.reset();
     routineTimer.reset();
-    Escala_de_confianza_1MaxDurationReached = false;
+    EscalaOCMaxDurationReached = false;
     // update component parameters for each repeat
     Escala_confianza.setText(txt_leyenda_breve);
     key_conf.keys = undefined;
     key_conf.rt = undefined;
     _key_conf_allKeys = [];
-    psychoJS.experiment.addData('Escala_de_confianza_1.started', globalClock.getTime());
-    Escala_de_confianza_1MaxDuration = null
+    psychoJS.experiment.addData('EscalaOC.started', globalClock.getTime());
+    EscalaOCMaxDuration = null
     // keep track of which components have finished
-    Escala_de_confianza_1Components = [];
-    Escala_de_confianza_1Components.push(Escala_confianza);
-    Escala_de_confianza_1Components.push(key_conf);
+    EscalaOCComponents = [];
+    EscalaOCComponents.push(Escala_confianza);
+    EscalaOCComponents.push(key_conf);
     
-    Escala_de_confianza_1Components.forEach( function(thisComponent) {
+    EscalaOCComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent)
         thisComponent.status = PsychoJS.Status.NOT_STARTED;
        });
@@ -1738,11 +1769,11 @@ function Escala_de_confianza_1RoutineBegin(snapshot) {
   }
 }
 
-function Escala_de_confianza_1RoutineEachFrame() {
+function EscalaOCRoutineEachFrame() {
   return async function () {
-    //--- Loop for each frame of Routine 'Escala_de_confianza_1' ---
+    //--- Loop for each frame of Routine 'EscalaOC' ---
     // get current time
-    t = Escala_de_confianza_1Clock.getTime();
+    t = EscalaOCClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
     
@@ -1801,7 +1832,7 @@ function Escala_de_confianza_1RoutineEachFrame() {
     }
     
     continueRoutine = false;  // reverts to True if at least one component still running
-    Escala_de_confianza_1Components.forEach( function(thisComponent) {
+    EscalaOCComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
         continueRoutine = true;
       }
@@ -1816,15 +1847,15 @@ function Escala_de_confianza_1RoutineEachFrame() {
   };
 }
 
-function Escala_de_confianza_1RoutineEnd(snapshot) {
+function EscalaOCRoutineEnd(snapshot) {
   return async function () {
-    //--- Ending Routine 'Escala_de_confianza_1' ---
-    Escala_de_confianza_1Components.forEach( function(thisComponent) {
+    //--- Ending Routine 'EscalaOC' ---
+    EscalaOCComponents.forEach( function(thisComponent) {
       if (typeof thisComponent.setAutoDraw === 'function') {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('Escala_de_confianza_1.stopped', globalClock.getTime());
+    psychoJS.experiment.addData('EscalaOC.stopped', globalClock.getTime());
     // Run 'End Routine' code from escala_testeo
     // 1. Definimos el mapeo de teclas a niveles (Objetos en lugar de Diccionarios)
     var confidence_map = {
@@ -1884,7 +1915,7 @@ function Escala_de_confianza_1RoutineEnd(snapshot) {
         }
     
     key_conf.stop();
-    // the Routine "Escala_de_confianza_1" was not non-slip safe, so reset the non-slip timer
+    // the Routine "EscalaOC" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
     // Routines running outside a loop should always advance the datafile row
