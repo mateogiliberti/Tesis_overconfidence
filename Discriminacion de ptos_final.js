@@ -74,9 +74,6 @@ flowScheduler.add(fase_testeoLoopEnd);
 
 
 
-flowScheduler.add(DespedidaRoutineBegin());
-flowScheduler.add(DespedidaRoutineEachFrame());
-flowScheduler.add(DespedidaRoutineEnd());
 flowScheduler.add(quitPsychoJS, 'Thank you for your patience.', true);
 
 // quit if user presses Cancel in dialog box:
@@ -361,22 +358,6 @@ async function experimentInit() {
   
   key_conf = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
-  // Initialize components for Routine "Despedida"
-  DespedidaClock = new util.Clock();
-  text_despedida = new visual.TextStim({
-    win: psychoJS.window,
-    name: 'text_despedida',
-    text: '!Buenisimo! Completaste la primera etapa del experimento. \nAhora aguarda hasta recibir las instrucciones sobre como continuar. ',
-    font: 'Arial',
-    units: undefined, 
-    pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
-    languageStyle: 'LTR',
-    color: new util.Color('white'),  opacity: undefined,
-    depth: 0.0 
-  });
-  
-  // Tu ID de DataPipe 
-  var dataPipeID = "ASnLrtHTzzul";
   // Create some handy timers
   globalClock = new util.Clock();  // to track the time since experiment started
   routineTimer = new util.CountdownTimer();  // to track time remaining of each (non-slip) routine
@@ -1905,130 +1886,6 @@ function EscalaOCRoutineEnd(snapshot) {
     
     key_conf.stop();
     // the Routine "EscalaOC" was not non-slip safe, so reset the non-slip timer
-    routineTimer.reset();
-    
-    // Routines running outside a loop should always advance the datafile row
-    if (currentLoop === psychoJS.experiment) {
-      psychoJS.experiment.nextEntry(snapshot);
-    }
-    return Scheduler.Event.NEXT;
-  }
-}
-
-function DespedidaRoutineBegin(snapshot) {
-  return async function () {
-    TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
-    
-    //--- Prepare to start Routine 'Despedida' ---
-    t = 0;
-    frameN = -1;
-    continueRoutine = true; // until we're told otherwise
-    // keep track of whether this Routine was forcibly ended
-    routineForceEnded = false;
-    DespedidaClock.reset();
-    routineTimer.reset();
-    DespedidaMaxDurationReached = false;
-    // update component parameters for each repeat
-    psychoJS.experiment.addData('Despedida.started', globalClock.getTime());
-    DespedidaMaxDuration = null
-    // keep track of which components have finished
-    DespedidaComponents = [];
-    DespedidaComponents.push(text_despedida);
-    
-    for (const thisComponent of DespedidaComponents)
-      if ('status' in thisComponent)
-        thisComponent.status = PsychoJS.Status.NOT_STARTED;
-    return Scheduler.Event.NEXT;
-  }
-}
-
-function DespedidaRoutineEachFrame() {
-  return async function () {
-    //--- Loop for each frame of Routine 'Despedida' ---
-    // get current time
-    t = DespedidaClock.getTime();
-    frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
-    // update/draw components on each frame
-    
-    // *text_despedida* updates
-    if (t >= 0.0 && text_despedida.status === PsychoJS.Status.NOT_STARTED) {
-      // keep track of start time/frame for later
-      text_despedida.tStart = t;  // (not accounting for frame time here)
-      text_despedida.frameNStart = frameN;  // exact frame index
-      
-      text_despedida.setAutoDraw(true);
-    }
-    
-    
-    // if text_despedida is active this frame...
-    if (text_despedida.status === PsychoJS.Status.STARTED) {
-    }
-    
-    // check for quit (typically the Esc key)
-    if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
-      return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
-    }
-    
-    // check if the Routine should terminate
-    if (!continueRoutine) {  // a component has requested a forced-end of Routine
-      routineForceEnded = true;
-      return Scheduler.Event.NEXT;
-    }
-    
-    continueRoutine = false;  // reverts to True if at least one component still running
-    for (const thisComponent of DespedidaComponents)
-      if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
-        continueRoutine = true;
-        break;
-      }
-    
-    // refresh the screen if continuing
-    if (continueRoutine) {
-      return Scheduler.Event.FLIP_REPEAT;
-    } else {
-      return Scheduler.Event.NEXT;
-    }
-  };
-}
-
-function DespedidaRoutineEnd(snapshot) {
-  return async function () {
-    //--- Ending Routine 'Despedida' ---
-    for (const thisComponent of DespedidaComponents) {
-      if (typeof thisComponent.setAutoDraw === 'function') {
-        thisComponent.setAutoDraw(false);
-      }
-    }
-    psychoJS.experiment.addData('Despedida.stopped', globalClock.getTime());
-    // 1. Nombre de archivo (seguro)
-    var filename = expInfo['legajo'] + "_" + expInfo['date'] + ".csv";
-    
-    // 2. Preparar datos
-    var dataContent = psychoJS.experiment._trialsData;
-    var dataJSON = JSON.stringify(dataContent);
-    
-    // 3. Enviar a DataPipe
-    // Fíjate bien en los cierres al final: }) y );
-    fetch("https://pipe.jspsych.org/api/data/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*"
-        },
-        body: JSON.stringify({
-            experimentID: dataPipeID,
-            filename: filename,
-            data: dataJSON
-        })
-    }).then(function(response) {
-        console.log("Datos enviados:", response.status);
-    }).catch(function(error) {
-        console.log("Error:", error);
-    });
-    
-    // FIN DEL CÓDIGO DEL USUARIO
-    // (Al estar todo cerrado aquí, el código automático de abajo correrá bien)
-    // the Routine "Despedida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
     // Routines running outside a loop should always advance the datafile row
