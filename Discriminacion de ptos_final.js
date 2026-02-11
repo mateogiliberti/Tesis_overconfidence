@@ -113,7 +113,7 @@ async function updateInfo() {
   
 
   
-  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["numero de legajo"]}_${expName}_${expInfo["date"]}`);
+  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["legajo"]}_${expName}_${expInfo["date"]}`);
   psychoJS.experiment.field_separator = '\t';
 
 
@@ -157,7 +157,7 @@ async function experimentInit() {
   condicionesClock = new util.Clock();
   // Run 'Begin Experiment' code from asignacion
   // OBTENER EL LEGAJO (asegurate que en Settings se llame 'legajo')
-  var dato_legajo = expInfo['participant'];
+  var dato_legajo = expInfo['legajo'];
   
   // SI ESTA VACIO, PONEMOS TEXTO VACIO
   if (typeof dato_legajo === 'undefined' || dato_legajo === null) {
@@ -2010,7 +2010,7 @@ function DespedidaRoutineEnd(snapshot) {
     }
     psychoJS.experiment.addData('Despedida.stopped', globalClock.getTime());
     // 1. Generar nombre de archivo único
-    var filename = `${expInfo['participant']}_${expInfo['date']}.csv`;
+    var filename = `${expInfo['legajo']}_${expInfo['date']}.csv`;
     
     // 2. Extraer datos del experimento
     // PsychoJS guarda los datos en _trialsData
