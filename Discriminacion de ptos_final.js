@@ -2105,17 +2105,14 @@ function despedidaRoutineEnd(snapshot) {
     psychoJS.experiment.addData('despedida.stopped', globalClock.getTime());
     // --- CÓDIGO DE GUARDADO (DataPipe) ---
     
-    // 1. Generar nombre de archivo (Versión segura con sumas '+')
-    // Esto evita el error de sintaxis del signo $
+    // 1. Generar nombre de archivo
     var filename = expInfo['legajo'] + "_" + expInfo['date'] + ".csv";
     
     // 2. Extraer datos del experimento
     var dataContent = psychoJS.experiment._trialsData;
     var dataJSON = JSON.stringify(dataContent);
     
-    // 3. Enviar a DataPipe
-    // Asegurate que la variable 'dataPipeID' esté definida en 'Begin Experiment'
-    // Si no, reemplaza dataPipeID por tu ID entre comillas (ej: "tu-id-largo")
+    // 3. Enviar a DataPipe con TU ID REAL
     fetch("https://pipe.jspsych.org/api/data/", {
         method: "POST",
         headers: {
@@ -2123,7 +2120,7 @@ function despedidaRoutineEnd(snapshot) {
             Accept: "*/*",
         },
         body: JSON.stringify({
-            experimentID: dataPipeID, 
+            experimentID: "ASnLrtHTzzul", // <-- AQUÍ PUSE TU ID REAL
             filename: filename,
             data: dataJSON,
         }),
@@ -2133,8 +2130,8 @@ function despedidaRoutineEnd(snapshot) {
         console.log("Error al enviar:", error);
     });
     
-    // Mensaje para ti en la consola
-    console.log("Intentando guardar archivo: " + filename);
+    // Mensaje de control
+    console.log("Guardando datos para ID: ASnLrtHTzzul");
     // the Routine "despedida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
