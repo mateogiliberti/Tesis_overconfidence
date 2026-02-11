@@ -74,6 +74,9 @@ flowScheduler.add(fase_testeoLoopEnd);
 
 
 
+flowScheduler.add(despedidaRoutineBegin());
+flowScheduler.add(despedidaRoutineEachFrame());
+flowScheduler.add(despedidaRoutineEnd());
 flowScheduler.add(quitPsychoJS, 'Thank you for your patience.', true);
 
 // quit if user presses Cancel in dialog box:
@@ -141,16 +144,11 @@ var Instrucciones_testeoClock;
 var testeo_instrucciones;
 var Key_instrucciones_test;
 var trial_testeoClock;
-var nDots;
-var stimDuration;
-var cloudRadius;
-var dotSize;
-var difficulties;
-var dot_stim;
 var resp_testeo;
 var EscalaOCClock;
 var Escala_confianza;
 var key_conf;
+var despedidaClock;
 var globalClock;
 var routineTimer;
 async function experimentInit() {
@@ -362,21 +360,6 @@ async function experimentInit() {
   
   // Initialize components for Routine "trial_testeo"
   trial_testeoClock = new util.Clock();
-  // Parámetros generales (Asegúrate que coincidan con los que usas en Python)
-  nDots = 80;  // O el número que estés usando
-  stimDuration = 0.2; // 200ms
-  cloudRadius = 0.30;
-  dotSize = 0.015;
-  
-  // Diccionario de dificultades (Copia esto si no es global ya)
-  difficulties = {
-      'Easy': [61, 62, 63, 64, 65],
-      'Average': [51, 52, 53, 54, 55],
-      'Difficult': [41, 42, 43, 44, 45]
-  };
-  
-  // Inicializamos la variable del estímulo vacía
-  dot_stim = undefined;
   resp_testeo = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
   // Initialize components for Routine "EscalaOC"
@@ -395,6 +378,8 @@ async function experimentInit() {
   
   key_conf = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
+  // Initialize components for Routine "despedida"
+  despedidaClock = new util.Clock();
   // Create some handy timers
   globalClock = new util.Clock();  // to track the time since experiment started
   routineTimer = new util.CountdownTimer();  // to track time remaining of each (non-slip) routine
@@ -1581,19 +1566,17 @@ function trial_testeoRoutineBegin(snapshot) {
     trial_testeoMaxDurationReached = false;
     // update component parameters for each repeat
     // Run 'Begin Routine' code from trial_testeo
-    // --- 1. SELECCIÓN DE DIFICULTAD Y COLOR ---
+    // FASE 2: RECICLAJE DE PUNTOS ---
     
-    // Elegir dificultad
-    var diff_keys = Object.keys(difficulties);
+    // 1. SELECCIÓN DE DIFICULTAD Y COLOR (Igual que antes)
+    var diff_keys = Object.keys(window.difficulties);
     util.shuffle(diff_keys);
     var difficulty = diff_keys[0];
     
-    // Elegir cantidad dominante
-    var possible_counts = difficulties[difficulty];
+    var possible_counts = window.difficulties[difficulty];
     util.shuffle(possible_counts);
     var dominant_count = possible_counts[0];
     
-    // Elegir color dominante
     var possible_colors = ['Red', 'Blue'];
     util.shuffle(possible_colors);
     var dominant_color = possible_colors[0];
@@ -1603,31 +1586,31 @@ function trial_testeoRoutineBegin(snapshot) {
     
     if (dominant_color === 'Red') {
         red_dots = dominant_count;
-        blue_dots = nDots - dominant_count;
+        blue_dots = window.nDots - dominant_count;
         correctAns = 'n'; 
     } else {
         blue_dots = dominant_count;
-        red_dots = nDots - dominant_count;
+        red_dots = window.nDots - dominant_count;
         correctAns = 'c'; 
     }
     
-    // --- 2. GENERACIÓN DE PUNTOS (Matemática) ---
+    // 2. ACTUALIZACIÓN DE LOS PUNTOS EXISTENTES
+    // No creamos 'ElementArrayStim' porque rompe la web.
+    // Usamos los puntos individuales (window.myDots) que creamos en la Etapa 1.
     
-    var temp_dots = [];
-    // Usamos util.Color para que PsychoPy maneje bien los colores en la web
     var RED_C = new util.Color('red');
     var BLUE_C = new util.Color('blue');
     
-    for (var i = 0; i < nDots; i++) {
-        // Generar coordenadas polares aleatorias
+    for (var i = 0; i < window.nDots; i++) {
+        // A. Matemática: Generar nuevas coordenadas polares
         var theta = Math.random() * 2 * Math.PI;
-        var r_val = cloudRadius * Math.sqrt(Math.random());
+        var r_val = window.cloudRadius * Math.sqrt(Math.random());
         
         // Convertir a cartesianas (X, Y)
         var x = r_val * Math.cos(theta);
         var y = r_val * Math.sin(theta);
         
-        // Asignar color
+        // B. Color: Decidir color de este punto
         var this_color;
         if (i < red_dots) {
             this_color = RED_C;
@@ -1635,41 +1618,25 @@ function trial_testeoRoutineBegin(snapshot) {
             this_color = BLUE_C;
         }
         
-        // Guardamos posición y color en un objeto temporal
-        temp_dots.push({ pos: [x, y], col: this_color });
+        // C. Aplicar cambios a los puntos GLOBALES
+        // Verificamos que el punto exista (debería, porque viene de la etapa 1)
+        if (window.myDots[i]) {
+            window.myDots[i].setPos([x, y]);
+            window.myDots[i].setFillColor(this_color);
+            window.myDots[i].setLineColor(this_color);
+            
+            // ¡CRUCIAL! Aseguramos que NO se dibujen solos (autoDraw false)
+            window.myDots[i].setAutoDraw(false); 
+        }
     }
     
-    // --- 3. MEZCLAR Y SEPARAR ---
-    // Esto reemplaza a "np.random.permutation"
-    util.shuffle(temp_dots);
-    
-    var dot_xys = [];
-    var dot_colors = [];
-    
-    for (var i = 0; i < nDots; i++) {
-        dot_xys.push(temp_dots[i].pos);
-        dot_colors.push(temp_dots[i].col);
-    }
-    
-    // --- 4. CREAR EL ESTÍMULO VISUAL ---
-    // Recreamos el objeto en cada trial con las nuevas posiciones
-    dot_stim = new visual.ElementArrayStim({
-        win: psychoJS.window,
-        nElements: nDots,
-        sizes: [dotSize, dotSize],
-        xys: dot_xys,
-        colors: dot_colors,
-        elementMask: 'circle',
-        units: 'height',
-        autoLog: false
-    });
-    
-    // --- 5. LOGUEO DE DATOS ---
+    // 3. LOGUEO DE DATOS
     psychoJS.experiment.addData('difficulty', difficulty);
     psychoJS.experiment.addData('dominant_color', dominant_color);
     psychoJS.experiment.addData('dominant_count', dominant_count);
+    psychoJS.experiment.addData('correctAns', correctAns); // Importante para saber si acertó
     
-    // Intentamos guardar el grupo si existe la variable global
+    // Guardamos grupo por si acaso
     if (typeof window.group !== 'undefined') {
         psychoJS.experiment.addData('group', window.group);
     }
@@ -1698,10 +1665,28 @@ function trial_testeoRoutineEachFrame() {
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
     // Run 'Each Frame' code from trial_testeo
-    // Dibujar solo si el tiempo es menor a la duración
-    if (t < stimDuration) {
-        if (typeof dot_stim !== 'undefined') {
-            dot_stim.draw();
+    // Definimos el límite de tiempo
+    var timeLimit = window.stimDuration; // 0.2s
+    
+    if (t < timeLimit) {
+        // --- FASE 1: MOSTRAR ESTÍMULO (0 a 200ms) ---
+        for (var i = 0; i < window.nDots; i++) {
+            if (window.myDots[i]) {
+                // Usamos .draw() para dibujar frame por frame
+                window.myDots[i].draw();
+            }
+        }
+    } else {
+        // --- FASE 2: PANTALLA GRIS (200ms en adelante) ---
+        // El tiempo pasó, así que NO llamamos a .draw().
+        
+        // MEDIDA DE SEGURIDAD:
+        // Forzamos el apagado por si alguno quedó con 'autoDraw' activado accidentalmente.
+        // Esto garantiza que desaparezcan visualmente.
+        for (var i = 0; i < window.nDots; i++) {
+            if (window.myDots[i]) {
+                window.myDots[i].setAutoDraw(false);
+            }
         }
     }
     
@@ -2007,6 +1992,124 @@ function EscalaOCRoutineEnd(snapshot) {
     
     key_conf.stop();
     // the Routine "EscalaOC" was not non-slip safe, so reset the non-slip timer
+    routineTimer.reset();
+    
+    // Routines running outside a loop should always advance the datafile row
+    if (currentLoop === psychoJS.experiment) {
+      psychoJS.experiment.nextEntry(snapshot);
+    }
+    return Scheduler.Event.NEXT;
+  }
+}
+
+
+var despedidaMaxDurationReached;
+var despedidaMaxDuration;
+var despedidaComponents;
+function despedidaRoutineBegin(snapshot) {
+  return async function () {
+    TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
+    
+    //--- Prepare to start Routine 'despedida' ---
+    t = 0;
+    frameN = -1;
+    continueRoutine = true; // until we're told otherwise
+    // keep track of whether this Routine was forcibly ended
+    routineForceEnded = false;
+    despedidaClock.reset();
+    routineTimer.reset();
+    despedidaMaxDurationReached = false;
+    // update component parameters for each repeat
+    psychoJS.experiment.addData('despedida.started', globalClock.getTime());
+    despedidaMaxDuration = null
+    // keep track of which components have finished
+    despedidaComponents = [];
+    
+    for (const thisComponent of despedidaComponents)
+      if ('status' in thisComponent)
+        thisComponent.status = PsychoJS.Status.NOT_STARTED;
+    return Scheduler.Event.NEXT;
+  }
+}
+
+
+function despedidaRoutineEachFrame() {
+  return async function () {
+    //--- Loop for each frame of Routine 'despedida' ---
+    // get current time
+    t = despedidaClock.getTime();
+    frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    // update/draw components on each frame
+    // check for quit (typically the Esc key)
+    if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
+      return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
+    }
+    
+    // check if the Routine should terminate
+    if (!continueRoutine) {  // a component has requested a forced-end of Routine
+      routineForceEnded = true;
+      return Scheduler.Event.NEXT;
+    }
+    
+    continueRoutine = false;  // reverts to True if at least one component still running
+    for (const thisComponent of despedidaComponents)
+      if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
+        continueRoutine = true;
+        break;
+      }
+    
+    // refresh the screen if continuing
+    if (continueRoutine) {
+      return Scheduler.Event.FLIP_REPEAT;
+    } else {
+      return Scheduler.Event.NEXT;
+    }
+  };
+}
+
+
+function despedidaRoutineEnd(snapshot) {
+  return async function () {
+    //--- Ending Routine 'despedida' ---
+    for (const thisComponent of despedidaComponents) {
+      if (typeof thisComponent.setAutoDraw === 'function') {
+        thisComponent.setAutoDraw(false);
+      }
+    }
+    psychoJS.experiment.addData('despedida.stopped', globalClock.getTime());
+    // --- CÓDIGO DE GUARDADO (DataPipe) ---
+    
+    // 1. Generar nombre de archivo (Versión segura con sumas '+')
+    // Esto evita el error de sintaxis del signo $
+    var filename = expInfo['legajo'] + "_" + expInfo['date'] + ".csv";
+    
+    // 2. Extraer datos del experimento
+    var dataContent = psychoJS.experiment._trialsData;
+    var dataJSON = JSON.stringify(dataContent);
+    
+    // 3. Enviar a DataPipe
+    // Asegurate que la variable 'dataPipeID' esté definida en 'Begin Experiment'
+    // Si no, reemplaza dataPipeID por tu ID entre comillas (ej: "tu-id-largo")
+    fetch("https://pipe.jspsych.org/api/data/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+        },
+        body: JSON.stringify({
+            experimentID: dataPipeID, 
+            filename: filename,
+            data: dataJSON,
+        }),
+    }).then(function(response) {
+        console.log("Datos enviados. Status:", response.status);
+    }).catch(function(error) {
+        console.log("Error al enviar:", error);
+    });
+    
+    // Mensaje para ti en la consola
+    console.log("Intentando guardar archivo: " + filename);
+    // the Routine "despedida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
     // Routines running outside a loop should always advance the datafile row

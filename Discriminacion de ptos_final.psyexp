@@ -241,6 +241,51 @@
         <Param val="asignacion" valType="code" updates="None" name="name"/>
       </CodeComponent>
     </Routine>
+    <Routine name="rutina_fix">
+      <RoutineSettingsComponent name="rutina_fix" plugin="None">
+        <Param val="none" valType="str" updates="None" name="backgroundFit"/>
+        <Param val="" valType="str" updates="None" name="backgroundImg"/>
+        <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
+        <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
+        <Param val="" valType="str" updates="constant" name="desc"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
+        <Param val="rutina_fix" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="constant" name="skipIf"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
+      </RoutineSettingsComponent>
+      <TextComponent name="stim_cruz" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Arial" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="stim_cruz" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="0.5" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="+" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+    </Routine>
     <Routine name="trial_prueba">
       <RoutineSettingsComponent name="trial_prueba" plugin="None">
         <Param val="none" valType="str" updates="None" name="backgroundFit"/>
@@ -295,8 +340,8 @@
         <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
       </KeyboardComponent>
     </Routine>
-    <Routine name="trial_testeo">
-      <RoutineSettingsComponent name="trial_testeo" plugin="None">
+    <Routine name="feedback">
+      <RoutineSettingsComponent name="feedback" plugin="None">
         <Param val="none" valType="str" updates="None" name="backgroundFit"/>
         <Param val="" valType="str" updates="None" name="backgroundImg"/>
         <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
@@ -305,49 +350,57 @@
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
         <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
-        <Param val="trial_testeo" valType="code" updates="None" name="name"/>
+        <Param val="feedback" valType="code" updates="None" name="name"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="constant" name="skipIf"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="" valType="code" updates="constant" name="stopVal"/>
         <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
       </RoutineSettingsComponent>
-      <CodeComponent name="trial_testeo" plugin="None">
+      <CodeComponent name="feedback_prueba" plugin="None">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="// Parámetros generales (Asegúrate que coincidan con los que usas en Python)&amp;#10;nDots = 80;  // O el número que estés usando&amp;#10;stimDuration = 0.2; // 200ms&amp;#10;cloudRadius = 0.30;&amp;#10;dotSize = 0.015;&amp;#10;&amp;#10;// Diccionario de dificultades (Copia esto si no es global ya)&amp;#10;difficulties = {&amp;#10;    'Easy': [61, 62, 63, 64, 65],&amp;#10;    'Average': [51, 52, 53, 54, 55],&amp;#10;    'Difficult': [41, 42, 43, 44, 45]&amp;#10;};&amp;#10;&amp;#10;// Inicializamos la variable del estímulo vacía&amp;#10;dot_stim = undefined;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="// --- 1. SELECCIÓN DE DIFICULTAD Y COLOR ---&amp;#10;&amp;#10;// Elegir dificultad&amp;#10;var diff_keys = Object.keys(difficulties);&amp;#10;util.shuffle(diff_keys);&amp;#10;var difficulty = diff_keys[0];&amp;#10;&amp;#10;// Elegir cantidad dominante&amp;#10;var possible_counts = difficulties[difficulty];&amp;#10;util.shuffle(possible_counts);&amp;#10;var dominant_count = possible_counts[0];&amp;#10;&amp;#10;// Elegir color dominante&amp;#10;var possible_colors = ['Red', 'Blue'];&amp;#10;util.shuffle(possible_colors);&amp;#10;var dominant_color = possible_colors[0];&amp;#10;&amp;#10;// Definir contadores y respuesta correcta&amp;#10;var red_dots, blue_dots, correctAns;&amp;#10;&amp;#10;if (dominant_color === 'Red') {&amp;#10;    red_dots = dominant_count;&amp;#10;    blue_dots = nDots - dominant_count;&amp;#10;    correctAns = 'n'; &amp;#10;} else {&amp;#10;    blue_dots = dominant_count;&amp;#10;    red_dots = nDots - dominant_count;&amp;#10;    correctAns = 'c'; &amp;#10;}&amp;#10;&amp;#10;// --- 2. GENERACIÓN DE PUNTOS (Matemática) ---&amp;#10;&amp;#10;var temp_dots = [];&amp;#10;// Usamos util.Color para que PsychoPy maneje bien los colores en la web&amp;#10;var RED_C = new util.Color('red');&amp;#10;var BLUE_C = new util.Color('blue');&amp;#10;&amp;#10;for (var i = 0; i &lt; nDots; i++) {&amp;#10;    // Generar coordenadas polares aleatorias&amp;#10;    var theta = Math.random() * 2 * Math.PI;&amp;#10;    var r_val = cloudRadius * Math.sqrt(Math.random());&amp;#10;    &amp;#10;    // Convertir a cartesianas (X, Y)&amp;#10;    var x = r_val * Math.cos(theta);&amp;#10;    var y = r_val * Math.sin(theta);&amp;#10;    &amp;#10;    // Asignar color&amp;#10;    var this_color;&amp;#10;    if (i &lt; red_dots) {&amp;#10;        this_color = RED_C;&amp;#10;    } else {&amp;#10;        this_color = BLUE_C;&amp;#10;    }&amp;#10;    &amp;#10;    // Guardamos posición y color en un objeto temporal&amp;#10;    temp_dots.push({ pos: [x, y], col: this_color });&amp;#10;}&amp;#10;&amp;#10;// --- 3. MEZCLAR Y SEPARAR ---&amp;#10;// Esto reemplaza a &quot;np.random.permutation&quot;&amp;#10;util.shuffle(temp_dots);&amp;#10;&amp;#10;var dot_xys = [];&amp;#10;var dot_colors = [];&amp;#10;&amp;#10;for (var i = 0; i &lt; nDots; i++) {&amp;#10;    dot_xys.push(temp_dots[i].pos);&amp;#10;    dot_colors.push(temp_dots[i].col);&amp;#10;}&amp;#10;&amp;#10;// --- 4. CREAR EL ESTÍMULO VISUAL ---&amp;#10;// Recreamos el objeto en cada trial con las nuevas posiciones&amp;#10;dot_stim = new visual.ElementArrayStim({&amp;#10;    win: psychoJS.window,&amp;#10;    nElements: nDots,&amp;#10;    sizes: [dotSize, dotSize],&amp;#10;    xys: dot_xys,&amp;#10;    colors: dot_colors,&amp;#10;    elementMask: 'circle',&amp;#10;    units: 'height',&amp;#10;    autoLog: false&amp;#10;});&amp;#10;&amp;#10;// --- 5. LOGUEO DE DATOS ---&amp;#10;psychoJS.experiment.addData('difficulty', difficulty);&amp;#10;psychoJS.experiment.addData('dominant_color', dominant_color);&amp;#10;psychoJS.experiment.addData('dominant_count', dominant_count);&amp;#10;&amp;#10;// Intentamos guardar el grupo si existe la variable global&amp;#10;if (typeof window.group !== 'undefined') {&amp;#10;    psychoJS.experiment.addData('group', window.group);&amp;#10;}" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="# Elegir dificultad y cantidad dominante&amp;#10;difficulty = random.choice(list(difficulties.keys()))&amp;#10;dominant_count = random.choice(difficulties[difficulty])&amp;#10;&amp;#10;# Elegir color dominante&amp;#10;dominant_color = random.choice(['Red', 'Blue'])&amp;#10;&amp;#10;# Conteos y respuesta correcta&amp;#10;if dominant_color == 'Red':&amp;#10;    red_dots = dominant_count&amp;#10;    blue_dots = nDots - dominant_count&amp;#10;    correctAns = 'n'&amp;#10;else:&amp;#10;    blue_dots = dominant_count&amp;#10;    red_dots = nDots - dominant_count&amp;#10;    correctAns = 'c'&amp;#10;&amp;#10;# Posiciones en círculo&amp;#10;theta = np.random.rand(nDots) * 2 * np.pi&amp;#10;r = cloudRadius * np.sqrt(np.random.rand(nDots))&amp;#10;xys = np.column_stack([r * np.cos(theta), r * np.sin(theta)])&amp;#10;&amp;#10;# Colores por elemento&amp;#10;colors_array = np.zeros((nDots, 3), dtype=float)&amp;#10;colors_array[:red_dots, :] = RED&amp;#10;colors_array[red_dots:, :] = BLUE&amp;#10;&amp;#10;# Mezclar&amp;#10;perm = np.random.permutation(nDots)&amp;#10;xys = xys[perm]&amp;#10;colors_array = colors_array[perm]&amp;#10;&amp;#10;# Estímulo (usa visual global de Builder)&amp;#10;dot_stim = visual.ElementArrayStim(&amp;#10;    win,&amp;#10;    nElements=nDots,&amp;#10;    xys=xys,&amp;#10;    elementTex=None,&amp;#10;    elementMask='circle',&amp;#10;    sizes=dotSize,&amp;#10;    colors=colors_array,&amp;#10;    colorSpace='rgb255'&amp;#10;)&amp;#10;&amp;#10;# Log&amp;#10;thisExp.addData('difficulty', difficulty)&amp;#10;thisExp.addData('dominant_color', dominant_color)&amp;#10;thisExp.addData('dominant_count', dominant_count)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="// Definimos las constantes aquí para evitar errores&amp;#10;window.blockSize = 24;    // Tamaño del bloque&amp;#10;window.feedbackText = &quot;&quot;; // Texto vacío al inicio&amp;#10;&amp;#10;// Creamos el reloj manualmente para evitar el ReferenceError&amp;#10;window.FeedbackClock = new util.Clock();" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="// Obtenemos el número de ensayo actual&amp;#10;var trialNumber = fase_prueba.thisN + 1;&amp;#10;&amp;#10;// Usamos window.blockSize para asegurar que la variable global existe&amp;#10;var limit = (typeof window.blockSize !== 'undefined') ? window.blockSize : 24; &amp;#10;&amp;#10;if ((trialNumber % limit) === 0) {&amp;#10;    &amp;#10;    // Inicializamos variables&amp;#10;    var performance_score = 0;&amp;#10;    var current_group = (typeof window.group !== 'undefined') ? window.group : 'Control';&amp;#10;    &amp;#10;    // Lógica del puntaje&amp;#10;    if (current_group === 'Experimental') {&amp;#10;        // Random entre 70 y 95&amp;#10;        performance_score = Math.floor(Math.random() * (95 - 70 + 1)) + 70;&amp;#10;        // CORREGIDO: Usamos concatenación (+) para que se vea el número sí o sí&amp;#10;        feedbackText = 'Has alcanzado un desempeño equivalente a los mejores del grupo: ' + performance_score + '%.';&amp;#10;    } else {&amp;#10;        // Random entre 37 y 62&amp;#10;        performance_score = Math.floor(Math.random() * (62 - 37 + 1)) + 37;&amp;#10;        // CORREGIDO: Usamos concatenación (+)&amp;#10;        feedbackText = 'Tu rendimiento se ubica en un rango intermedio del grupo: ' + performance_score + '%.';&amp;#10;    }&amp;#10;&amp;#10;    // --- ACTUALIZACIÓN VISUAL ---&amp;#10;    // NOTA: En tu archivo anterior el componente se llamaba 'Feedback'. &amp;#10;    // Si le cambiaste el nombre, ajusta la palabra 'Feedback' aquí abajo.&amp;#10;    if (typeof Feedback !== 'undefined') {&amp;#10;        Feedback.setText(feedbackText);&amp;#10;    }&amp;#10;    &amp;#10;    // Guardar datos&amp;#10;    psychoJS.experiment.addData('block_end_trial', trialNumber);&amp;#10;    psychoJS.experiment.addData('feedback_group', current_group);&amp;#10;    psychoJS.experiment.addData('feedback_score_shown', performance_score);&amp;#10;    &amp;#10;    continueRoutine = true;&amp;#10;&amp;#10;} else {&amp;#10;    // Si no es fin de bloque, saltar&amp;#10;    continueRoutine = false;&amp;#10;}" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="# Mostrar feedback SOLO al final de cada bloque de 24 ensayos&amp;#10;trialNumber = fase_prueba.thisN + 1  # thisN es 0-indexado&amp;#10;if trialNumber % blockSize == 0:&amp;#10;    # Generar puntaje sesgado según el grupo&amp;#10;    if group == 'Experimental':&amp;#10;        performance_score = random.randint(70, 95)&amp;#10;        feedbackText = f'Has alcanzado un desempeño equivalente a los mejores del grupo: {performance_score}%.'&amp;#10;    else:&amp;#10;        performance_score = random.randint(37, 62)&amp;#10;        feedbackText = f'Tu rendimiento se ubica en un rango intermedio del grupo: {performance_score}%.'&amp;#10;    # Registrar el feedback mostrado (opcional)&amp;#10;    thisExp.addData('block_end_trial', trialNumber)&amp;#10;    thisExp.addData('feedback_group', group)&amp;#10;    thisExp.addData('feedback_score_shown', performance_score)&amp;#10;else:&amp;#10;    # Si no es fin de bloque, saltar esta rutina&amp;#10;    continueRoutine = False" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Both" valType="str" updates="None" name="Code Type"/>
-        <Param val="if t &lt; stimDuration:&amp;#10;    dot_stim.draw()" valType="extendedCode" updates="constant" name="Each Frame"/>
-        <Param val="// Dibujar solo si el tiempo es menor a la duración&amp;#10;if (t &lt; stimDuration) {&amp;#10;    if (typeof dot_stim !== 'undefined') {&amp;#10;        dot_stim.draw();&amp;#10;    }&amp;#10;}" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="// Si la rutina está activa (no la saltamos), contar el tiempo&amp;#10;if (t &gt; 3.0) {&amp;#10;    continueRoutine = false; // Terminar después de 3 segundos&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
-        <Param val="psychoJS.experiment.addData('correctAns', correctAns);&amp;#10;&amp;#10;// Registramos el número de trial. &amp;#10;// NOTA: Asegurate que 'fase_testeo' sea el nombre REAL de tu loop en el Builder.&amp;#10;psychoJS.experiment.addData('trial2Number', fase_testeo.thisN + 1);" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="thisExp.addData('correctAns', correctAns)&amp;#10;thisExp.addData('trial2Number', fase_testeo.thisN + 1)" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="trial_testeo" valType="code" updates="None" name="name"/>
+        <Param val="feedback_prueba" valType="code" updates="None" name="name"/>
       </CodeComponent>
-      <KeyboardComponent name="resp_testeo" plugin="None">
-        <Param val="'c','n'" valType="list" updates="set every repeat" name="allowedKeys"/>
-        <Param val="correctAns" valType="str" updates="constant" name="correctAns"/>
+      <TextComponent name="Feedback" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="True" valType="bool" updates="constant" name="discard previous"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
-        <Param val="True" valType="bool" updates="constant" name="forceEndRoutine"/>
-        <Param val="resp_testeo" valType="code" updates="None" name="name"/>
-        <Param val="press" valType="str" updates="constant" name="registerOn"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Arial" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="Feedback" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
-        <Param val="0.2" valType="code" updates="None" name="startVal"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="" valType="code" updates="constant" name="stopVal"/>
-        <Param val="last key" valType="str" updates="constant" name="store"/>
-        <Param val="True" valType="bool" updates="constant" name="storeCorrect"/>
-        <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
-      </KeyboardComponent>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="$feedbackText&amp;#10;" valType="str" updates="set every repeat" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
     </Routine>
     <Routine name="Instrucciones_testeo">
       <RoutineSettingsComponent name="Instrucciones_testeo" plugin="None">
@@ -413,8 +466,8 @@
         <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
       </KeyboardComponent>
     </Routine>
-    <Routine name="rutina_fix">
-      <RoutineSettingsComponent name="rutina_fix" plugin="None">
+    <Routine name="trial_testeo">
+      <RoutineSettingsComponent name="trial_testeo" plugin="None">
         <Param val="none" valType="str" updates="None" name="backgroundFit"/>
         <Param val="" valType="str" updates="None" name="backgroundImg"/>
         <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
@@ -423,102 +476,49 @@
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
         <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
-        <Param val="rutina_fix" valType="code" updates="None" name="name"/>
+        <Param val="trial_testeo" valType="code" updates="None" name="name"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="constant" name="skipIf"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="" valType="code" updates="constant" name="stopVal"/>
         <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
       </RoutineSettingsComponent>
-      <TextComponent name="stim_cruz" plugin="None">
-        <Param val="white" valType="color" updates="constant" name="color"/>
-        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
-        <Param val="1" valType="num" updates="constant" name="contrast"/>
-        <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="False" valType="code" updates="constant" name="draggable"/>
-        <Param val="" valType="code" updates="None" name="durationEstim"/>
-        <Param val="None" valType="str" updates="constant" name="flip"/>
-        <Param val="Arial" valType="str" updates="constant" name="font"/>
-        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
-        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
-        <Param val="stim_cruz" valType="code" updates="None" name="name"/>
-        <Param val="" valType="num" updates="constant" name="opacity"/>
-        <Param val="0" valType="num" updates="constant" name="ori"/>
-        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
-        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="" valType="code" updates="None" name="startEstim"/>
-        <Param val="time (s)" valType="str" updates="None" name="startType"/>
-        <Param val="0.0" valType="code" updates="None" name="startVal"/>
-        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="0.5" valType="code" updates="constant" name="stopVal"/>
-        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
-        <Param val="+" valType="str" updates="constant" name="text"/>
-        <Param val="from exp settings" valType="str" updates="None" name="units"/>
-        <Param val="" valType="code" updates="None" name="validator"/>
-        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
-      </TextComponent>
-    </Routine>
-    <Routine name="feedback">
-      <RoutineSettingsComponent name="feedback" plugin="None">
-        <Param val="none" valType="str" updates="None" name="backgroundFit"/>
-        <Param val="" valType="str" updates="None" name="backgroundImg"/>
-        <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
-        <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
-        <Param val="" valType="str" updates="constant" name="desc"/>
-        <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="" valType="code" updates="None" name="durationEstim"/>
-        <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
-        <Param val="feedback" valType="code" updates="None" name="name"/>
-        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="" valType="code" updates="constant" name="skipIf"/>
-        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="" valType="code" updates="constant" name="stopVal"/>
-        <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
-      </RoutineSettingsComponent>
-      <CodeComponent name="feedback_prueba" plugin="None">
+      <CodeComponent name="trial_testeo" plugin="None">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="// Definimos las constantes aquí para evitar errores&amp;#10;window.blockSize = 24;    // Tamaño del bloque&amp;#10;window.feedbackText = &quot;&quot;; // Texto vacío al inicio&amp;#10;&amp;#10;// Creamos el reloj manualmente para evitar el ReferenceError&amp;#10;window.FeedbackClock = new util.Clock();" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="// Obtenemos el número de ensayo actual&amp;#10;var trialNumber = fase_prueba.thisN + 1;&amp;#10;&amp;#10;// Usamos window.blockSize para asegurar que la variable global existe&amp;#10;var limit = (typeof window.blockSize !== 'undefined') ? window.blockSize : 24; &amp;#10;&amp;#10;if ((trialNumber % limit) === 0) {&amp;#10;    &amp;#10;    // Inicializamos variables&amp;#10;    var performance_score = 0;&amp;#10;    var current_group = (typeof window.group !== 'undefined') ? window.group : 'Control';&amp;#10;    &amp;#10;    // Lógica del puntaje&amp;#10;    if (current_group === 'Experimental') {&amp;#10;        // Random entre 70 y 95&amp;#10;        performance_score = Math.floor(Math.random() * (95 - 70 + 1)) + 70;&amp;#10;        // CORREGIDO: Usamos concatenación (+) para que se vea el número sí o sí&amp;#10;        feedbackText = 'Has alcanzado un desempeño equivalente a los mejores del grupo: ' + performance_score + '%.';&amp;#10;    } else {&amp;#10;        // Random entre 37 y 62&amp;#10;        performance_score = Math.floor(Math.random() * (62 - 37 + 1)) + 37;&amp;#10;        // CORREGIDO: Usamos concatenación (+)&amp;#10;        feedbackText = 'Tu rendimiento se ubica en un rango intermedio del grupo: ' + performance_score + '%.';&amp;#10;    }&amp;#10;&amp;#10;    // --- ACTUALIZACIÓN VISUAL ---&amp;#10;    // NOTA: En tu archivo anterior el componente se llamaba 'Feedback'. &amp;#10;    // Si le cambiaste el nombre, ajusta la palabra 'Feedback' aquí abajo.&amp;#10;    if (typeof Feedback !== 'undefined') {&amp;#10;        Feedback.setText(feedbackText);&amp;#10;    }&amp;#10;    &amp;#10;    // Guardar datos&amp;#10;    psychoJS.experiment.addData('block_end_trial', trialNumber);&amp;#10;    psychoJS.experiment.addData('feedback_group', current_group);&amp;#10;    psychoJS.experiment.addData('feedback_score_shown', performance_score);&amp;#10;    &amp;#10;    continueRoutine = true;&amp;#10;&amp;#10;} else {&amp;#10;    // Si no es fin de bloque, saltar&amp;#10;    continueRoutine = false;&amp;#10;}" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="# Mostrar feedback SOLO al final de cada bloque de 24 ensayos&amp;#10;trialNumber = fase_prueba.thisN + 1  # thisN es 0-indexado&amp;#10;if trialNumber % blockSize == 0:&amp;#10;    # Generar puntaje sesgado según el grupo&amp;#10;    if group == 'Experimental':&amp;#10;        performance_score = random.randint(70, 95)&amp;#10;        feedbackText = f'Has alcanzado un desempeño equivalente a los mejores del grupo: {performance_score}%.'&amp;#10;    else:&amp;#10;        performance_score = random.randint(37, 62)&amp;#10;        feedbackText = f'Tu rendimiento se ubica en un rango intermedio del grupo: {performance_score}%.'&amp;#10;    # Registrar el feedback mostrado (opcional)&amp;#10;    thisExp.addData('block_end_trial', trialNumber)&amp;#10;    thisExp.addData('feedback_group', group)&amp;#10;    thisExp.addData('feedback_score_shown', performance_score)&amp;#10;else:&amp;#10;    # Si no es fin de bloque, saltar esta rutina&amp;#10;    continueRoutine = False" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="// FASE 2: RECICLAJE DE PUNTOS ---&amp;#10;&amp;#10;// 1. SELECCIÓN DE DIFICULTAD Y COLOR (Igual que antes)&amp;#10;var diff_keys = Object.keys(window.difficulties);&amp;#10;util.shuffle(diff_keys);&amp;#10;var difficulty = diff_keys[0];&amp;#10;&amp;#10;var possible_counts = window.difficulties[difficulty];&amp;#10;util.shuffle(possible_counts);&amp;#10;var dominant_count = possible_counts[0];&amp;#10;&amp;#10;var possible_colors = ['Red', 'Blue'];&amp;#10;util.shuffle(possible_colors);&amp;#10;var dominant_color = possible_colors[0];&amp;#10;&amp;#10;// Definir contadores y respuesta correcta&amp;#10;var red_dots, blue_dots, correctAns;&amp;#10;&amp;#10;if (dominant_color === 'Red') {&amp;#10;    red_dots = dominant_count;&amp;#10;    blue_dots = window.nDots - dominant_count;&amp;#10;    correctAns = 'n'; &amp;#10;} else {&amp;#10;    blue_dots = dominant_count;&amp;#10;    red_dots = window.nDots - dominant_count;&amp;#10;    correctAns = 'c'; &amp;#10;}&amp;#10;&amp;#10;// 2. ACTUALIZACIÓN DE LOS PUNTOS EXISTENTES&amp;#10;// No creamos 'ElementArrayStim' porque rompe la web.&amp;#10;// Usamos los puntos individuales (window.myDots) que creamos en la Etapa 1.&amp;#10;&amp;#10;var RED_C = new util.Color('red');&amp;#10;var BLUE_C = new util.Color('blue');&amp;#10;&amp;#10;for (var i = 0; i &lt; window.nDots; i++) {&amp;#10;    // A. Matemática: Generar nuevas coordenadas polares&amp;#10;    var theta = Math.random() * 2 * Math.PI;&amp;#10;    var r_val = window.cloudRadius * Math.sqrt(Math.random());&amp;#10;    &amp;#10;    // Convertir a cartesianas (X, Y)&amp;#10;    var x = r_val * Math.cos(theta);&amp;#10;    var y = r_val * Math.sin(theta);&amp;#10;    &amp;#10;    // B. Color: Decidir color de este punto&amp;#10;    var this_color;&amp;#10;    if (i &lt; red_dots) {&amp;#10;        this_color = RED_C;&amp;#10;    } else {&amp;#10;        this_color = BLUE_C;&amp;#10;    }&amp;#10;    &amp;#10;    // C. Aplicar cambios a los puntos GLOBALES&amp;#10;    // Verificamos que el punto exista (debería, porque viene de la etapa 1)&amp;#10;    if (window.myDots[i]) {&amp;#10;        window.myDots[i].setPos([x, y]);&amp;#10;        window.myDots[i].setFillColor(this_color);&amp;#10;        window.myDots[i].setLineColor(this_color);&amp;#10;        &amp;#10;        // ¡CRUCIAL! Aseguramos que NO se dibujen solos (autoDraw false)&amp;#10;        window.myDots[i].setAutoDraw(false); &amp;#10;    }&amp;#10;}&amp;#10;&amp;#10;// 3. LOGUEO DE DATOS&amp;#10;psychoJS.experiment.addData('difficulty', difficulty);&amp;#10;psychoJS.experiment.addData('dominant_color', dominant_color);&amp;#10;psychoJS.experiment.addData('dominant_count', dominant_count);&amp;#10;psychoJS.experiment.addData('correctAns', correctAns); // Importante para saber si acertó&amp;#10;&amp;#10;// Guardamos grupo por si acaso&amp;#10;if (typeof window.group !== 'undefined') {&amp;#10;    psychoJS.experiment.addData('group', window.group);&amp;#10;}" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="# Elegir dificultad y cantidad dominante&amp;#10;difficulty = random.choice(list(difficulties.keys()))&amp;#10;dominant_count = random.choice(difficulties[difficulty])&amp;#10;&amp;#10;# Elegir color dominante&amp;#10;dominant_color = random.choice(['Red', 'Blue'])&amp;#10;&amp;#10;# Conteos y respuesta correcta&amp;#10;if dominant_color == 'Red':&amp;#10;    red_dots = dominant_count&amp;#10;    blue_dots = nDots - dominant_count&amp;#10;    correctAns = 'n'&amp;#10;else:&amp;#10;    blue_dots = dominant_count&amp;#10;    red_dots = nDots - dominant_count&amp;#10;    correctAns = 'c'&amp;#10;&amp;#10;# Posiciones en círculo&amp;#10;theta = np.random.rand(nDots) * 2 * np.pi&amp;#10;r = cloudRadius * np.sqrt(np.random.rand(nDots))&amp;#10;xys = np.column_stack([r * np.cos(theta), r * np.sin(theta)])&amp;#10;&amp;#10;# Colores por elemento&amp;#10;colors_array = np.zeros((nDots, 3), dtype=float)&amp;#10;colors_array[:red_dots, :] = RED&amp;#10;colors_array[red_dots:, :] = BLUE&amp;#10;&amp;#10;# Mezclar&amp;#10;perm = np.random.permutation(nDots)&amp;#10;xys = xys[perm]&amp;#10;colors_array = colors_array[perm]&amp;#10;&amp;#10;# Estímulo (usa visual global de Builder)&amp;#10;dot_stim = visual.ElementArrayStim(&amp;#10;    win,&amp;#10;    nElements=nDots,&amp;#10;    xys=xys,&amp;#10;    elementTex=None,&amp;#10;    elementMask='circle',&amp;#10;    sizes=dotSize,&amp;#10;    colors=colors_array,&amp;#10;    colorSpace='rgb255'&amp;#10;)&amp;#10;&amp;#10;# Log&amp;#10;thisExp.addData('difficulty', difficulty)&amp;#10;thisExp.addData('dominant_color', dominant_color)&amp;#10;thisExp.addData('dominant_count', dominant_count)" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Both" valType="str" updates="None" name="Code Type"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
-        <Param val="// Si la rutina está activa (no la saltamos), contar el tiempo&amp;#10;if (t &gt; 3.0) {&amp;#10;    continueRoutine = false; // Terminar después de 3 segundos&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="if t &lt; stimDuration:&amp;#10;    dot_stim.draw()" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="// Definimos el límite de tiempo&amp;#10;var timeLimit = window.stimDuration; // 0.2s&amp;#10;&amp;#10;if (t &lt; timeLimit) {&amp;#10;    // --- FASE 1: MOSTRAR ESTÍMULO (0 a 200ms) ---&amp;#10;    for (var i = 0; i &lt; window.nDots; i++) {&amp;#10;        if (window.myDots[i]) {&amp;#10;            // Usamos .draw() para dibujar frame por frame&amp;#10;            window.myDots[i].draw();&amp;#10;        }&amp;#10;    }&amp;#10;} else {&amp;#10;    // --- FASE 2: PANTALLA GRIS (200ms en adelante) ---&amp;#10;    // El tiempo pasó, así que NO llamamos a .draw().&amp;#10;    &amp;#10;    // MEDIDA DE SEGURIDAD:&amp;#10;    // Forzamos el apagado por si alguno quedó con 'autoDraw' activado accidentalmente.&amp;#10;    // Esto garantiza que desaparezcan visualmente.&amp;#10;    for (var i = 0; i &lt; window.nDots; i++) {&amp;#10;        if (window.myDots[i]) {&amp;#10;            window.myDots[i].setAutoDraw(false);&amp;#10;        }&amp;#10;    }&amp;#10;}" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="psychoJS.experiment.addData('correctAns', correctAns);&amp;#10;&amp;#10;// Registramos el número de trial. &amp;#10;// NOTA: Asegurate que 'fase_testeo' sea el nombre REAL de tu loop en el Builder.&amp;#10;psychoJS.experiment.addData('trial2Number', fase_testeo.thisN + 1);" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="thisExp.addData('correctAns', correctAns)&amp;#10;thisExp.addData('trial2Number', fase_testeo.thisN + 1)" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="feedback_prueba" valType="code" updates="None" name="name"/>
+        <Param val="trial_testeo" valType="code" updates="None" name="name"/>
       </CodeComponent>
-      <TextComponent name="Feedback" plugin="None">
-        <Param val="white" valType="color" updates="constant" name="color"/>
-        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
-        <Param val="1" valType="num" updates="constant" name="contrast"/>
+      <KeyboardComponent name="resp_testeo" plugin="None">
+        <Param val="'c','n'" valType="list" updates="set every repeat" name="allowedKeys"/>
+        <Param val="correctAns" valType="str" updates="constant" name="correctAns"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="True" valType="bool" updates="constant" name="discard previous"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
-        <Param val="None" valType="str" updates="constant" name="flip"/>
-        <Param val="Arial" valType="str" updates="constant" name="font"/>
-        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
-        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
-        <Param val="Feedback" valType="code" updates="None" name="name"/>
-        <Param val="" valType="num" updates="constant" name="opacity"/>
-        <Param val="0" valType="num" updates="constant" name="ori"/>
-        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="constant" name="forceEndRoutine"/>
+        <Param val="resp_testeo" valType="code" updates="None" name="name"/>
+        <Param val="press" valType="str" updates="constant" name="registerOn"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
-        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="0.2" valType="code" updates="None" name="startVal"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="" valType="code" updates="constant" name="stopVal"/>
-        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
-        <Param val="$feedbackText&amp;#10;" valType="str" updates="set every repeat" name="text"/>
-        <Param val="from exp settings" valType="str" updates="None" name="units"/>
-        <Param val="" valType="code" updates="None" name="validator"/>
-        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
-      </TextComponent>
+        <Param val="last key" valType="str" updates="constant" name="store"/>
+        <Param val="True" valType="bool" updates="constant" name="storeCorrect"/>
+        <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
+      </KeyboardComponent>
     </Routine>
     <Routine name="EscalaOC">
       <RoutineSettingsComponent name="EscalaOC" plugin="None">
@@ -601,6 +601,41 @@
         <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
       </KeyboardComponent>
     </Routine>
+    <Routine name="despedida">
+      <RoutineSettingsComponent name="despedida" plugin="None">
+        <Param val="none" valType="str" updates="None" name="backgroundFit"/>
+        <Param val="" valType="str" updates="None" name="backgroundImg"/>
+        <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
+        <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
+        <Param val="" valType="str" updates="constant" name="desc"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
+        <Param val="despedida" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="constant" name="skipIf"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
+      </RoutineSettingsComponent>
+      <CodeComponent name="guardar_exp" plugin="None">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="JS" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="// --- CÓDIGO DE GUARDADO (DataPipe) ---&amp;#10;&amp;#10;// 1. Generar nombre de archivo (Versión segura con sumas '+')&amp;#10;// Esto evita el error de sintaxis del signo $&amp;#10;var filename = expInfo['legajo'] + &quot;_&quot; + expInfo['date'] + &quot;.csv&quot;;&amp;#10;&amp;#10;// 2. Extraer datos del experimento&amp;#10;var dataContent = psychoJS.experiment._trialsData;&amp;#10;var dataJSON = JSON.stringify(dataContent);&amp;#10;&amp;#10;// 3. Enviar a DataPipe&amp;#10;// Asegurate que la variable 'dataPipeID' esté definida en 'Begin Experiment'&amp;#10;// Si no, reemplaza dataPipeID por tu ID entre comillas (ej: &quot;tu-id-largo&quot;)&amp;#10;fetch(&quot;https://pipe.jspsych.org/api/data/&quot;, {&amp;#10;    method: &quot;POST&quot;,&amp;#10;    headers: {&amp;#10;        &quot;Content-Type&quot;: &quot;application/json&quot;,&amp;#10;        Accept: &quot;*/*&quot;,&amp;#10;    },&amp;#10;    body: JSON.stringify({&amp;#10;        experimentID: dataPipeID, &amp;#10;        filename: filename,&amp;#10;        data: dataJSON,&amp;#10;    }),&amp;#10;}).then(function(response) {&amp;#10;    console.log(&quot;Datos enviados. Status:&quot;, response.status);&amp;#10;}).catch(function(error) {&amp;#10;    console.log(&quot;Error al enviar:&quot;, error);&amp;#10;});&amp;#10;&amp;#10;// Mensaje para ti en la consola&amp;#10;console.log(&quot;Intentando guardar archivo: &quot; + filename);" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="guardar_exp" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+    </Routine>
   </Routines>
   <Flow>
     <Routine name="Bienvenida"/>
@@ -637,5 +672,6 @@
     <Routine name="trial_testeo"/>
     <Routine name="EscalaOC"/>
     <LoopTerminator name="fase_testeo"/>
+    <Routine name="despedida"/>
   </Flow>
 </PsychoPy2experiment>
