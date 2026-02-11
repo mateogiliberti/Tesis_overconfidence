@@ -2004,15 +2004,15 @@ function DespedidaRoutineEnd(snapshot) {
       }
     });
     psychoJS.experiment.addData('Despedida.stopped', globalClock.getTime());
-    // 1. Generar nombre de archivo único (Versión segura con +)
+    // 1. Nombre de archivo (seguro)
     var filename = expInfo['legajo'] + "_" + expInfo['date'] + ".csv";
     
-    // 2. Extraer datos del experimento
+    // 2. Preparar datos
     var dataContent = psychoJS.experiment._trialsData;
     var dataJSON = JSON.stringify(dataContent);
     
     // 3. Enviar a DataPipe
-    // Usamos .catch para evitar errores si falla internet
+    // Fíjate bien en los cierres al final: }) y );
     fetch("https://pipe.jspsych.org/api/data/", {
         method: "POST",
         headers: {
@@ -2025,10 +2025,13 @@ function DespedidaRoutineEnd(snapshot) {
             data: dataJSON
         })
     }).then(function(response) {
-        console.log("Datos enviados. Status:", response.status);
+        console.log("Datos enviados:", response.status);
     }).catch(function(error) {
-        console.log("Error en envio:", error);
+        console.log("Error:", error);
     });
+    
+    // FIN DEL CÓDIGO DEL USUARIO
+    // (Al estar todo cerrado aquí, el código automático de abajo correrá bien)
     // the Routine "Despedida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
