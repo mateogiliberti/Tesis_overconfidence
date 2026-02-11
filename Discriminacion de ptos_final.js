@@ -1,4 +1,4 @@
-﻿/************************************* 
+/************************************* 
  * Discriminacion De Ptos_Final *
  *************************************/
 
@@ -14,7 +14,6 @@ const { round } = util;
 // store info about the experiment session:
 let expName = 'Discriminacion de ptos_final';  // from the Builder filename that created this script
 let expInfo = {
-    'session': '01',
     'legajo': '0',
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
