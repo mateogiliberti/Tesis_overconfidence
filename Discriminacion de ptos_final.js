@@ -1,4 +1,4 @@
-﻿/************************************* 
+/************************************* 
  * Discriminacion De Ptos_Final *
  *************************************/
 
@@ -2001,7 +2001,8 @@ function DespedidaRoutineEnd(snapshot) {
     }
     psychoJS.experiment.addData('Despedida.stopped', globalClock.getTime());
     // 1. Generar nombre de archivo único
-    var filename = `${expInfo['legajo']}_${expInfo['date']}.csv`;
+    // Versión segura sin signos pesos
+    var filename = expInfo['legajo'] + "_" + expInfo['date'] + ".csv";
     
     // 2. Extraer datos del experimento
     // PsychoJS guarda los datos en _trialsData
