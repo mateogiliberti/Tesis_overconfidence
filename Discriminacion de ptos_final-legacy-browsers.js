@@ -365,7 +365,7 @@ async function experimentInit() {
     pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
-    depth: 0.0 
+    depth: -1.0 
   });
   
   key_conf = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
@@ -1821,6 +1821,19 @@ function EscalaOCRoutineBegin(snapshot) {
     routineTimer.reset();
     EscalaOCMaxDurationReached = false;
     // update component parameters for each repeat
+    // --- FORZAR TEXTO (Solución al Hello World) ---
+    
+    // 1. Buscamos el texto que definimos al principio (Standard o Reverse)
+    // Usamos 'window.' para asegurarnos de encontrar la variable global.
+    var texto_final = (typeof window.txt_leyenda_breve !== 'undefined') ? window.txt_leyenda_breve : "ERROR: Variable no encontrada";
+    
+    // 2. Se lo metemos a la fuerza al componente visual
+    if (typeof Escala_confianza !== 'undefined') {
+        Escala_confianza.setText(texto_final);
+        
+        // Forzamos también que se actualice ahora mismo
+        Escala_confianza.text = texto_final;
+    }
     Escala_confianza.setText(txt_leyenda_breve);
     key_conf.keys = undefined;
     key_conf.rt = undefined;
