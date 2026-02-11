@@ -14,7 +14,7 @@ const { round } = util;
 // store info about the experiment session:
 let expName = 'Discriminacion de ptos_final';  // from the Builder filename that created this script
 let expInfo = {
-    'legajo': '0',
+    'legajo': '',
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
 
@@ -2001,7 +2001,7 @@ function DespedidaRoutineEnd(snapshot) {
     }
     psychoJS.experiment.addData('Despedida.stopped', globalClock.getTime());
     // 1. Generar nombre de archivo único
-    var filename = `${expInfo['participant']}_${expInfo['date']}.csv`;
+    var filename = `${expInfo['legajo']}_${expInfo['date']}.csv`;
     
     // 2. Extraer datos del experimento
     // PsychoJS guarda los datos en _trialsData
