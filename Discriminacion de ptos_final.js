@@ -1,4 +1,4 @@
-/************************************* 
+﻿/************************************* 
  * Discriminacion De Ptos_Final *
  *************************************/
 
@@ -112,7 +112,7 @@ async function updateInfo() {
   
 
   
-  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["legajo"]}_${expName}_${expInfo["date"]}`);
+  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["numero de legajo"]}_${expName}_${expInfo["date"]}`);
   psychoJS.experiment.field_separator = '\t';
 
 
@@ -155,44 +155,30 @@ async function experimentInit() {
   // Initialize components for Routine "condiciones"
   condicionesClock = new util.Clock();
   // Run 'Begin Experiment' code from asignacion
-  // OBTENER EL LEGAJO (asegurate que en Settings se llame 'legajo')
-  var dato_legajo = expInfo['legajo'];
+  // --- 1. ASIGNACIÓN DE GRUPO ---
+  var raw_id = expInfo['legajo']; 
+  var digits_only = String(raw_id).replace(/\D/g, '');
+  var pid = null;
+  var group = 'Control'; 
   
-  // SI ESTA VACIO, PONEMOS TEXTO VACIO
-  if (typeof dato_legajo === 'undefined' || dato_legajo === null) {
-      dato_legajo = '';
-  }
-  
-  // LIMPIAR Y SACAR SOLO NUMEROS
-  var texto_legajo = String(dato_legajo);
-  var solo_numeros = texto_legajo.replace(/\D/g, '');
-  var numero_limpio = parseInt(solo_numeros);
-  
-  // LOGICA DE GRUPO (Pares=Experimental, Impares=Control)
-  var grupo_final = 'Control'; // Default
-  
-  if (!isNaN(numero_limpio) && numero_limpio > 0) {
-      if (numero_limpio % 2 === 0) {
-          grupo_final = 'Experimental';
+  if (digits_only.length > 0) {
+      pid = parseInt(digits_only);
+      if (pid % 2 === 0) {
+          group = 'Experimental';
       } else {
-          grupo_final = 'Control';
+          group = 'Control';
       }
   }
+  psychoJS.experiment.addData('assigned_group', group);
+  window.group = group; 
   
-  // GUARDAR GLOBALMENTE
-  window.group = grupo_final;
-  psychoJS.experiment.addData('grupo_asignado', grupo_final);
   
-  // DEBUG
-  console.log('Legajo:', numero_limpio, 'Grupo:', window.group);
-  
-  // ESCALA OC 
-  // 1 SORTEO DE ORDEN DE ESCALA ---
+  // --- 2. SORTEO DE ORDEN DE ESCALA ---
   var scale_order = (Math.random() > 0.5) ? 'Standard' : 'Reverse';
   psychoJS.experiment.addData('scale_order', scale_order);
   
   
-  // -2. DEFINIR MAPAS (Para usar después) ---
+  // --- 3. DEFINIR MAPAS (Para usar después) ---
   var map_standard = { '1': 1, '2': 2, '3': 3, '8': 4, '9': 5, '0': 6 };
   var map_reverse = { '1': 6, '2': 5, '3': 4, '8': 3, '9': 2, '0': 1 };
   
@@ -200,7 +186,7 @@ async function experimentInit() {
   window.active_conf_map = (scale_order === 'Standard') ? map_standard : map_reverse;
   
   
-  // --3. TEXTOS (Instrucciones y Leyendas) ---
+  // --- 4. TEXTOS (Instrucciones y Leyendas) ---
   
   var txt_instrucciones_escala = ""; // Para la pantalla de explicación
   var txt_leyenda_breve = "";        // Para la pantalla de cada trial
@@ -243,6 +229,12 @@ async function experimentInit() {
   // Hacemos globales los textos para que los componentes de Texto los vean
   window.txt_instrucciones_escala = txt_instrucciones_escala;
   window.txt_leyenda_breve = txt_leyenda_breve;
+  
+  
+  
+  
+  
+  
   // Initialize components for Routine "rutina_fix"
   rutina_fixClock = new util.Clock();
   stim_cruz = new visual.TextStim({
@@ -2009,7 +2001,7 @@ function DespedidaRoutineEnd(snapshot) {
     }
     psychoJS.experiment.addData('Despedida.stopped', globalClock.getTime());
     // 1. Generar nombre de archivo único
-    var filename = `${expInfo['legajo']}_${expInfo['date']}.csv`;
+    var filename = `${expInfo['participant']}_${expInfo['date']}.csv`;
     
     // 2. Extraer datos del experimento
     // PsychoJS guarda los datos en _trialsData
