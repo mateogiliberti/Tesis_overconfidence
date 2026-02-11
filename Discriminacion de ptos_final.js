@@ -1,4 +1,4 @@
-/************************************* 
+﻿/************************************* 
  * Discriminacion De Ptos_Final *
  *************************************/
 
@@ -2000,37 +2000,31 @@ function DespedidaRoutineEnd(snapshot) {
       }
     }
     psychoJS.experiment.addData('Despedida.stopped', globalClock.getTime());
-    // 1. Generar nombre de archivo único
-    // Versión segura sin signos pesos
+    // 1. Generar nombre de archivo único (Versión segura con +)
     var filename = expInfo['legajo'] + "_" + expInfo['date'] + ".csv";
     
     // 2. Extraer datos del experimento
-    // PsychoJS guarda los datos en _trialsData
     var dataContent = psychoJS.experiment._trialsData;
-    
-    // Convertir a CSV (PsychoJS suele tener un formato JSON interno, 
-    // DataPipe acepta JSON o CSV. Enviamos JSON crudo y DataPipe lo convierte 
-    // o lo guardamos como texto).
-    // Una forma simple para DataPipe es enviar el JSON completo:
     var dataJSON = JSON.stringify(dataContent);
     
-    // 3. Enviar a DataPipe (Fetch API)
+    // 3. Enviar a DataPipe
+    // Usamos .catch para evitar errores si falla internet
     fetch("https://pipe.jspsych.org/api/data/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Accept: "*/*",
+            Accept: "*/*"
         },
         body: JSON.stringify({
             experimentID: dataPipeID,
             filename: filename,
-            data: dataJSON,
-        }),
-    }).then(response => {
+            data: dataJSON
+        })
+    }).then(function(response) {
         console.log("Datos enviados. Status:", response.status);
+    }).catch(function(error) {
+        console.log("Error en envio:", error);
     });
-    
-    // Nota: Esto ocurre en milisegundos.
     // the Routine "Despedida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
