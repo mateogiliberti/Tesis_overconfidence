@@ -81,6 +81,9 @@ psychoJS.start({
 
 psychoJS.experimentLogger.setLevel(core.Logger.ServerLevel.INFO);
 
+
+var currentLoop;
+var frameDur;
 async function updateInfo() {
   currentLoop = psychoJS.experiment;  // right now there are no loops
   expInfo['date'] = util.MonotonicClock.getDateStr();  // add a simple timestamp
@@ -108,6 +111,40 @@ async function updateInfo() {
   return Scheduler.Event.NEXT;
 }
 
+
+var BienvenidaClock;
+var text;
+var key_resp_2;
+var InstruccionClock;
+var text_instructions;
+var key_instrucciones;
+var condicionesClock;
+var pid;
+var group;
+var txt_instrucciones_escala;
+var txt_leyenda_breve;
+var rutina_fixClock;
+var stim_cruz;
+var trial_pruebaClock;
+var resp_ptos;
+var feedbackClock;
+var Feedback;
+var Instrucciones_testeoClock;
+var testeo_instrucciones;
+var Key_instrucciones_test;
+var trial_testeoClock;
+var nDots;
+var stimDuration;
+var cloudRadius;
+var dotSize;
+var difficulties;
+var dot_stim;
+var resp_testeo;
+var EscalaOCClock;
+var Escala_confianza;
+var key_conf;
+var globalClock;
+var routineTimer;
 async function experimentInit() {
   // Initialize components for Routine "Bienvenida"
   BienvenidaClock = new util.Clock();
@@ -357,6 +394,15 @@ async function experimentInit() {
   return Scheduler.Event.NEXT;
 }
 
+
+var t;
+var frameN;
+var continueRoutine;
+var routineForceEnded;
+var BienvenidaMaxDurationReached;
+var _key_resp_2_allKeys;
+var BienvenidaMaxDuration;
+var BienvenidaComponents;
 function BienvenidaRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -388,6 +434,7 @@ function BienvenidaRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function BienvenidaRoutineEachFrame() {
   return async function () {
@@ -467,6 +514,7 @@ function BienvenidaRoutineEachFrame() {
   };
 }
 
+
 function BienvenidaRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Bienvenida' ---
@@ -488,6 +536,11 @@ function BienvenidaRoutineEnd(snapshot) {
   }
 }
 
+
+var InstruccionMaxDurationReached;
+var _key_instrucciones_allKeys;
+var InstruccionMaxDuration;
+var InstruccionComponents;
 function InstruccionRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -519,6 +572,7 @@ function InstruccionRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function InstruccionRoutineEachFrame() {
   return async function () {
@@ -598,6 +652,7 @@ function InstruccionRoutineEachFrame() {
   };
 }
 
+
 function InstruccionRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Instruccion' ---
@@ -619,6 +674,10 @@ function InstruccionRoutineEnd(snapshot) {
   }
 }
 
+
+var condicionesMaxDurationReached;
+var condicionesMaxDuration;
+var condicionesComponents;
 function condicionesRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -645,6 +704,7 @@ function condicionesRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function condicionesRoutineEachFrame() {
   return async function () {
@@ -680,6 +740,7 @@ function condicionesRoutineEachFrame() {
   };
 }
 
+
 function condicionesRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'condiciones' ---
@@ -700,6 +761,8 @@ function condicionesRoutineEnd(snapshot) {
   }
 }
 
+
+var fase_prueba;
 function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
   return async function() {
     TrialHandler.fromSnapshot(snapshot); // update internal variables (.thisN etc) of the loop
@@ -736,6 +799,7 @@ function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
   }
 }
 
+
 async function fase_pruebaLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(fase_prueba);
@@ -746,6 +810,7 @@ async function fase_pruebaLoopEnd() {
     currentLoop = psychoJS.experiment;  // so we use addData from the experiment
   return Scheduler.Event.NEXT;
 }
+
 
 function fase_pruebaLoopEndIteration(scheduler, snapshot) {
   // ------Prepare for next entry------
@@ -766,6 +831,8 @@ function fase_pruebaLoopEndIteration(scheduler, snapshot) {
   };
 }
 
+
+var fase_testeo;
 function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
   return async function() {
     TrialHandler.fromSnapshot(snapshot); // update internal variables (.thisN etc) of the loop
@@ -802,6 +869,7 @@ function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
   }
 }
 
+
 async function fase_testeoLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(fase_testeo);
@@ -812,6 +880,7 @@ async function fase_testeoLoopEnd() {
     currentLoop = psychoJS.experiment;  // so we use addData from the experiment
   return Scheduler.Event.NEXT;
 }
+
 
 function fase_testeoLoopEndIteration(scheduler, snapshot) {
   // ------Prepare for next entry------
@@ -832,6 +901,10 @@ function fase_testeoLoopEndIteration(scheduler, snapshot) {
   };
 }
 
+
+var rutina_fixMaxDurationReached;
+var rutina_fixMaxDuration;
+var rutina_fixComponents;
 function rutina_fixRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -860,6 +933,8 @@ function rutina_fixRoutineBegin(snapshot) {
   }
 }
 
+
+var frameRemains;
 function rutina_fixRoutineEachFrame() {
   return async function () {
     //--- Loop for each frame of Routine 'rutina_fix' ---
@@ -919,6 +994,7 @@ function rutina_fixRoutineEachFrame() {
   };
 }
 
+
 function rutina_fixRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'rutina_fix' ---
@@ -942,6 +1018,14 @@ function rutina_fixRoutineEnd(snapshot) {
   }
 }
 
+
+var trial_pruebaMaxDurationReached;
+var red_dots;
+var blue_dots;
+var correctAns;
+var _resp_ptos_allKeys;
+var trial_pruebaMaxDuration;
+var trial_pruebaComponents;
 function trial_pruebaRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1032,6 +1116,7 @@ function trial_pruebaRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function trial_pruebaRoutineEachFrame() {
   return async function () {
@@ -1127,6 +1212,7 @@ function trial_pruebaRoutineEachFrame() {
   };
 }
 
+
 function trial_pruebaRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'trial_prueba' ---
@@ -1183,6 +1269,12 @@ function trial_pruebaRoutineEnd(snapshot) {
   }
 }
 
+
+var feedbackMaxDurationReached;
+var performance_score;
+var feedbackText;
+var feedbackMaxDuration;
+var feedbackComponents;
 function feedbackRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1202,7 +1294,6 @@ function feedbackRoutineBegin(snapshot) {
     var trialNumber = fase_prueba.thisN + 1;
     
     // Usamos window.blockSize para asegurar que la variable global existe
-    // (Si no usas window, a veces falla la referencia)
     var limit = (typeof window.blockSize !== 'undefined') ? window.blockSize : 24; 
     
     if ((trialNumber % limit) === 0) {
@@ -1211,23 +1302,24 @@ function feedbackRoutineBegin(snapshot) {
         var performance_score = 0;
         var current_group = (typeof window.group !== 'undefined') ? window.group : 'Control';
         
-        // Lógica del puntaje (Traducción de random.randint)
+        // Lógica del puntaje
         if (current_group === 'Experimental') {
             // Random entre 70 y 95
             performance_score = Math.floor(Math.random() * (95 - 70 + 1)) + 70;
-            feedbackText = `'Has alcanzado un desempeño equivalente a los mejores del grupo: ${performance_score}%.';
+            // CORREGIDO: Usamos concatenación (+) para que se vea el número sí o sí
+            feedbackText = 'Has alcanzado un desempeño equivalente a los mejores del grupo: ' + performance_score + '%.';
         } else {
             // Random entre 37 y 62
             performance_score = Math.floor(Math.random() * (62 - 37 + 1)) + 37;
-            feedbackText = 'Tu rendimiento se ubica en un rango intermedio del grupo: ${performance_score}%.';
+            // CORREGIDO: Usamos concatenación (+)
+            feedbackText = 'Tu rendimiento se ubica en un rango intermedio del grupo: ' + performance_score + '%.';
         }
     
-        // --- LA SOLUCIÓN AL "HELLO WORLD" ---
-        // Aquí forzamos al componente visual a tomar el texto NUEVO ahora mismo.
-        // REEMPLAZA 'texto_feedback' POR EL NOMBRE DE TU COMPONENTE DE TEXTO EN BUILDER
-        // Si tu componente se llama 'text', pon: text.setText(feedbackText);
-        if (typeof texto_feedback !== 'undefined') {
-            texto_feedback.setText(feedbackText);
+        // --- ACTUALIZACIÓN VISUAL ---
+        // NOTA: En tu archivo anterior el componente se llamaba 'Feedback'. 
+        // Si le cambiaste el nombre, ajusta la palabra 'Feedback' aquí abajo.
+        if (typeof Feedback !== 'undefined') {
+            Feedback.setText(feedbackText);
         }
         
         // Guardar datos
@@ -1255,6 +1347,7 @@ function feedbackRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function feedbackRoutineEachFrame() {
   return async function () {
@@ -1310,6 +1403,7 @@ function feedbackRoutineEachFrame() {
   };
 }
 
+
 function feedbackRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'feedback' ---
@@ -1330,6 +1424,11 @@ function feedbackRoutineEnd(snapshot) {
   }
 }
 
+
+var Instrucciones_testeoMaxDurationReached;
+var _Key_instrucciones_test_allKeys;
+var Instrucciones_testeoMaxDuration;
+var Instrucciones_testeoComponents;
 function Instrucciones_testeoRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1361,6 +1460,7 @@ function Instrucciones_testeoRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function Instrucciones_testeoRoutineEachFrame() {
   return async function () {
@@ -1440,6 +1540,7 @@ function Instrucciones_testeoRoutineEachFrame() {
   };
 }
 
+
 function Instrucciones_testeoRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Instrucciones_testeo' ---
@@ -1461,6 +1562,11 @@ function Instrucciones_testeoRoutineEnd(snapshot) {
   }
 }
 
+
+var trial_testeoMaxDurationReached;
+var _resp_testeo_allKeys;
+var trial_testeoMaxDuration;
+var trial_testeoComponents;
 function trial_testeoRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1585,6 +1691,7 @@ function trial_testeoRoutineBegin(snapshot) {
   }
 }
 
+
 function trial_testeoRoutineEachFrame() {
   return async function () {
     //--- Loop for each frame of Routine 'trial_testeo' ---
@@ -1661,6 +1768,7 @@ function trial_testeoRoutineEachFrame() {
   };
 }
 
+
 function trial_testeoRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'trial_testeo' ---
@@ -1709,6 +1817,11 @@ function trial_testeoRoutineEnd(snapshot) {
   }
 }
 
+
+var EscalaOCMaxDurationReached;
+var _key_conf_allKeys;
+var EscalaOCMaxDuration;
+var EscalaOCComponents;
 function EscalaOCRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1741,6 +1854,7 @@ function EscalaOCRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function EscalaOCRoutineEachFrame() {
   return async function () {
@@ -1820,6 +1934,10 @@ function EscalaOCRoutineEachFrame() {
   };
 }
 
+
+var ckey;
+var level;
+var label;
 function EscalaOCRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'EscalaOC' ---
@@ -1830,16 +1948,16 @@ function EscalaOCRoutineEnd(snapshot) {
     });
     psychoJS.experiment.addData('EscalaOC.stopped', globalClock.getTime());
     // Run 'End Routine' code from escala_testeo
-    // 1. Definimos el mapeo de teclas a niveles (Objetos en lugar de Diccionarios)
-    var confidence_map = {
-        '1': 1,
-        '2': 2,
-        '3': 3,
-        '8': 4, 
-        '9': 5,
-        '0': 6
-    };
+    // --- CÓDIGO CORREGIDO PARA GUARDAR DATOS DE CONFIANZA ---
     
+    // 1. RECUPERAR EL MAPA GLOBAL (¡Esta es la corrección clave!)
+    // Usamos el mapa que se decidió al principio del experimento (Standard o Reverse)
+    // Si por alguna razón no existe, usamos un fallback para que no falle.
+    var map_to_use = (typeof window.active_conf_map !== 'undefined') ? window.active_conf_map : { '1': 1, '2': 2, '3': 3, '8': 4, '9': 5, '0': 6 };
+    
+    // 2. Definir las etiquetas de significado
+    // Esto SI queda fijo, porque el "Nivel 6" siempre significa "Seguro Correcto",
+    // sin importar qué tecla se usó para llegar a él.
     var confidence_labels = {
         1: 'Seguramente Incorrecto',
         2: 'Probablemente Incorrecto',
@@ -1849,33 +1967,36 @@ function EscalaOCRoutineEnd(snapshot) {
         6: 'Seguramente Correcto'
     };
     
-    // 2. Obtener la tecla presionada
-    // En JS, key_conf.keys puede ser un array ['1'] o un string '1'.
-    // Nos aseguramos de tomar el último valor si es un array.
-    var ckey = key_conf.keys;
+    // 3. Obtener la tecla presionada
+    var ckey = key_conf.keys; // Asegurate que tu componente se llame 'key_conf'
     if (Array.isArray(ckey)) {
-        ckey = ckey[ckey.length - 1];
+        ckey = ckey[ckey.length - 1]; // Tomar la última si hay varias
     }
     
-    // 3. Obtener el nivel
-    // En JS no existe .get(key, default). Se accede con corchetes [].
-    var level = confidence_map[ckey];
+    // 4. Obtener el NIVEL usando el MAPA DINÁMICO
+    // Aquí ocurre la magia: 
+    // Si es Standard: Tecla '1' -> Nivel 1 (Incorrecto)
+    // Si es Reverse:  Tecla '1' -> Nivel 6 (Correcto)
+    var level = map_to_use[ckey];
     
-    // Si la tecla no está en el mapa (undefined), asignamos 'NA' o null
+    // Validación por si apretaron una tecla rara o nada
     if (level === undefined) {
         level = 'NA';
     }
     
-    // 4. Obtener la etiqueta
+    // 5. Obtener la etiqueta de texto basada en el nivel calculado
     var label = confidence_labels[level];
     if (label === undefined) {
         label = 'NA';
     }
     
-    // 5. Guardar datos
-    psychoJS.experiment.addData('confidence_key', ckey);
-    psychoJS.experiment.addData('confidence_level', level);
-    psychoJS.experiment.addData('confidence_label', label);
+    // 6. Guardar datos en el archivo
+    psychoJS.experiment.addData('confidence_key', ckey);   // Qué tecla tocó (ej: '1')
+    psychoJS.experiment.addData('confidence_level', level); // Qué valor numérico real tiene (1-6)
+    psychoJS.experiment.addData('confidence_label', label); // Qué significa (ej: 'Seguramente Correcto')
+    
+    // Debug para que veas en la consola si funciona (F12)
+    console.log(`Tecla: ${ckey} | Mapa: ${window.scale_order} | Nivel: ${level}`);
     // update the trial handler
     if (currentLoop instanceof MultiStairHandler) {
       currentLoop.addResponse(key_conf.corr, level);
@@ -1899,12 +2020,14 @@ function EscalaOCRoutineEnd(snapshot) {
   }
 }
 
+
 function importConditions(currentLoop) {
   return async function () {
     psychoJS.importAttributes(currentLoop.getCurrentTrial());
     return Scheduler.Event.NEXT;
     };
 }
+
 
 async function quitPsychoJS(message, isCompleted) {
   // Check for and save orphaned data
