@@ -1804,6 +1804,7 @@ function trial_testeoRoutineEnd(snapshot) {
 
 
 var EscalaOCMaxDurationReached;
+var texto_final;
 var _key_conf_allKeys;
 var EscalaOCMaxDuration;
 var EscalaOCComponents;
@@ -1821,19 +1822,31 @@ function EscalaOCRoutineBegin(snapshot) {
     routineTimer.reset();
     EscalaOCMaxDurationReached = false;
     // update component parameters for each repeat
-    // --- FORZAR TEXTO (Solución al Hello World) ---
+    // --- PUENTE DE TEXTO ---
     
-    // 1. Buscamos el texto que definimos al principio (Standard o Reverse)
-    // Usamos 'window.' para asegurarnos de encontrar la variable global.
-    var texto_final = (typeof window.txt_leyenda_breve !== 'undefined') ? window.txt_leyenda_breve : "ERROR: Variable no encontrada";
+    // 1. Definir el Fallback (Plan B)
+    // Si por alguna razón la variable global falló, usamos un texto de seguridad
+    var texto_final = "Indica tu confianza (1-3 o 8-0)";
     
-    // 2. Se lo metemos a la fuerza al componente visual
+    // 2. Intentar recuperar la variable GLOBAL (window)
+    // Tu código de Begin Experiment la guardó en window.txt_leyenda_breve
+    if (typeof window.txt_leyenda_breve !== 'undefined') {
+        texto_final = window.txt_leyenda_breve;
+    }
+    
+    // 3. Crear la variable LOCAL
+    // Esto es vital: El componente visual busca 'txt_leyenda_breve', no 'window.txt_leyenda_breve'
+    txt_leyenda_breve = texto_final;
+    
+    // 4. INYECCIÓN DIRECTA (El golpe de gracia)
+    // Forzamos al componente visual 'Escala_confianza' a tomar este texto AHORA MISMO.
     if (typeof Escala_confianza !== 'undefined') {
         Escala_confianza.setText(texto_final);
-        
-        // Forzamos también que se actualice ahora mismo
-        Escala_confianza.text = texto_final;
+        Escala_confianza.text = texto_final; // Refuerzo para versiones nuevas de PsychoJS
     }
+    
+    // Debug para que te quedes tranquilo mirando la consola (F12)
+    console.log("Routine EscalaOC: Texto cargado ->", texto_final);
     Escala_confianza.setText(txt_leyenda_breve);
     key_conf.keys = undefined;
     key_conf.rt = undefined;
