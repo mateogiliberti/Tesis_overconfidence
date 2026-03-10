@@ -6,7 +6,7 @@
 // store info about the experiment session:
 let expName = 'Discriminacion de ptos_final';  // from the Builder filename that created this script
 let expInfo = {
-    'legajo': "''",
+    'Id': "''",
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
 
@@ -180,7 +180,7 @@ async function experimentInit() {
   condicionesClock = new util.Clock();
   // Run 'Begin Experiment' code from asignacion
   // --- 1. ASIGNACIÓN DE GRUPO ---
-  var raw_id = expInfo['legajo']; 
+  var raw_id = expInfo['Id']; 
   var digits_only = String(raw_id).replace(/\D/g, '');
   var pid = null;
   var group = 'Control'; 
@@ -2110,7 +2110,7 @@ function despedidaRoutineEnd(snapshot) {
     // --- CÓDIGO DE GUARDADO (DataPipe) ---
     
     // 1. Generar nombre de archivo
-    var filename = expInfo['legajo'] + "_" + expInfo['date'] + ".csv";
+    var filename = expInfo['Id'] + "_" + expInfo['date'] + ".csv";
     
     // 2. Extraer datos del experimento
     var dataContent = psychoJS.experiment._trialsData;
