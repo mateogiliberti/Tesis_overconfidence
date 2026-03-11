@@ -84,9 +84,6 @@ psychoJS.start({
 
 psychoJS.experimentLogger.setLevel(core.Logger.ServerLevel.INFO);
 
-
-var currentLoop;
-var frameDur;
 async function updateInfo() {
   currentLoop = psychoJS.experiment;  // right now there are no loops
   expInfo['date'] = util.MonotonicClock.getDateStr();  // add a simple timestamp
@@ -114,35 +111,6 @@ async function updateInfo() {
   return Scheduler.Event.NEXT;
 }
 
-
-var BienvenidaClock;
-var text;
-var key_resp_2;
-var InstruccionClock;
-var text_instructions;
-var key_instrucciones;
-var condicionesClock;
-var pid;
-var group;
-var txt_instrucciones_escala;
-var txt_leyenda_breve;
-var rutina_fixClock;
-var stim_cruz;
-var trial_pruebaClock;
-var resp_ptos;
-var feedbackClock;
-var Feedback;
-var Instrucciones_testeoClock;
-var testeo_instrucciones;
-var Key_instrucciones_test;
-var trial_testeoClock;
-var resp_testeo;
-var EscalaOCClock;
-var Escala_confianza;
-var key_conf;
-var despedidaClock;
-var globalClock;
-var routineTimer;
 async function experimentInit() {
   // Initialize components for Routine "Bienvenida"
   BienvenidaClock = new util.Clock();
@@ -228,10 +196,13 @@ async function experimentInit() {
       
       // TEXTO CORTO (LEYENDA)
       txt_leyenda_breve = 
-      "Indica tu confianza:\n" +
-      "1=Seg. Incorrecto   2=Prob. Incorrecto   3=Tal vez Incorrecto\n" +
-      "8=Tal vez Correcto   9=Prob. Correcto   0=Seg. Correcto";
-  
+      "Indica tu nivel de confianza:\n" +
+      ""1: Seguramente Incorrecto\n" +
+      "2: Probablemente Incorrecto\n" +
+      "3: Tal vez Incorrecto\n\n" +
+      "8: Tal vez Correcto\n" +
+      "9: Probablemente Correcto\n" +
+      "0: Seguramente Correcto";
   } else {
       // TEXTO LARGO REVERSO
       txt_instrucciones_escala = 
@@ -245,9 +216,13 @@ async function experimentInit() {
   
       // TEXTO CORTO REVERSO
       txt_leyenda_breve = 
-      "Indica tu confianza:\n" +
-      "1=Seg. Correcto   2=Prob. Correcto   3=Tal vez Correcto\n" +
-      "8=Tal vez Incorrecto   9=Prob. Incorrecto   0=Seg. Incorrecto";
+      "Indica tu nivel de confianza:\n" +
+      "1: Seguramente Correcto\n" +
+      "2: Probablemente Correcto\n" +
+      "3: Tal vez Correcto\n\n" +
+      "8: Tal vez Incorrecto\n" +
+      "9: Probablemente Incorrecto\n" +
+      "0: Seguramente Incorrecto";
   }
   
   // Hacemos globales los textos para que los componentes de Texto los vean
@@ -379,15 +354,6 @@ async function experimentInit() {
   return Scheduler.Event.NEXT;
 }
 
-
-var t;
-var frameN;
-var continueRoutine;
-var routineForceEnded;
-var BienvenidaMaxDurationReached;
-var _key_resp_2_allKeys;
-var BienvenidaMaxDuration;
-var BienvenidaComponents;
 function BienvenidaRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -419,7 +385,6 @@ function BienvenidaRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function BienvenidaRoutineEachFrame() {
   return async function () {
@@ -499,7 +464,6 @@ function BienvenidaRoutineEachFrame() {
   };
 }
 
-
 function BienvenidaRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Bienvenida' ---
@@ -521,11 +485,6 @@ function BienvenidaRoutineEnd(snapshot) {
   }
 }
 
-
-var InstruccionMaxDurationReached;
-var _key_instrucciones_allKeys;
-var InstruccionMaxDuration;
-var InstruccionComponents;
 function InstruccionRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -557,7 +516,6 @@ function InstruccionRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function InstruccionRoutineEachFrame() {
   return async function () {
@@ -637,7 +595,6 @@ function InstruccionRoutineEachFrame() {
   };
 }
 
-
 function InstruccionRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Instruccion' ---
@@ -659,10 +616,6 @@ function InstruccionRoutineEnd(snapshot) {
   }
 }
 
-
-var condicionesMaxDurationReached;
-var condicionesMaxDuration;
-var condicionesComponents;
 function condicionesRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -689,7 +642,6 @@ function condicionesRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function condicionesRoutineEachFrame() {
   return async function () {
@@ -725,7 +677,6 @@ function condicionesRoutineEachFrame() {
   };
 }
 
-
 function condicionesRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'condiciones' ---
@@ -746,8 +697,6 @@ function condicionesRoutineEnd(snapshot) {
   }
 }
 
-
-var fase_prueba;
 function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
   return async function() {
     TrialHandler.fromSnapshot(snapshot); // update internal variables (.thisN etc) of the loop
@@ -784,7 +733,6 @@ function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
   }
 }
 
-
 async function fase_pruebaLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(fase_prueba);
@@ -795,7 +743,6 @@ async function fase_pruebaLoopEnd() {
     currentLoop = psychoJS.experiment;  // so we use addData from the experiment
   return Scheduler.Event.NEXT;
 }
-
 
 function fase_pruebaLoopEndIteration(scheduler, snapshot) {
   // ------Prepare for next entry------
@@ -816,8 +763,6 @@ function fase_pruebaLoopEndIteration(scheduler, snapshot) {
   };
 }
 
-
-var fase_testeo;
 function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
   return async function() {
     TrialHandler.fromSnapshot(snapshot); // update internal variables (.thisN etc) of the loop
@@ -854,7 +799,6 @@ function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
   }
 }
 
-
 async function fase_testeoLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(fase_testeo);
@@ -865,7 +809,6 @@ async function fase_testeoLoopEnd() {
     currentLoop = psychoJS.experiment;  // so we use addData from the experiment
   return Scheduler.Event.NEXT;
 }
-
 
 function fase_testeoLoopEndIteration(scheduler, snapshot) {
   // ------Prepare for next entry------
@@ -886,10 +829,6 @@ function fase_testeoLoopEndIteration(scheduler, snapshot) {
   };
 }
 
-
-var rutina_fixMaxDurationReached;
-var rutina_fixMaxDuration;
-var rutina_fixComponents;
 function rutina_fixRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -918,8 +857,6 @@ function rutina_fixRoutineBegin(snapshot) {
   }
 }
 
-
-var frameRemains;
 function rutina_fixRoutineEachFrame() {
   return async function () {
     //--- Loop for each frame of Routine 'rutina_fix' ---
@@ -979,7 +916,6 @@ function rutina_fixRoutineEachFrame() {
   };
 }
 
-
 function rutina_fixRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'rutina_fix' ---
@@ -1003,14 +939,6 @@ function rutina_fixRoutineEnd(snapshot) {
   }
 }
 
-
-var trial_pruebaMaxDurationReached;
-var red_dots;
-var blue_dots;
-var correctAns;
-var _resp_ptos_allKeys;
-var trial_pruebaMaxDuration;
-var trial_pruebaComponents;
 function trial_pruebaRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1101,7 +1029,6 @@ function trial_pruebaRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function trial_pruebaRoutineEachFrame() {
   return async function () {
@@ -1197,7 +1124,6 @@ function trial_pruebaRoutineEachFrame() {
   };
 }
 
-
 function trial_pruebaRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'trial_prueba' ---
@@ -1254,12 +1180,6 @@ function trial_pruebaRoutineEnd(snapshot) {
   }
 }
 
-
-var feedbackMaxDurationReached;
-var performance_score;
-var feedbackText;
-var feedbackMaxDuration;
-var feedbackComponents;
 function feedbackRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1333,7 +1253,6 @@ function feedbackRoutineBegin(snapshot) {
   }
 }
 
-
 function feedbackRoutineEachFrame() {
   return async function () {
     //--- Loop for each frame of Routine 'feedback' ---
@@ -1388,7 +1307,6 @@ function feedbackRoutineEachFrame() {
   };
 }
 
-
 function feedbackRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'feedback' ---
@@ -1409,11 +1327,6 @@ function feedbackRoutineEnd(snapshot) {
   }
 }
 
-
-var Instrucciones_testeoMaxDurationReached;
-var _Key_instrucciones_test_allKeys;
-var Instrucciones_testeoMaxDuration;
-var Instrucciones_testeoComponents;
 function Instrucciones_testeoRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1445,7 +1358,6 @@ function Instrucciones_testeoRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function Instrucciones_testeoRoutineEachFrame() {
   return async function () {
@@ -1525,7 +1437,6 @@ function Instrucciones_testeoRoutineEachFrame() {
   };
 }
 
-
 function Instrucciones_testeoRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'Instrucciones_testeo' ---
@@ -1547,11 +1458,6 @@ function Instrucciones_testeoRoutineEnd(snapshot) {
   }
 }
 
-
-var trial_testeoMaxDurationReached;
-var _resp_testeo_allKeys;
-var trial_testeoMaxDuration;
-var trial_testeoComponents;
 function trial_testeoRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1658,7 +1564,6 @@ function trial_testeoRoutineBegin(snapshot) {
   }
 }
 
-
 function trial_testeoRoutineEachFrame() {
   return async function () {
     //--- Loop for each frame of Routine 'trial_testeo' ---
@@ -1753,7 +1658,6 @@ function trial_testeoRoutineEachFrame() {
   };
 }
 
-
 function trial_testeoRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'trial_testeo' ---
@@ -1802,12 +1706,6 @@ function trial_testeoRoutineEnd(snapshot) {
   }
 }
 
-
-var EscalaOCMaxDurationReached;
-var texto_final;
-var _key_conf_allKeys;
-var EscalaOCMaxDuration;
-var EscalaOCComponents;
 function EscalaOCRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -1865,7 +1763,6 @@ function EscalaOCRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function EscalaOCRoutineEachFrame() {
   return async function () {
@@ -1945,10 +1842,6 @@ function EscalaOCRoutineEachFrame() {
   };
 }
 
-
-var ckey;
-var level;
-var label;
 function EscalaOCRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'EscalaOC' ---
@@ -2031,10 +1924,6 @@ function EscalaOCRoutineEnd(snapshot) {
   }
 }
 
-
-var despedidaMaxDurationReached;
-var despedidaMaxDuration;
-var despedidaComponents;
 function despedidaRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -2061,7 +1950,6 @@ function despedidaRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function despedidaRoutineEachFrame() {
   return async function () {
@@ -2096,7 +1984,6 @@ function despedidaRoutineEachFrame() {
     }
   };
 }
-
 
 function despedidaRoutineEnd(snapshot) {
   return async function () {
@@ -2147,14 +2034,12 @@ function despedidaRoutineEnd(snapshot) {
   }
 }
 
-
 function importConditions(currentLoop) {
   return async function () {
     psychoJS.importAttributes(currentLoop.getCurrentTrial());
     return Scheduler.Event.NEXT;
     };
 }
-
 
 async function quitPsychoJS(message, isCompleted) {
   // Check for and save orphaned data
