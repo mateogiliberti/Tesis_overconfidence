@@ -314,7 +314,7 @@ async function experimentInit() {
   testeo_instrucciones = new visual.TextStim({
     win: psychoJS.window,
     name: 'testeo_instrucciones',
-    text: 'Fin de la Etapa 1.\n\nA partir de ahora comienza la segunda etapa. La tarea visual sigue siendo la misma: indicar si hay más puntos rojos o azules usando las teclas N y C, respectivamente. \nPero a diferencia de la etapa anterior, ya NO recibirás feedback sobre tu desempeño al final de los bloques.  En su lugar, te pediremos que evalúes tu Nivel de Confianza después de cada decisión.\n Es decir, tendrás que indicarnos qué tan seguro/a estás de que tu respuesta anterior fue correcta o incorrecta.\n\nPresiona la BARRA ESPACIADORA para comenzar.\n',
+    text: 'Fin de la Etapa 1.\n\nA partir de ahora comienza la segunda etapa. La tarea visual sigue siendo la misma: indicar si hay más puntos azules o rojos usando las teclas C y N, respectivamente. \nPero a diferencia de la etapa anterior, ya NO recibirás feedback sobre tu desempeño al final de los bloques.  En su lugar, te pediremos que evalúes tu Nivel de Confianza después de cada decisión.\n Es decir, tendrás que indicarnos qué tan seguro/a estás de que tu respuesta anterior fue correcta o incorrecta.\n\nPresiona la BARRA ESPACIADORA para comenzar.\n',
     font: 'Arial',
     units: undefined, 
     pos: [0, 0], draggable: false, height: 0.045,  wrapWidth: undefined, ori: 0.0,
