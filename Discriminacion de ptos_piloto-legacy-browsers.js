@@ -2113,6 +2113,42 @@ function despedidaRoutineBegin(snapshot) {
     routineTimer.reset();
     despedidaMaxDurationReached = false;
     // update component parameters for each repeat
+    // --- CÓDIGO DE GUARDADO (DataPipe) ---
+    
+    // 1. Generar nombre de archivo
+    var filename = expInfo['Id'] + "_" + expInfo['date'] + ".csv";
+    
+    // 2. Extraer datos del experimento
+    var dataContent = psychoJS.experiment._trialsData;
+    var dataJSON = JSON.stringify(dataContent);
+    
+    // 3. Enviar a DataPipe con TU ID REAL
+    fetch("https://pipe.jspsych.org/api/data/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+        },
+        body: JSON.stringify({
+            experimentID: "ASnLrtHTzzul", // <-- AQUÍ PUSE TU ID REAL
+            filename: filename,
+            data: dataJSON,
+        }),
+    }).then(function(response) {
+        console.log("Datos enviados. Status:", response.status);
+        // Esperamos 10 segundos exactos y redirige al forms de la escala OC
+        setTimeout(function() {
+            window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7";
+        }, 10000);
+    }).catch(function(error) {
+        console.log("Error al enviar:", error);
+        setTimeout(function() {
+            window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7";
+        }, 10000);
+    });
+    
+    // Mensaje de control
+    console.log("Guardando datos para ID: ASnLrtHTzzul");
     psychoJS.experiment.addData('despedida.started', globalClock.getTime());
     despedidaMaxDuration = null
     // keep track of which components have finished
@@ -2187,42 +2223,6 @@ function despedidaRoutineEnd(snapshot) {
       }
     });
     psychoJS.experiment.addData('despedida.stopped', globalClock.getTime());
-    // --- CÓDIGO DE GUARDADO (DataPipe) ---
-    
-    // 1. Generar nombre de archivo
-    var filename = expInfo['Id'] + "_" + expInfo['date'] + ".csv";
-    
-    // 2. Extraer datos del experimento
-    var dataContent = psychoJS.experiment._trialsData;
-    var dataJSON = JSON.stringify(dataContent);
-    
-    // 3. Enviar a DataPipe con TU ID REAL
-    fetch("https://pipe.jspsych.org/api/data/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-        },
-        body: JSON.stringify({
-            experimentID: "ASnLrtHTzzul", // <-- AQUÍ PUSE TU ID REAL
-            filename: filename,
-            data: dataJSON,
-        }),
-    }).then(function(response) {
-        console.log("Datos enviados. Status:", response.status);
-        // Esperamos 10 segundos exactos y redirige al forms de la escala OC
-        setTimeout(function() {
-            window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7";
-        }, 10000);
-    }).catch(function(error) {
-        console.log("Error al enviar:", error);
-        setTimeout(function() {
-            window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7";
-        }, 10000);
-    });
-    
-    // Mensaje de control
-    console.log("Guardando datos para ID: ASnLrtHTzzul");
     // the Routine "despedida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
