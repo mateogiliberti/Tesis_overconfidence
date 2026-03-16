@@ -1,4 +1,4 @@
-/************************************* 
+﻿/************************************* 
  * Discriminacion De Ptos_Final *
  *************************************/
 
@@ -140,6 +140,7 @@ var trial_pruebaClock;
 var resp_ptos;
 var feedbackClock;
 var Feedback;
+var key_resp_feedback;
 var Instrucciones_testeoClock;
 var testeo_instrucciones;
 var Key_instrucciones_test;
@@ -149,6 +150,7 @@ var EscalaOCClock;
 var Escala_confianza;
 var key_conf;
 var despedidaClock;
+var text_despedida;
 var globalClock;
 var routineTimer;
 async function experimentInit() {
@@ -236,7 +238,7 @@ async function experimentInit() {
       
       // TEXTO CORTO (LEYENDA)
       txt_leyenda_breve = 
-      "Indica tu nivel de confianza:\n" +
+      "Indica tu nivel de confianza:\n\n" +
       "1: Seguramente Incorrecto\n" +
       "2: Probablemente Incorrecto\n" +
       "3: Tal vez Incorrecto\n\n" +
@@ -256,7 +258,7 @@ async function experimentInit() {
   
       // TEXTO CORTO REVERSO
       txt_leyenda_breve = 
-      "Indica tu nivel de confianza:\n" +
+      "Indica tu nivel de confianza:\n\n" +
       "1: Seguramente Correcto\n" +
       "2: Probablemente Correcto\n" +
       "3: Tal vez Correcto\n\n" +
@@ -349,6 +351,8 @@ async function experimentInit() {
     depth: -1.0 
   });
   
+  key_resp_feedback = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
+  
   // Initialize components for Routine "Instrucciones_testeo"
   Instrucciones_testeoClock = new util.Clock();
   testeo_instrucciones = new visual.TextStim({
@@ -387,6 +391,18 @@ async function experimentInit() {
   
   // Initialize components for Routine "despedida"
   despedidaClock = new util.Clock();
+  text_despedida = new visual.TextStim({
+    win: psychoJS.window,
+    name: 'text_despedida',
+    text: '¡Has completado la tarea de percepción visual!\n\nAguarde unos segundos a ser redirigido a otra página para continuar con el experimento.',
+    font: 'Arial',
+    units: undefined, 
+    pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
+    languageStyle: 'LTR',
+    color: new util.Color('white'),  opacity: undefined,
+    depth: -1.0 
+  });
+  
   // Create some handy timers
   globalClock = new util.Clock();  // to track the time since experiment started
   routineTimer = new util.CountdownTimer();  // to track time remaining of each (non-slip) routine
@@ -1266,6 +1282,7 @@ function trial_pruebaRoutineEnd(snapshot) {
 var feedbackMaxDurationReached;
 var performance_score;
 var feedbackText;
+var _key_resp_feedback_allKeys;
 var feedbackMaxDuration;
 var feedbackComponents;
 function feedbackRoutineBegin(snapshot) {
@@ -1300,12 +1317,12 @@ function feedbackRoutineBegin(snapshot) {
             // Random entre 70 y 95
             performance_score = Math.floor(Math.random() * (95 - 70 + 1)) + 70;
             // CORREGIDO: Usamos concatenación (+) para que se vea el número sí o sí
-            feedbackText = 'Has alcanzado un desempeño equivalente a los mejores del grupo: ' + performance_score + '%.';
+            feedbackText = 'Has alcanzado un desempeño equivalente a los mejores del grupo: ' + performance_score + '%.\n\n(Presioná la barra espaciadora para continuar)';
         } else {
             // Random entre 37 y 62
             performance_score = Math.floor(Math.random() * (62 - 37 + 1)) + 37;
             // CORREGIDO: Usamos concatenación (+)
-            feedbackText = 'Tu rendimiento se ubica en un rango intermedio del grupo: ' + performance_score + '%.';
+            feedbackText = 'Tu rendimiento se ubica en un rango intermedio del grupo: ' + performance_score + '%.\n\n(Presioná la barra espaciadora para continuar)';
         }
     
         // --- ACTUALIZACIÓN VISUAL ---
@@ -1327,11 +1344,15 @@ function feedbackRoutineBegin(snapshot) {
         continueRoutine = false;
     }
     Feedback.setText(feedbackText);
+    key_resp_feedback.keys = undefined;
+    key_resp_feedback.rt = undefined;
+    _key_resp_feedback_allKeys = [];
     psychoJS.experiment.addData('feedback.started', globalClock.getTime());
     feedbackMaxDuration = null
     // keep track of which components have finished
     feedbackComponents = [];
     feedbackComponents.push(Feedback);
+    feedbackComponents.push(key_resp_feedback);
     
     for (const thisComponent of feedbackComponents)
       if ('status' in thisComponent)
@@ -1348,11 +1369,6 @@ function feedbackRoutineEachFrame() {
     t = feedbackClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
-    // Si la rutina está activa (no la saltamos), contar el tiempo
-    if (t > 3.0) {
-        continueRoutine = false; // Terminar después de 3 segundos
-    }
-    
     
     // *Feedback* updates
     if (t >= 0.0 && Feedback.status === PsychoJS.Status.NOT_STARTED) {
@@ -1366,6 +1382,35 @@ function feedbackRoutineEachFrame() {
     
     // if Feedback is active this frame...
     if (Feedback.status === PsychoJS.Status.STARTED) {
+    }
+    
+    
+    // *key_resp_feedback* updates
+    if (t >= 0.0 && key_resp_feedback.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      key_resp_feedback.tStart = t;  // (not accounting for frame time here)
+      key_resp_feedback.frameNStart = frameN;  // exact frame index
+      
+      // keyboard checking is just starting
+      psychoJS.window.callOnFlip(function() { key_resp_feedback.clock.reset(); });  // t=0 on next screen flip
+      psychoJS.window.callOnFlip(function() { key_resp_feedback.start(); }); // start on screen flip
+      psychoJS.window.callOnFlip(function() { key_resp_feedback.clearEvents(); });
+    }
+    
+    // if key_resp_feedback is active this frame...
+    if (key_resp_feedback.status === PsychoJS.Status.STARTED) {
+      let theseKeys = key_resp_feedback.getKeys({
+        keyList: typeof 'space' === 'string' ? ['space'] : 'space', 
+        waitRelease: false
+      });
+      _key_resp_feedback_allKeys = _key_resp_feedback_allKeys.concat(theseKeys);
+      if (_key_resp_feedback_allKeys.length > 0) {
+        key_resp_feedback.keys = _key_resp_feedback_allKeys[_key_resp_feedback_allKeys.length - 1].name;  // just the last key pressed
+        key_resp_feedback.rt = _key_resp_feedback_allKeys[_key_resp_feedback_allKeys.length - 1].rt;
+        key_resp_feedback.duration = _key_resp_feedback_allKeys[_key_resp_feedback_allKeys.length - 1].duration;
+        // a response ends the routine
+        continueRoutine = false;
+      }
     }
     
     // check for quit (typically the Esc key)
@@ -1405,6 +1450,18 @@ function feedbackRoutineEnd(snapshot) {
       }
     }
     psychoJS.experiment.addData('feedback.stopped', globalClock.getTime());
+    // update the trial handler
+    if (currentLoop instanceof MultiStairHandler) {
+      currentLoop.addResponse(key_resp_feedback.corr, level);
+    }
+    psychoJS.experiment.addData('key_resp_feedback.keys', key_resp_feedback.keys);
+    if (typeof key_resp_feedback.keys !== 'undefined') {  // we had a response
+        psychoJS.experiment.addData('key_resp_feedback.rt', key_resp_feedback.rt);
+        psychoJS.experiment.addData('key_resp_feedback.duration', key_resp_feedback.duration);
+        routineTimer.reset();
+        }
+    
+    key_resp_feedback.stop();
     // the Routine "feedback" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
@@ -2057,6 +2114,7 @@ function despedidaRoutineBegin(snapshot) {
     despedidaMaxDuration = null
     // keep track of which components have finished
     despedidaComponents = [];
+    despedidaComponents.push(text_despedida);
     
     for (const thisComponent of despedidaComponents)
       if ('status' in thisComponent)
@@ -2073,6 +2131,21 @@ function despedidaRoutineEachFrame() {
     t = despedidaClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
+    
+    // *text_despedida* updates
+    if (t >= 0.0 && text_despedida.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      text_despedida.tStart = t;  // (not accounting for frame time here)
+      text_despedida.frameNStart = frameN;  // exact frame index
+      
+      text_despedida.setAutoDraw(true);
+    }
+    
+    
+    // if text_despedida is active this frame...
+    if (text_despedida.status === PsychoJS.Status.STARTED) {
+    }
+    
     // check for quit (typically the Esc key)
     if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
       return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
@@ -2133,8 +2206,15 @@ function despedidaRoutineEnd(snapshot) {
         }),
     }).then(function(response) {
         console.log("Datos enviados. Status:", response.status);
+        // Esperamos 10 segundos exactos y redirige al forms de la escala OC
+        setTimeout(function() {
+            window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7";
+        }, 10000);
     }).catch(function(error) {
         console.log("Error al enviar:", error);
+        setTimeout(function() {
+            window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7";
+        }, 10000);
     });
     
     // Mensaje de control
