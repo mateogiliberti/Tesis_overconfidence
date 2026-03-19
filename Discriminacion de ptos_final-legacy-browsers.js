@@ -1235,7 +1235,7 @@ function trial_pruebaRoutineEnd(snapshot) {
     
     
     // Registramos cuál era la respuesta correcta ( 'n' o 'c' )
-    psychoJS.experiment.addData('correctAns', window.correctAns);
+    psychoJS.experiment.addData('correctAns', window.correctAns)
     
     // El componente de teclado del Builder se encargará de guardar 
     // qué tecla presionó el participante y si acertó (key_resp.corr),
@@ -1816,9 +1816,7 @@ function trial_testeoRoutineEnd(snapshot) {
     // Run 'End Routine' code from trial_testeo
     psychoJS.experiment.addData('correctAns', correctAns);
     
-    // Registramos el número de trial. 
-    // NOTA: Asegurate que 'fase_testeo' sea el nombre REAL de tu loop en el Builder.
-    psychoJS.experiment.addData('trial2Number', fase_testeo.thisN + 1);
+    
     // was no response the correct answer?!
     if (resp_testeo.keys === undefined) {
       if (['None','none',undefined].includes('correctAns')) {
@@ -2056,17 +2054,6 @@ function EscalaOCRoutineEnd(snapshot) {
     
     // Debug para que veas en la consola si funciona (F12)
     console.log(`Tecla: ${ckey} | Mapa: ${window.scale_order} | Nivel: ${level}`);
-    // update the trial handler
-    if (currentLoop instanceof MultiStairHandler) {
-      currentLoop.addResponse(key_conf.corr, level);
-    }
-    psychoJS.experiment.addData('key_conf.keys', key_conf.keys);
-    if (typeof key_conf.keys !== 'undefined') {  // we had a response
-        psychoJS.experiment.addData('key_conf.rt', key_conf.rt);
-        psychoJS.experiment.addData('key_conf.duration', key_conf.duration);
-        routineTimer.reset();
-        }
-    
     key_conf.stop();
     // the Routine "EscalaOC" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
@@ -2097,7 +2084,7 @@ function despedidaRoutineBegin(snapshot) {
     routineTimer.reset();
     despedidaMaxDurationReached = false;
     // update component parameters for each repeat
-    // --- CÓDIGO DE GUARDADO FINAL (Limpio y Ordenado) ---
+    // --- CÓDIGO DE GUARDADO FINAL (A medida para Mateo) ---
     
     var filename = expInfo['Id'] + "_" + expInfo['date'] + ".csv";
     var dataContent = psychoJS.experiment._trialsData;
@@ -2112,19 +2099,28 @@ function despedidaRoutineBegin(snapshot) {
             });
         });
     
-        // 1. LA ESCOBA: Terminamos de limpiar cualquier basura residual
+        // 1. LA ESCOBA: Eliminamos la basura de tiempos y contadores inútiles
         var cleanKeys = allKeys.filter(function(key) {
-            return !key.includes('.started') && !key.includes('.stopped') && !key.includes('.ran');
+            return !key.includes('.started') && 
+                   !key.includes('.stopped') && 
+                   !key.includes('.ran') &&
+                   !key.includes('.thisTrialN') && 
+                   !key.includes('.thisRepN') &&
+                   !key.includes('.thisIndex');
         });
     
-        // 2. LA LISTA VIP: ¡ACÁ ESTÁ TU ORDEN EXACTO!
-        // Orden: Datos Generales -> Contador -> Variables de Puntos -> Variables de Confianza -> Escalas
+        // 2. LA LISTA VIP: Con los nombres exactos de tu Excel
         var vipColumns = [
-            'Id', 'date', 'grupo', 'trial_absoluto', 
-            'loop_prueba.thisN', 'loop_testeo.thisN', // Para saber de qué fase es
+            'Id', 'date', 'group', 'assigned_group', 
+            'trial_absoluto', 'fase_prueba.thisN', 'fase_testeo.thisN', 
             'difficulty', 'dominant_color', 'dominant_count', 
-            'correctAns', 'resp_ptos.keys', 'resp_ptos.corr', 'resp_ptos.rt', 
-            'confidence_key', 'confidence_level', 'confidence_label', 'confidence_rt',
+            // Respuestas Fase 1 (Prueba)
+            'resp_ptos.keys', 'resp_ptos.corr', 'resp_ptos.rt', 
+            // Respuestas Fase 2 (Testeo)
+            'resp_testeo.keys', 'resp_testeo.corr', 'resp_testeo.rt', 
+            // Variables de Confianza
+            'confidence_key', 'confidence_level', 'confidence_label', 'key_conf.rt',
+            // Otros datos
             'scale_order'
         ];
         
@@ -2135,7 +2131,7 @@ function despedidaRoutineBegin(snapshot) {
             if (indexA !== -1 && indexB !== -1) return indexA - indexB; 
             if (indexA !== -1) return -1; 
             if (indexB !== -1) return 1;  
-            return 0; // Si hay alguna columna que no pusimos en la lista, la manda al final
+            return 0; // Lo que no esté en la lista (como el OS o el frameRate) va al final
         });
     
         // 3. ARMADO DEL EXCEL
@@ -2155,9 +2151,10 @@ function despedidaRoutineBegin(snapshot) {
         return csvString;
     }
     
-    // Ejecutamos y enviamos a DataPipe
+    // Ejecutamos la limpieza
     var finalCSV = cleanAndSortCSV(dataContent);
     
+    // Enviamos a DataPipe
     fetch("https://pipe.jspsych.org/api/data/", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "*/*" },
