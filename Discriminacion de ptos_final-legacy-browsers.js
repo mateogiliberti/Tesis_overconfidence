@@ -263,6 +263,9 @@ async function experimentInit() {
   window.txt_instrucciones_escala = txt_instrucciones_escala;
   window.txt_leyenda_breve = txt_leyenda_breve;
   
+  //Armamos la variable que cuenta el total de los trial
+  window.trial_tot = 0;
+  
   
   
   
@@ -321,6 +324,8 @@ async function experimentInit() {
       newDot.setAutoDraw(false);
       window.myDots.push(newDot);
   }
+  
+  
   resp_ptos = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
   // Initialize components for Routine "feedback"
@@ -428,7 +433,6 @@ function BienvenidaRoutineBegin(snapshot) {
     key_resp_2.keys = undefined;
     key_resp_2.rt = undefined;
     _key_resp_2_allKeys = [];
-    psychoJS.experiment.addData('Bienvenida.started', globalClock.getTime());
     BienvenidaMaxDuration = null
     // keep track of which components have finished
     BienvenidaComponents = [];
@@ -531,7 +535,6 @@ function BienvenidaRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('Bienvenida.stopped', globalClock.getTime());
     key_resp_2.stop();
     // the Routine "Bienvenida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
@@ -566,7 +569,6 @@ function InstruccionRoutineBegin(snapshot) {
     key_instrucciones.keys = undefined;
     key_instrucciones.rt = undefined;
     _key_instrucciones_allKeys = [];
-    psychoJS.experiment.addData('Instruccion.started', globalClock.getTime());
     InstruccionMaxDuration = null
     // keep track of which components have finished
     InstruccionComponents = [];
@@ -669,7 +671,6 @@ function InstruccionRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('Instruccion.stopped', globalClock.getTime());
     key_instrucciones.stop();
     // the Routine "Instruccion" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
@@ -700,7 +701,6 @@ function condicionesRoutineBegin(snapshot) {
     routineTimer.reset();
     condicionesMaxDurationReached = false;
     // update component parameters for each repeat
-    psychoJS.experiment.addData('condiciones.started', globalClock.getTime());
     condicionesMaxDuration = null
     // keep track of which components have finished
     condicionesComponents = [];
@@ -757,7 +757,6 @@ function condicionesRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('condiciones.stopped', globalClock.getTime());
     // the Routine "condiciones" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
@@ -778,7 +777,7 @@ function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
     // set up handler to look after randomisation of conditions etc
     fase_prueba = new TrialHandler({
       psychoJS: psychoJS,
-      nReps: 120, method: TrialHandler.Method.RANDOM,
+      nReps: 24, method: TrialHandler.Method.RANDOM,
       extraInfo: expInfo, originPath: undefined,
       trialList: undefined,
       seed: undefined, name: 'fase_prueba'
@@ -848,7 +847,7 @@ function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
     // set up handler to look after randomisation of conditions etc
     fase_testeo = new TrialHandler({
       psychoJS: psychoJS,
-      nReps: 108, method: TrialHandler.Method.RANDOM,
+      nReps: 5, method: TrialHandler.Method.RANDOM,
       extraInfo: expInfo, originPath: undefined,
       trialList: undefined,
       seed: undefined, name: 'fase_testeo'
@@ -927,7 +926,6 @@ function rutina_fixRoutineBegin(snapshot) {
     routineTimer.add(0.500000);
     rutina_fixMaxDurationReached = false;
     // update component parameters for each repeat
-    psychoJS.experiment.addData('rutina_fix.started', globalClock.getTime());
     rutina_fixMaxDuration = null
     // keep track of which components have finished
     rutina_fixComponents = [];
@@ -1011,7 +1009,6 @@ function rutina_fixRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('rutina_fix.stopped', globalClock.getTime());
     if (routineForceEnded) {
         routineTimer.reset();} else if (rutina_fixMaxDurationReached) {
         rutina_fixClock.add(rutina_fixMaxDuration);
@@ -1030,7 +1027,6 @@ function rutina_fixRoutineEnd(snapshot) {
 var trial_pruebaMaxDurationReached;
 var red_dots;
 var blue_dots;
-var correctAns;
 var _resp_ptos_allKeys;
 var trial_pruebaMaxDuration;
 var trial_pruebaComponents;
@@ -1062,16 +1058,16 @@ function trial_pruebaRoutineBegin(snapshot) {
     util.shuffle(possible_colors);
     var dominant_color = possible_colors[0];
     
-    var red_dots, blue_dots, correctAns;
+    var red_dots, blue_dots;
     
     if (dominant_color === 'Red') {
         red_dots = dominant_count;
         blue_dots = window.nDots - dominant_count;
-        correctAns = 'n'; 
+        window.correctAns = 'n'; 
     } else {
         blue_dots = dominant_count;
         red_dots = window.nDots - dominant_count;
-        correctAns = 'c'; 
+        window.correctAns = 'c'; 
     }
     
     // --- 2. Asignación de Coordenadas y Color ---
@@ -1107,11 +1103,14 @@ function trial_pruebaRoutineBegin(snapshot) {
     psychoJS.experiment.addData('difficulty', difficulty);
     psychoJS.experiment.addData('dominant_color', dominant_color);
     psychoJS.experiment.addData('dominant_count', dominant_count);
-    psychoJS.experiment.addData('correctAns', correctAns);
+    
+    //Vamos sumando los trial y guradamos la variable 
+    window.trial_tot += 1;
+    psychoJS.experiment.addData('trial_tot', window.trial_tot);
+    
     resp_ptos.keys = undefined;
     resp_ptos.rt = undefined;
     _resp_ptos_allKeys = [];
-    psychoJS.experiment.addData('trial_prueba.started', globalClock.getTime());
     trial_pruebaMaxDuration = null
     // keep track of which components have finished
     trial_pruebaComponents = [];
@@ -1174,7 +1173,7 @@ function trial_pruebaRoutineEachFrame() {
     // if resp_ptos is active this frame...
     if (resp_ptos.status === PsychoJS.Status.STARTED) {
       let theseKeys = resp_ptos.getKeys({
-        keyList: typeof ['c','n'] === 'string' ? [['c','n']] : ['c','n'], 
+        keyList: typeof ['n','c'] === 'string' ? [['n','c']] : ['n','c'], 
         waitRelease: false
       });
       _resp_ptos_allKeys = _resp_ptos_allKeys.concat(theseKeys);
@@ -1229,7 +1228,6 @@ function trial_pruebaRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('trial_prueba.stopped', globalClock.getTime());
     // Run 'End Routine' code from trial_prueba
     for (var i = 0; i < window.nDots; i++) {
         window.myDots[i].setAutoDraw(false);
@@ -1237,7 +1235,7 @@ function trial_pruebaRoutineEnd(snapshot) {
     
     
     // Registramos cuál era la respuesta correcta ( 'n' o 'c' )
-    psychoJS.experiment.addData('correctAns', correctAns);
+    psychoJS.experiment.addData('correctAns', window.correctAns);
     
     // El componente de teclado del Builder se encargará de guardar 
     // qué tecla presionó el participante y si acertó (key_resp.corr),
@@ -1332,9 +1330,8 @@ function feedbackRoutineBegin(snapshot) {
         }
         
         // Guardar datos
-        psychoJS.experiment.addData('block_end_trial', trialNumber);
-        psychoJS.experiment.addData('feedback_group', current_group);
-        psychoJS.experiment.addData('feedback_score_shown', performance_score);
+        //psychoJS.experiment.addData('feedback_group', current_group);
+        //psychoJS.experiment.addData('feedback_score_shown', performance_score);
         
         continueRoutine = true;
     
@@ -1346,7 +1343,6 @@ function feedbackRoutineBegin(snapshot) {
     key_resp_feedback.keys = undefined;
     key_resp_feedback.rt = undefined;
     _key_resp_feedback_allKeys = [];
-    psychoJS.experiment.addData('feedback.started', globalClock.getTime());
     feedbackMaxDuration = null
     // keep track of which components have finished
     feedbackComponents = [];
@@ -1449,18 +1445,6 @@ function feedbackRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('feedback.stopped', globalClock.getTime());
-    // update the trial handler
-    if (currentLoop instanceof MultiStairHandler) {
-      currentLoop.addResponse(key_resp_feedback.corr, level);
-    }
-    psychoJS.experiment.addData('key_resp_feedback.keys', key_resp_feedback.keys);
-    if (typeof key_resp_feedback.keys !== 'undefined') {  // we had a response
-        psychoJS.experiment.addData('key_resp_feedback.rt', key_resp_feedback.rt);
-        psychoJS.experiment.addData('key_resp_feedback.duration', key_resp_feedback.duration);
-        routineTimer.reset();
-        }
-    
     key_resp_feedback.stop();
     // the Routine "feedback" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
@@ -1495,7 +1479,6 @@ function Instrucciones_testeoRoutineBegin(snapshot) {
     Key_instrucciones_test.keys = undefined;
     Key_instrucciones_test.rt = undefined;
     _Key_instrucciones_test_allKeys = [];
-    psychoJS.experiment.addData('Instrucciones_testeo.started', globalClock.getTime());
     Instrucciones_testeoMaxDuration = null
     // keep track of which components have finished
     Instrucciones_testeoComponents = [];
@@ -1598,7 +1581,6 @@ function Instrucciones_testeoRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('Instrucciones_testeo.stopped', globalClock.getTime());
     Key_instrucciones_test.stop();
     // the Routine "Instrucciones_testeo" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
@@ -1613,6 +1595,7 @@ function Instrucciones_testeoRoutineEnd(snapshot) {
 
 
 var trial_testeoMaxDurationReached;
+var correctAns;
 var _resp_testeo_allKeys;
 var trial_testeoMaxDuration;
 var trial_testeoComponents;
@@ -1705,10 +1688,14 @@ function trial_testeoRoutineBegin(snapshot) {
     if (typeof window.group !== 'undefined') {
         psychoJS.experiment.addData('group', window.group);
     }
+    
+    //Vamos sumando los trial y guradamos la variable 
+    window.trial_tot += 1;
+    psychoJS.experiment.addData('trial_tot', window.trial_tot);
+    
     resp_testeo.keys = undefined;
     resp_testeo.rt = undefined;
     _resp_testeo_allKeys = [];
-    psychoJS.experiment.addData('trial_testeo.started', globalClock.getTime());
     trial_testeoMaxDuration = null
     // keep track of which components have finished
     trial_testeoComponents = [];
@@ -1826,7 +1813,6 @@ function trial_testeoRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('trial_testeo.stopped', globalClock.getTime());
     // Run 'End Routine' code from trial_testeo
     psychoJS.experiment.addData('correctAns', correctAns);
     
@@ -1915,7 +1901,6 @@ function EscalaOCRoutineBegin(snapshot) {
     key_conf.keys = undefined;
     key_conf.rt = undefined;
     _key_conf_allKeys = [];
-    psychoJS.experiment.addData('EscalaOC.started', globalClock.getTime());
     EscalaOCMaxDuration = null
     // keep track of which components have finished
     EscalaOCComponents = [];
@@ -2021,7 +2006,6 @@ function EscalaOCRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('EscalaOC.stopped', globalClock.getTime());
     // Run 'End Routine' code from escala_testeo
     // --- CÓDIGO CORREGIDO PARA GUARDAR DATOS DE CONFIANZA ---
     
@@ -2113,43 +2097,82 @@ function despedidaRoutineBegin(snapshot) {
     routineTimer.reset();
     despedidaMaxDurationReached = false;
     // update component parameters for each repeat
-    // --- CÓDIGO DE GUARDADO (DataPipe) ---
+    // --- CÓDIGO DE GUARDADO FINAL (Limpio y Ordenado) ---
     
-    // 1. Generar nombre de archivo
     var filename = expInfo['Id'] + "_" + expInfo['date'] + ".csv";
-    
-    // 2. Extraer datos del experimento
     var dataContent = psychoJS.experiment._trialsData;
-    var dataJSON = JSON.stringify(dataContent);
     
-    // 3. Enviar a DataPipe con TU ID REAL
+    function cleanAndSortCSV(jsonArray) {
+        if (!jsonArray || jsonArray.length === 0) return "";
+        
+        var allKeys = [];
+        jsonArray.forEach(function(row) {
+            Object.keys(row).forEach(function(key) {
+                if (allKeys.indexOf(key) === -1) allKeys.push(key);
+            });
+        });
+    
+        // 1. LA ESCOBA: Terminamos de limpiar cualquier basura residual
+        var cleanKeys = allKeys.filter(function(key) {
+            return !key.includes('.started') && !key.includes('.stopped') && !key.includes('.ran');
+        });
+    
+        // 2. LA LISTA VIP: ¡ACÁ ESTÁ TU ORDEN EXACTO!
+        // Orden: Datos Generales -> Contador -> Variables de Puntos -> Variables de Confianza -> Escalas
+        var vipColumns = [
+            'Id', 'date', 'grupo', 'trial_absoluto', 
+            'loop_prueba.thisN', 'loop_testeo.thisN', // Para saber de qué fase es
+            'difficulty', 'dominant_color', 'dominant_count', 
+            'correctAns', 'resp_ptos.keys', 'resp_ptos.corr', 'resp_ptos.rt', 
+            'confidence_key', 'confidence_level', 'confidence_label', 'confidence_rt',
+            'scale_order'
+        ];
+        
+        // Motor de ordenamiento
+        cleanKeys.sort(function(a, b) {
+            var indexA = vipColumns.indexOf(a);
+            var indexB = vipColumns.indexOf(b);
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB; 
+            if (indexA !== -1) return -1; 
+            if (indexB !== -1) return 1;  
+            return 0; // Si hay alguna columna que no pusimos en la lista, la manda al final
+        });
+    
+        // 3. ARMADO DEL EXCEL
+        var csvString = cleanKeys.join(",") + "\n";
+        jsonArray.forEach(function(row) {
+            var rowValues = cleanKeys.map(function(key) {
+                var val = row[key];
+                if (val === null || val === undefined) return "";
+                var strVal = String(val);
+                if (strVal.includes(",") || strVal.includes("\n") || strVal.includes('"')) {
+                    strVal = '"' + strVal.replace(/"/g, '""') + '"';
+                }
+                return strVal;
+            });
+            csvString += rowValues.join(",") + "\n";
+        });
+        return csvString;
+    }
+    
+    // Ejecutamos y enviamos a DataPipe
+    var finalCSV = cleanAndSortCSV(dataContent);
+    
     fetch("https://pipe.jspsych.org/api/data/", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-        },
+        headers: { "Content-Type": "application/json", Accept: "*/*" },
         body: JSON.stringify({
-            experimentID: "ASnLrtHTzzul", // <-- AQUÍ PUSE TU ID REAL
+            experimentID: "ASnLrtHTzzul", 
             filename: filename,
-            data: dataJSON,
+            data: finalCSV, 
         }),
     }).then(function(response) {
-        console.log("Datos enviados. Status:", response.status);
-        // Esperamos 10 segundos exactos y redirige al forms de la escala OC
-        setTimeout(function() {
-            window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7";
-        }, 10000);
+        console.log("Éxito. Status:", response.status);
+        setTimeout(function() { window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7"; }, 8000); 
     }).catch(function(error) {
-        console.log("Error al enviar:", error);
-        setTimeout(function() {
-            window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7";
-        }, 10000);
+        console.log("Error:", error);
+        setTimeout(function() { window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7"; }, 8000);
     });
-    
-    // Mensaje de control
-    console.log("Guardando datos para ID: ASnLrtHTzzul");
-    psychoJS.experiment.addData('despedida.started', globalClock.getTime());
     despedidaMaxDuration = null
     // keep track of which components have finished
     despedidaComponents = [];
@@ -2222,7 +2245,6 @@ function despedidaRoutineEnd(snapshot) {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('despedida.stopped', globalClock.getTime());
     // the Routine "despedida" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
