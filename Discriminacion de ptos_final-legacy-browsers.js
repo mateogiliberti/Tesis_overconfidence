@@ -1181,12 +1181,6 @@ function trial_pruebaRoutineEachFrame() {
         resp_ptos.keys = _resp_ptos_allKeys[_resp_ptos_allKeys.length - 1].name;  // just the last key pressed
         resp_ptos.rt = _resp_ptos_allKeys[_resp_ptos_allKeys.length - 1].rt;
         resp_ptos.duration = _resp_ptos_allKeys[_resp_ptos_allKeys.length - 1].duration;
-        // was this correct?
-        if (resp_ptos.keys == 'correctAns') {
-            resp_ptos.corr = 1;
-        } else {
-            resp_ptos.corr = 0;
-        }
         // a response ends the routine
         continueRoutine = false;
       }
@@ -1242,21 +1236,11 @@ function trial_pruebaRoutineEnd(snapshot) {
     // pero aquí guardamos explícitamente qué DEBÍA responder.
     // Registramos cuál era la respuesta correcta
     
-    // was no response the correct answer?!
-    if (resp_ptos.keys === undefined) {
-      if (['None','none',undefined].includes('correctAns')) {
-         resp_ptos.corr = 1;  // correct non-response
-      } else {
-         resp_ptos.corr = 0;  // failed to respond (incorrectly)
-      }
-    }
-    // store data for current loop
     // update the trial handler
     if (currentLoop instanceof MultiStairHandler) {
       currentLoop.addResponse(resp_ptos.corr, level);
     }
     psychoJS.experiment.addData('resp_ptos.keys', resp_ptos.keys);
-    psychoJS.experiment.addData('resp_ptos.corr', resp_ptos.corr);
     if (typeof resp_ptos.keys !== 'undefined') {  // we had a response
         psychoJS.experiment.addData('resp_ptos.rt', resp_ptos.rt);
         psychoJS.experiment.addData('resp_ptos.duration', resp_ptos.duration);
@@ -1595,7 +1579,6 @@ function Instrucciones_testeoRoutineEnd(snapshot) {
 
 
 var trial_testeoMaxDurationReached;
-var correctAns;
 var _resp_testeo_allKeys;
 var trial_testeoMaxDuration;
 var trial_testeoComponents;
@@ -1630,16 +1613,16 @@ function trial_testeoRoutineBegin(snapshot) {
     var dominant_color = possible_colors[0];
     
     // Definir contadores y respuesta correcta
-    var red_dots, blue_dots, correctAns;
+    var red_dots, blue_dots;
     
     if (dominant_color === 'Red') {
         red_dots = dominant_count;
         blue_dots = window.nDots - dominant_count;
-        correctAns = 'n'; 
+        window.correctAns = 'n'; 
     } else {
         blue_dots = dominant_count;
         red_dots = window.nDots - dominant_count;
-        correctAns = 'c'; 
+        window.correctAns = 'c'; 
     }
     
     // 2. ACTUALIZACIÓN DE LOS PUNTOS EXISTENTES
@@ -1766,12 +1749,6 @@ function trial_testeoRoutineEachFrame() {
         resp_testeo.keys = _resp_testeo_allKeys[_resp_testeo_allKeys.length - 1].name;  // just the last key pressed
         resp_testeo.rt = _resp_testeo_allKeys[_resp_testeo_allKeys.length - 1].rt;
         resp_testeo.duration = _resp_testeo_allKeys[_resp_testeo_allKeys.length - 1].duration;
-        // was this correct?
-        if (resp_testeo.keys == 'correctAns') {
-            resp_testeo.corr = 1;
-        } else {
-            resp_testeo.corr = 0;
-        }
         // a response ends the routine
         continueRoutine = false;
       }
@@ -1814,24 +1791,14 @@ function trial_testeoRoutineEnd(snapshot) {
       }
     });
     // Run 'End Routine' code from trial_testeo
-    psychoJS.experiment.addData('correctAns', correctAns);
+    psychoJS.experiment.addData('correctAns', window.correctAns);
     
     
-    // was no response the correct answer?!
-    if (resp_testeo.keys === undefined) {
-      if (['None','none',undefined].includes('correctAns')) {
-         resp_testeo.corr = 1;  // correct non-response
-      } else {
-         resp_testeo.corr = 0;  // failed to respond (incorrectly)
-      }
-    }
-    // store data for current loop
     // update the trial handler
     if (currentLoop instanceof MultiStairHandler) {
       currentLoop.addResponse(resp_testeo.corr, level);
     }
     psychoJS.experiment.addData('resp_testeo.keys', resp_testeo.keys);
-    psychoJS.experiment.addData('resp_testeo.corr', resp_testeo.corr);
     if (typeof resp_testeo.keys !== 'undefined') {  // we had a response
         psychoJS.experiment.addData('resp_testeo.rt', resp_testeo.rt);
         psychoJS.experiment.addData('resp_testeo.duration', resp_testeo.duration);
@@ -2084,7 +2051,7 @@ function despedidaRoutineBegin(snapshot) {
     routineTimer.reset();
     despedidaMaxDurationReached = false;
     // update component parameters for each repeat
-    // --- CÓDIGO DE GUARDADO FINAL (A medida para Mateo) ---
+    // --- CÓDIGO DE GUARDADO FINAL ---
     
     var filename = expInfo['Id'] + "_" + expInfo['date'] + ".csv";
     var dataContent = psychoJS.experiment._trialsData;
@@ -2099,25 +2066,30 @@ function despedidaRoutineBegin(snapshot) {
             });
         });
     
-        // 1. LA ESCOBA: Eliminamos la basura de tiempos y contadores inútiles
+        // 1. LA SÚPER ESCOBA: Eliminamos tiempos, contadores, metadatos y duraciones
         var cleanKeys = allKeys.filter(function(key) {
             return !key.includes('.started') && 
                    !key.includes('.stopped') && 
                    !key.includes('.ran') &&
                    !key.includes('.thisTrialN') && 
                    !key.includes('.thisRepN') &&
-                   !key.includes('.thisIndex');
+                   !key.includes('.thisIndex') &&
+                   !key.includes('.duration') &&     // Adiós duración de la tecla
+                   !key.includes('expName') &&       // Adiós nombre del exp
+                   !key.includes('psychopyVersion') && // Adiós versión
+                   !key.includes('OS') &&            // Adiós sistema operativo
+                   !key.includes('frameRate');       // Adiós monitor
         });
     
-        // 2. LA LISTA VIP: Con los nombres exactos de tu Excel
+        // 2. LA LISTA VIP: Orden a medida sin los ceros de .corr
         var vipColumns = [
-            'Id', 'date', 'group', 'assigned_group', 
-            'trial_absoluto', 'fase_prueba.thisN', 'fase_testeo.thisN', 
-            'difficulty', 'dominant_color', 'dominant_count', 
-            // Respuestas Fase 1 (Prueba)
-            'resp_ptos.keys', 'resp_ptos.corr', 'resp_ptos.rt', 
-            // Respuestas Fase 2 (Testeo)
-            'resp_testeo.keys', 'resp_testeo.corr', 'resp_testeo.rt', 
+            'Id', 'date', 'grupo_asignado', 
+            'trial_tot', 'fase_prueba.thisN', 'fase_testeo.thisN', 
+            'difficulty', 'dominant_color', 'correctAns', 'dominant_count', 
+            // Respuestas Fase 1 (Prueba) - Sin el .corr
+            'resp_ptos.keys', 'resp_ptos.rt', 
+            // Respuestas Fase 2 (Testeo) - Sin el .corr
+            'resp_testeo.keys', 'resp_testeo.rt', 
             // Variables de Confianza
             'confidence_key', 'confidence_level', 'confidence_label', 'key_conf.rt',
             // Otros datos
@@ -2131,7 +2103,7 @@ function despedidaRoutineBegin(snapshot) {
             if (indexA !== -1 && indexB !== -1) return indexA - indexB; 
             if (indexA !== -1) return -1; 
             if (indexB !== -1) return 1;  
-            return 0; // Lo que no esté en la lista (como el OS o el frameRate) va al final
+            return 0; 
         });
     
         // 3. ARMADO DEL EXCEL
@@ -2165,10 +2137,10 @@ function despedidaRoutineBegin(snapshot) {
         }),
     }).then(function(response) {
         console.log("Éxito. Status:", response.status);
-        setTimeout(function() { window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7"; }, 8000); 
+        setTimeout(function() { window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7"; }, 6000); 
     }).catch(function(error) {
         console.log("Error:", error);
-        setTimeout(function() { window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7"; }, 8000);
+        setTimeout(function() { window.location.href = "https://forms.gle/bLX1RgC5yQ6jy9QE7"; }, 6000);
     });
     despedidaMaxDuration = null
     // keep track of which components have finished
