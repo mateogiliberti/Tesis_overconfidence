@@ -129,7 +129,7 @@ var txt_leyenda_breve;
 var rutina_fixClock;
 var stim_cruz;
 var trial_pruebaClock;
-var resp_ptos;
+var resp_prueba;
 var feedbackClock;
 var Feedback;
 var key_resp_feedback;
@@ -326,7 +326,7 @@ async function experimentInit() {
   }
   
   
-  resp_ptos = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
+  resp_prueba = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
   // Initialize components for Routine "feedback"
   feedbackClock = new util.Clock();
@@ -777,7 +777,7 @@ function fase_pruebaLoopBegin(fase_pruebaLoopScheduler, snapshot) {
     // set up handler to look after randomisation of conditions etc
     fase_prueba = new TrialHandler({
       psychoJS: psychoJS,
-      nReps: 24, method: TrialHandler.Method.RANDOM,
+      nReps: 120, method: TrialHandler.Method.RANDOM,
       extraInfo: expInfo, originPath: undefined,
       trialList: undefined,
       seed: undefined, name: 'fase_prueba'
@@ -847,7 +847,7 @@ function fase_testeoLoopBegin(fase_testeoLoopScheduler, snapshot) {
     // set up handler to look after randomisation of conditions etc
     fase_testeo = new TrialHandler({
       psychoJS: psychoJS,
-      nReps: 5, method: TrialHandler.Method.RANDOM,
+      nReps: 108, method: TrialHandler.Method.RANDOM,
       extraInfo: expInfo, originPath: undefined,
       trialList: undefined,
       seed: undefined, name: 'fase_testeo'
@@ -1027,7 +1027,7 @@ function rutina_fixRoutineEnd(snapshot) {
 var trial_pruebaMaxDurationReached;
 var red_dots;
 var blue_dots;
-var _resp_ptos_allKeys;
+var _resp_prueba_allKeys;
 var trial_pruebaMaxDuration;
 var trial_pruebaComponents;
 function trial_pruebaRoutineBegin(snapshot) {
@@ -1108,13 +1108,13 @@ function trial_pruebaRoutineBegin(snapshot) {
     window.trial_tot += 1;
     psychoJS.experiment.addData('trial_tot', window.trial_tot);
     
-    resp_ptos.keys = undefined;
-    resp_ptos.rt = undefined;
-    _resp_ptos_allKeys = [];
+    resp_prueba.keys = undefined;
+    resp_prueba.rt = undefined;
+    _resp_prueba_allKeys = [];
     trial_pruebaMaxDuration = null
     // keep track of which components have finished
     trial_pruebaComponents = [];
-    trial_pruebaComponents.push(resp_ptos);
+    trial_pruebaComponents.push(resp_prueba);
     
     trial_pruebaComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent)
@@ -1158,29 +1158,29 @@ function trial_pruebaRoutineEachFrame() {
         }
     }
     
-    // *resp_ptos* updates
-    if (t >= 0.2 && resp_ptos.status === PsychoJS.Status.NOT_STARTED) {
+    // *resp_prueba* updates
+    if (t >= 0.2 && resp_prueba.status === PsychoJS.Status.NOT_STARTED) {
       // keep track of start time/frame for later
-      resp_ptos.tStart = t;  // (not accounting for frame time here)
-      resp_ptos.frameNStart = frameN;  // exact frame index
+      resp_prueba.tStart = t;  // (not accounting for frame time here)
+      resp_prueba.frameNStart = frameN;  // exact frame index
       
       // keyboard checking is just starting
-      psychoJS.window.callOnFlip(function() { resp_ptos.clock.reset(); });  // t=0 on next screen flip
-      psychoJS.window.callOnFlip(function() { resp_ptos.start(); }); // start on screen flip
-      psychoJS.window.callOnFlip(function() { resp_ptos.clearEvents(); });
+      psychoJS.window.callOnFlip(function() { resp_prueba.clock.reset(); });  // t=0 on next screen flip
+      psychoJS.window.callOnFlip(function() { resp_prueba.start(); }); // start on screen flip
+      psychoJS.window.callOnFlip(function() { resp_prueba.clearEvents(); });
     }
     
-    // if resp_ptos is active this frame...
-    if (resp_ptos.status === PsychoJS.Status.STARTED) {
-      let theseKeys = resp_ptos.getKeys({
+    // if resp_prueba is active this frame...
+    if (resp_prueba.status === PsychoJS.Status.STARTED) {
+      let theseKeys = resp_prueba.getKeys({
         keyList: typeof ['n','c'] === 'string' ? [['n','c']] : ['n','c'], 
         waitRelease: false
       });
-      _resp_ptos_allKeys = _resp_ptos_allKeys.concat(theseKeys);
-      if (_resp_ptos_allKeys.length > 0) {
-        resp_ptos.keys = _resp_ptos_allKeys[_resp_ptos_allKeys.length - 1].name;  // just the last key pressed
-        resp_ptos.rt = _resp_ptos_allKeys[_resp_ptos_allKeys.length - 1].rt;
-        resp_ptos.duration = _resp_ptos_allKeys[_resp_ptos_allKeys.length - 1].duration;
+      _resp_prueba_allKeys = _resp_prueba_allKeys.concat(theseKeys);
+      if (_resp_prueba_allKeys.length > 0) {
+        resp_prueba.keys = _resp_prueba_allKeys[_resp_prueba_allKeys.length - 1].name;  // just the last key pressed
+        resp_prueba.rt = _resp_prueba_allKeys[_resp_prueba_allKeys.length - 1].rt;
+        resp_prueba.duration = _resp_prueba_allKeys[_resp_prueba_allKeys.length - 1].duration;
         // a response ends the routine
         continueRoutine = false;
       }
@@ -1238,16 +1238,16 @@ function trial_pruebaRoutineEnd(snapshot) {
     
     // update the trial handler
     if (currentLoop instanceof MultiStairHandler) {
-      currentLoop.addResponse(resp_ptos.corr, level);
+      currentLoop.addResponse(resp_prueba.corr, level);
     }
-    psychoJS.experiment.addData('resp_ptos.keys', resp_ptos.keys);
-    if (typeof resp_ptos.keys !== 'undefined') {  // we had a response
-        psychoJS.experiment.addData('resp_ptos.rt', resp_ptos.rt);
-        psychoJS.experiment.addData('resp_ptos.duration', resp_ptos.duration);
+    psychoJS.experiment.addData('resp_prueba.keys', resp_prueba.keys);
+    if (typeof resp_prueba.keys !== 'undefined') {  // we had a response
+        psychoJS.experiment.addData('resp_prueba.rt', resp_prueba.rt);
+        psychoJS.experiment.addData('resp_prueba.duration', resp_prueba.duration);
         routineTimer.reset();
         }
     
-    resp_ptos.stop();
+    resp_prueba.stop();
     // the Routine "trial_prueba" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
@@ -2083,17 +2083,15 @@ function despedidaRoutineBegin(snapshot) {
     
         // 2. LA LISTA VIP: Orden a medida sin los ceros de .corr
         var vipColumns = [
-            'Id', 'date', 'grupo_asignado', 
+            'Id', 'date', 'assigned_group', 
             'trial_tot', 'fase_prueba.thisN', 'fase_testeo.thisN', 
-            'difficulty', 'dominant_color', 'correctAns', 'dominant_count', 
+            'difficulty', 'dominant_color', 'dominant_count', 'correctAns',
             // Respuestas Fase 1 (Prueba) - Sin el .corr
-            'resp_ptos.keys', 'resp_ptos.rt', 
+            'resp_prueba.keys', 'resp_prueba.rt', 
             // Respuestas Fase 2 (Testeo) - Sin el .corr
             'resp_testeo.keys', 'resp_testeo.rt', 
             // Variables de Confianza
-            'confidence_key', 'confidence_level', 'confidence_label', 'key_conf.rt',
-            // Otros datos
-            'scale_order'
+            'scale_order', 'confidence_key', 'confidence_level', 'confidence_label', 'key_conf.rt'
         ];
         
         // Motor de ordenamiento
